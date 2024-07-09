@@ -65,10 +65,10 @@ public class BallBehavior : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     // Function used for destroying bricks when the ball collides with them
     {
-        if(collision.gameObject.CompareTag("Brick"))
-        {
-            Destroy(collision.gameObject);
-        }
+        //if(collision.gameObject.CompareTag("Brick"))
+        //{
+        //    Destroy(collision.gameObject);
+        //}
     }
 
     private void Reset()
