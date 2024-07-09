@@ -8,27 +8,37 @@ public class MainMenu : MonoBehaviour
 
     public void SinglePlayer()
     {
-        SceneManager.LoadSceneAsync("SampleScene");
+        SceneManager.LoadScene("SampleScene");
     }
 
-        public void Beginner()
+    public void Beginner()
     {
-        SceneManager.LoadSceneAsync("Beginner");
+        SceneManager.LoadScene("Beginner");
     }
 
-        public void Intermediate()
+    public void Intermediate()
     {
-        SceneManager.LoadSceneAsync("Intermediate");
+        SceneManager.LoadScene("Intermediate");
     }
 
-        public void Advanced()
+    public void Advanced()
     {
-        SceneManager.LoadSceneAsync("Advanced");
+        SceneManager.LoadScene("Advanced");
     }
 
-        public void Training()
+    public void Training()
     {
-        SceneManager.LoadSceneAsync("Training");
+        SceneManager.LoadScene("Training");
+    }
+
+    public void About()
+    {
+        SceneManager.LoadScene("About");
+    }
+
+    public void ReturnToMain()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
 }
