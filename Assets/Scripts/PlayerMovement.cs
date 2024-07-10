@@ -9,23 +9,24 @@ public class PlayerMovement : MonoBehaviour
  * @return void.
  */
 {
-    public Rigidbody2D rb;                  // sets the paddle Component
     public float speed = 14.0f;             // sets the paddle speed
-    float movementHorizontal;               // stores the user/agent movement input
     public float maxX = 6f;                 // controls the max X dimension of the game
+    private float movementHorizontal;       // stores the user/agent movement input
+    private Rigidbody2D rb;                 // sets the paddle Component
+    private bool frozen = false;            // determines if the paddle is frozen or not
 
     // Start is called before the first frame update
     void Start()
     // Sets the paddle Component at the start of the game
     {
         rb = GetComponent<Rigidbody2D>();
-
     }
-
 
     void Update()
     // Regulates the paddle movement to the speed and dimensions of the game
     {
+        // Don't update the paddle if it is frozen
+        if (frozen) return;
         // get horizontal input from user
         movementHorizontal = Input.GetAxis("Horizontal");
 
@@ -37,4 +38,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Freezes the paddle movement
+    /// </summary>
+    public void Freeze()
+    {
+        frozen = true;
+    }
+
+    /// <summary>
+    /// Unfreezes the paddle movement
+    /// </summary>
+    public void Unfreeze()
+    {
+        frozen = false;
+    }
 }
