@@ -65,10 +65,10 @@ public class BallBehavior : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     // Function used for destroying bricks when the ball collides with them
     {
-        //if(collision.gameObject.CompareTag("Brick"))
-        //{
-        //    Destroy(collision.gameObject);
-        //}
+        if(collision.gameObject.CompareTag("Brick"))
+        {
+            Destroy(collision.gameObject);
+        }
     }
 
     private void Reset()
@@ -84,7 +84,7 @@ public class BallBehavior : MonoBehaviour
         }
         else
         {
-            random = Random.Range(2f, 8f);
+            random = Random.Range(2f, 4f);
             transform.position = new Vector2(random, 0f);
             rb.velocity = new Vector2(-3.5f, -3.5f);
         }
