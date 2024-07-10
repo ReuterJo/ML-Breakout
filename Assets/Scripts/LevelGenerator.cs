@@ -10,7 +10,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject brickPrefab;
     public Gradient gradient;
 
-    private void Awake()
+    public void GenerateLevel()
     {
         for (int i = 0; i < size.x; i++)
         {

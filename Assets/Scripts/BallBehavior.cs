@@ -9,13 +9,18 @@ public class BallBehavior : MonoBehaviour
  * @return void.
  */
 {
+    [Tooltip("The bottom of the screen")]
     public float minY = -5.5f;              // sets the bottom of the screen
+    [Tooltip("The maximum ball velocity")]
     public float maxVelocity = 8f;          // sets the maximum ball velocity
+    [Tooltip("The minimum ball velocity")]
     public float minVelocityY = 3.0f;       // sets the minimum Y velocity
+    [Tooltip("The starting ball velocity")]
     public float startingVelocity = 3.5f;   // sets the starting velocity
-    int side;                               // stores a randomly generated 0 or 1
-    float random;                           // stores randomly generated numbers
-    Rigidbody2D rb;                         // stores the ball Component
+    [Tooltip("The game manager")]
+    public GameManager gameManager;         // the game manager
+    private Rigidbody2D rb;                 // stores the ball Component
+    private bool frozen = false;            // determins if the ball is frozen or not
 
 
     void Start()
@@ -28,9 +33,16 @@ public class BallBehavior : MonoBehaviour
     void Update()
     // Regulates the ball position and velocity while in play
     {
+        // Don't update the ball if it is frozen
+        if (frozen)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }    
         // Reset the ball position if it has fallen below the game Y axis
         if(transform.position.y < minY) 
         {
+            gameManager.loseLife();
             Reset();
         }
         // Get the current velocity
@@ -58,7 +70,7 @@ public class BallBehavior : MonoBehaviour
         // Constrain total velocity
         if(rb.velocity.magnitude > maxVelocity)
         {
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxVelocity);
         }
     }
 
@@ -68,25 +80,42 @@ public class BallBehavior : MonoBehaviour
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
+            gameManager.scoreBrick();
         }
     }
 
-    private void Reset()
+    /// <summary>
+    /// Freeze the balls movement
+    /// </summary>
+    public void Freeze()
+    {
+        frozen = true;
+    }
+
+    /// <summary>
+    /// Unfreezes the balls movement
+    /// </summary>
+    public void Unfreeze()
+    {
+        frozen = false;
+    }
+
+    public void Reset()
     // Randomly reset the ball position with position and velocity
     {
-        random = Random.Range(0f, 1f);
-        side = Mathf.RoundToInt(random);
+        float random = Random.Range(0f, 1f);  // stores randomly generated numbers  
+        int side = Mathf.RoundToInt(random);  // stores a randomly generated 0 or 1
         if (side == 0)
         {
             random = Random.Range(-4f, -2f);
             transform.position = new Vector2(random, 0f);
-            rb.velocity = new Vector2(3.5f, -3.5f);
+            rb.velocity = new Vector2(1f, -1f) * startingVelocity;
         }
         else
         {
             random = Random.Range(2f, 4f);
             transform.position = new Vector2(random, 0f);
-            rb.velocity = new Vector2(-3.5f, -3.5f);
+            rb.velocity = new Vector2(-1f, -1f) * startingVelocity;
         }
     }
 }
