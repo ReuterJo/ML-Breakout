@@ -20,7 +20,7 @@ public class BallBehavior : MonoBehaviour
     [Tooltip("The game manager")]
     public GameManager gameManager;         // the game manager
     private Rigidbody2D rb;                 // stores the ball Component
-    private bool frozen = false;            // determins if the ball is frozen or not
+    private bool frozen = true;            // determins if the ball is frozen or not
 
 
     void Start()

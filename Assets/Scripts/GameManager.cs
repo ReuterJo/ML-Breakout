@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class GameManager : MonoBehaviour
     [Tooltip("The paddle ball")]
     public BallBehavior ballBehavior;
 
-    [Tooltip("The player paddle")]
-    public PlayerMovement playerMovement;
+    [Tooltip("The agent paddle")]
+    public AgentBehavior agentBehavior;
 
     [Tooltip("The level generator")]
     public LevelGenerator levelGenerator;
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     private int maxScore;
     private int brickValue = 10;
     private int lives;
+    private Rigidbody2D ballRb;
 
     /// <summary>
     /// All possible game states
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
     public void scoreBrick()
     {   
         score += brickValue;
+        agentBehavior.BrickDestoryed();
     }
 
     /// <summary>
@@ -51,36 +54,20 @@ public class GameManager : MonoBehaviour
     public void loseLife()
     {
         lives--;
-    }
-
-    /// <summary>
-    /// Called before the game starts
-    /// </summary>
-    private void Awake()
-    {
-        levelGenerator = GameObject.Find("LevelGenerator").GetComponent<LevelGenerator>();
-
-        // Generate level
-        levelGenerator.GenerateLevel();
-
-        maxScore = levelGenerator.size.x * levelGenerator.size.y * brickValue;
-    }
-
-    /// <summary>
-    /// Called when the game starts
-    /// </summary>
-    private void Start()
-    {
-        StartGame();
+        agentBehavior.BallLost();
     }
 
     /// <summary>
     /// Starts the game
     /// </summary>
-    private void StartGame()
+    public void StartGame()
     {
         // Set the game state to preparing
         State = GameState.Preparing;
+
+        // Generate level
+        levelGenerator.GenerateLevel();
+        maxScore = levelGenerator.size.x * levelGenerator.size.y * brickValue;
 
         // Update lives and score
         score = 0;
@@ -90,9 +77,19 @@ public class GameManager : MonoBehaviour
 
         // Reset paddle ball
         ballBehavior.Reset();
+        agentBehavior.Reset();
+
+        // Unfreeze player and ball
+        ballBehavior.Unfreeze();
+        agentBehavior.Unfreeze();
 
         // Set the game state to playing
         State = GameState.Playing;
+    }
+
+    private void Awake()
+    {
+        ballRb = ballBehavior.GetComponent<Rigidbody2D>();
     }
 
     /// <summary>
@@ -103,12 +100,12 @@ public class GameManager : MonoBehaviour
         // Set the game state to game over
         State = GameState.Gameover;
 
-        // Reset the ball
-        ballBehavior.Reset();
+        // Deconstruct level
+
 
         // Freeze player and ball
         ballBehavior.Freeze();
-        playerMovement.Freeze();
+        agentBehavior.Freeze();
     }
 
     /// <summary>
@@ -118,6 +115,9 @@ public class GameManager : MonoBehaviour
     {
         if (State == GameState.Playing)
         {
+            // Reward agent for ball moving
+            if (ballRb.velocity.magnitude > 0) agentBehavior.BallMoving();
+
             // Update score and lives
             uiController.ShowLives(lives.ToString());
             uiController.ShowScore(score.ToString());
@@ -126,15 +126,8 @@ public class GameManager : MonoBehaviour
             if (lives == 0 || score == maxScore)
             {
                 EndGame();
+                agentBehavior.EndTrainingEpisode();   
             }
-        }
-        else if (State == GameState.Preparing || State == GameState.Gameover)
-        {
-
-        }
-        else
-        {
-
         }
     }
 }
