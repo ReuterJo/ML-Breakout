@@ -5,23 +5,26 @@ using UnityEngine.Scripting;
 
 public class GameManager : MonoBehaviour
 {
-    [Tooltip("The UI Controller")]
+    [Tooltip("Sets the UI Controller script")]
     public UIController uiController;
 
-    [Tooltip("The paddle ball")]
+    [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
 
-    [Tooltip("The agent paddle")]
+    [Tooltip("Sets the AgentBehavior script")]
     public AgentBehavior agentBehavior;
 
-    [Tooltip("The level generator")]
+    [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
 
-    private int score;
-    private int maxScore;
+    private int score = 0;
     private int brickValue = 10;
-    private int lives;
+    private int bricksRemaining;
+    private int lives = 5;
     private Rigidbody2D ballRb;
+    private int level;
+    private float levelStartTime;
+    private bool multi_level = true;  // use to change single or multi-level game
 
     /// <summary>
     /// All possible game states
@@ -45,6 +48,7 @@ public class GameManager : MonoBehaviour
     public void scoreBrick()
     {   
         score += brickValue;
+        bricksRemaining -= 1;
         agentBehavior.BrickDestoryed();
     }
 
@@ -66,14 +70,23 @@ public class GameManager : MonoBehaviour
         State = GameState.Preparing;
 
         // Generate level
-        levelGenerator.GenerateLevel();
-        maxScore = levelGenerator.size.x * levelGenerator.size.y * brickValue;
+        bricksRemaining = levelGenerator.ChangeLevel(1);
+        if (!multi_level)
+        {
+            uiController.HideLevel();
+        }
+        else
+        {
+            level = 1;
+            uiController.ShowLevel("Level " + level.ToString());
+        }
 
         // Update lives and score
-        score = 0;
-        lives = 5;
-        uiController.ShowLives(lives.ToString());
-        uiController.ShowScore(score.ToString());
+        uiController.ShowLives(lives.ToString() + " Lives");
+        uiController.ShowScore("Score " + score.ToString());
+
+        // Begin the level timer
+        levelStartTime = Time.time;
 
         // Reset paddle ball
         ballBehavior.Reset();
@@ -119,15 +132,62 @@ public class GameManager : MonoBehaviour
             if (ballRb.velocity.magnitude > 0) agentBehavior.BallMoving();
 
             // Update score and lives
-            uiController.ShowLives(lives.ToString());
-            uiController.ShowScore(score.ToString());
+            uiController.ShowLives(lives.ToString() + " Lives");
+            uiController.ShowScore("Score " + score.ToString());
 
-            // Check to see if the player has lost all lives or reached max score
-            if (lives == 0 || score == maxScore)
+            // Check to see if the player has lost all lives
+            if (lives == 0)
             {
                 EndGame();
                 agentBehavior.EndTrainingEpisode();   
             }
+
+            // Single level game
+            if (!multi_level)
+            {
+                if (bricksRemaining == 0)
+                {
+                    EndGame();
+                    agentBehavior.EndTrainingEpisode();  
+                }
+            }
+            // Multi-level game
+            else
+            {
+                // finished game
+                if (level == 5)
+                {
+                    EndGame();
+                    agentBehavior.EndTrainingEpisode();  
+                }
+                else
+                {
+                    if ((level == 1 && bricksRemaining == 27) || bricksRemaining == 0) levelGenerator.ChangeLevel(level + 1);
+                    uiController.ShowLevel("Level " + level.ToString());
+                }
+            }
         }
     }
+
+    public void ChangeLevel(float pointMultiplier, int maxBonusPoints, float decreasePaddlePercent, float increaseBallVelocityPercent)
+    {
+        // change brickValue 
+        brickValue = (int) (brickValue * pointMultiplier);
+
+        // give level bonus points based on time to complete level
+
+        float elapsed = Time.time - levelStartTime;
+        int bonus = (int) (maxBonusPoints / elapsed);
+        score += bonus;
+
+        // change paddle size
+        agentBehavior.ChangePaddleScale(decreasePaddlePercent);
+
+        // change ball velocity
+        ballBehavior.ChangeBallVelocity(increaseBallVelocityPercent);
+
+        // change level
+        level += 1;
+    }
+
 }

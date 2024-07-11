@@ -8,12 +8,22 @@ using System.Runtime.CompilerServices;
 
 public class AgentBehavior : Agent
 {
-    public float speed = 14.0f;             // sets the paddle speed
-    public float maxX = 4.5f;                 // controls the max X dimension of the game
-    [Tooltip("The game manager")]
+    [Tooltip("Sets the paddle x axis speed")]
+    public float speed = 10.0f;
+    
+    [Tooltip("Sets the allowable maximum X value in gameplay")]
+    public float maxX = 4.5f;
+    
+    [Tooltip("Sets the GameManager object")]
     public GameManager gameManager;
-    [Tooltip("The paddle ball")]
+    
+    [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
+
+    [Tooltip("Sets the paddleScale (width)")]
+    public Vector3 paddleScale = new Vector3(2.0f, 0.25f, 1.0f);
+    
+    [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not
 
     /// <summary>
@@ -136,5 +146,9 @@ public class AgentBehavior : Agent
         {
             AddReward(0.1f);
         }
+    }
+
+    public void ChangePaddleScale(float percent){
+        paddleScale.x *= percent;
     }
 }

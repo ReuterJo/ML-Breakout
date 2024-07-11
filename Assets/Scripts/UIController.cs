@@ -11,6 +11,9 @@ public class UIController : MonoBehaviour
     [Tooltip("The score text")]
     public TextMeshProUGUI scoreText;
 
+    [Tooltip("The level text")]
+    public TextMeshProUGUI levelText;
+
     /// <summary>
     /// Shows lives text
     /// </summary>
@@ -45,5 +48,16 @@ public class UIController : MonoBehaviour
     public void HideScore()
     {
         scoreText.gameObject.SetActive(false);
-    }  
+    }
+
+    public void ShowLevel(string text)
+    {
+        levelText.text = text;
+        levelText.gameObject.SetActive(true);
+    }
+
+    public void HideLevel()
+    {
+        levelText.gameObject.SetActive(false);
+    }
 }
