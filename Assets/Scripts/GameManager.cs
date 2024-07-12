@@ -24,18 +24,18 @@ public class GameManager : MonoBehaviour
     private int bricksRemaining;
     private int lives = 5;
     private Rigidbody2D ballRb;
-    private int level = 0;
     private float levelStartTime;
 
     // configuration variables
     private bool multi_level = true;            // use to change single or multi-level game
     private bool training_mode = false;         // use to train the model vs play the game
+    private int level = 1;                      // use to set starting level in multi-level mode
 
     // level variables
     private float levelPointMultiplier = 1.5f;
     private float levelPaddleSizeMultiplier = 0.9f;
     private float levelBonusMultiplier = 1.5f;
-    private float levelBallVelocityMultiplier = 1.1f;
+    private float levelBallVelocityMultiplier = 0.1f;
 
     /// <summary>
     /// All possible game states
@@ -87,11 +87,20 @@ public class GameManager : MonoBehaviour
         if (!multi_level)
         {
             uiController.HideLevel();
-            ChangeLevel();
+            bricksRemaining = levelGenerator.ChangeLevel(level);
         }
         else
         {
-            ChangeLevel();
+            if (level == 1)
+            {
+                bricksRemaining = levelGenerator.ChangeLevel(level);
+            }
+            else
+            {
+                level -= 1;
+                ChangeLevel();
+            }
+            
             uiController.ShowLevel("Level " + level.ToString());
         }
 

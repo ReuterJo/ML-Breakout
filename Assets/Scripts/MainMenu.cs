@@ -36,6 +36,11 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("About");
     }
 
+    public void Leaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard");
+    }
+
     public void ReturnToMain()
     {
         SceneManager.LoadScene("MainMenu");
