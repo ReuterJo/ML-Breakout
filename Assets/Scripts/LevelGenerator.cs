@@ -12,8 +12,6 @@ public class LevelGenerator : MonoBehaviour
     public Gradient gradient;
     private List<GameObject> brickList;
 
-    [Tooltip("Sets the GameManager script")]
-    public GameManager gameManager;
 
     public int ChangeLevel(int level)
     {
@@ -58,14 +56,12 @@ public class LevelGenerator : MonoBehaviour
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
             }
         }
-        // game behavior attributes remain the same
     }
 
     public void GenerateLevelTwo()
     // ChangeLevel(int pointMultiplier, int maxBonusPoints, float decreasePaddlePercent, float increaseBallVelocityPercent)
     {
         // blocks stay in play, game behavior attributes change
-        gameManager.ChangeLevel(0.5f, 1000, 0.9f, 1.1f);
     }
     
     public void GenerateLevelThree()
@@ -81,7 +77,6 @@ public class LevelGenerator : MonoBehaviour
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
             }
         }
-        gameManager.ChangeLevel(0.5f, 2000, 0.9f, 1.1f);
     }
 
     public void GenerateLevelFour()
@@ -97,7 +92,6 @@ public class LevelGenerator : MonoBehaviour
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
             }
         }
-        gameManager.ChangeLevel(0.5f, 3000, 0.9f, 1.1f);
     }
 
     public void GenerateLevelFive()
@@ -113,7 +107,6 @@ public class LevelGenerator : MonoBehaviour
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
             }
         }
-        gameManager.ChangeLevel(0.5f, 1000, 0.9f, 1.1f);
     }
 
 
