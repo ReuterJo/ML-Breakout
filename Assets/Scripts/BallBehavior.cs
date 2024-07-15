@@ -129,7 +129,6 @@ public class BallBehavior : MonoBehaviour
 
     public void ChangeBallVelocity(float percent)
     {
-        ball.velocity *= percent;
-        startingVelocity *= percent;
+        startingVelocity *= (1 + percent);
     }
 }

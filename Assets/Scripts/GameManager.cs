@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     private float levelPointMultiplier = 1.5f;
     private float levelPaddleSizeMultiplier = 0.9f;
     private float levelBonusMultiplier = 1.5f;
-    private float levelBallVelocityMultiplier = 0.1f;
+    private float levelBallVelocityMultiplier = 0.2f;
 
     /// <summary>
     /// All possible game states
@@ -97,6 +97,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                // decrement level by one to generate correct level
                 level -= 1;
                 ChangeLevel();
             }
@@ -197,7 +198,6 @@ public class GameManager : MonoBehaviour
         brickValue = (int) (brickValue * level * levelPointMultiplier);
 
         // give level bonus points based on time to complete level
-
         float elapsed = Time.time - levelStartTime;
         int bonus = (int) ((level * levelBonusMultiplier * 1000) / elapsed);
         score += bonus;

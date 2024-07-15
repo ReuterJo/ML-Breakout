@@ -1285,7 +1285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 9, y: 6}
-  offset: {x: 0.7, y: 0.25}
+  offset: {x: 0.8, y: 0.25}
   brickPrefab: {fileID: 4867713411622701126, guid: 544a0625310b5481383cdbf38a73b6fd, type: 3}
   gradient:
     serializedVersion: 2
@@ -1317,7 +1317,6 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  gameManager: {fileID: 1938980521}
 --- !u!4 &1056267043
 Transform:
   m_ObjectHideFlags: 0

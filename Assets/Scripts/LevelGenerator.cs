@@ -12,38 +12,32 @@ public class LevelGenerator : MonoBehaviour
     public Gradient gradient;
     private List<GameObject> brickList;
 
-
     public int ChangeLevel(int level)
     {
         if (level == 1) 
         {
             GenerateLevelOne();
-            return size.x * size.y;
         }
         else if (level == 2) 
         {
-            GenerateLevelTwo();
-            return 27;   // TODO
+            // pass
         }
         else if (level == 3) 
         {
             GenerateLevelThree();
-            return 27;
         }
         else if (level == 4) 
         {
             GenerateLevelFour();
-            return 18;
         }
         else if (level == 5) 
         {
             GenerateLevelFive();
-            return 12;
         }
-        else return 0;
+        return brickList.Count;
     }
 
-    public void GenerateLevelOne()
+    public void GenerateAllBricks()
     {
         brickList = new List<GameObject>();
         for (int i = 0; i < size.x; i++)
@@ -51,11 +45,17 @@ public class LevelGenerator : MonoBehaviour
             for (int j = 0; j < size.y; j++)
             {
                 GameObject newBrick = Instantiate(brickPrefab, transform);
-                brickList.Add(newBrick);
                 newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
+                brickList.Add(newBrick);
             }
         }
+    }
+
+
+    public void GenerateLevelOne()
+    {
+        GenerateAllBricks();
     }
 
     public void GenerateLevelTwo()
@@ -66,47 +66,26 @@ public class LevelGenerator : MonoBehaviour
     
     public void GenerateLevelThree()
     {
-        brickList = new List<GameObject>();
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                GameObject newBrick = Instantiate(brickPrefab, transform);
-                brickList.Add(newBrick);
-                newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
-                newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
-            }
-        }
+        GenerateAllBricks();
     }
 
     public void GenerateLevelFour()
     {
-        brickList = new List<GameObject>();
-        for (int i = 0; i < size.x; i++)
+        List<int> checkerboard = new List<int> 
         {
-            for (int j = 0; j < size.y; j++)
-            {
-                GameObject newBrick = Instantiate(brickPrefab, transform);
-                brickList.Add(newBrick);
-                newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
-                newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
-            }
-        }
+            0, 1, 0, 1, 0, 1, 0, 1, 0,
+            1, 0, 1, 0, 1, 0, 1, 0, 1,
+            0, 1, 0, 1, 0, 1, 0, 1, 0,
+            1, 0, 1, 0, 1, 0, 1, 0, 1,
+            0, 1, 0, 1, 0, 1, 0, 1, 0,
+            1, 0, 1, 0, 1, 0, 1, 0, 1
+        };
+        GenerateAllBricks();
     }
 
     public void GenerateLevelFive()
     {
-        brickList = new List<GameObject>();
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                GameObject newBrick = Instantiate(brickPrefab, transform);
-                brickList.Add(newBrick);
-                newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
-                newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
-            }
-        }
+        GenerateAllBricks();
     }
 
 
