@@ -9,24 +9,32 @@ public class BallBehavior : MonoBehaviour
  * @return void.
  */
 {
-    [Tooltip("The bottom of the screen")]
-    public float minY = -5.5f;              // sets the bottom of the screen
-    [Tooltip("The maximum ball velocity")]
-    public float maxVelocity = 8f;          // sets the maximum ball velocity
-    [Tooltip("The minimum ball velocity")]
-    public float minVelocityY = 3.0f;       // sets the minimum Y velocity
-    [Tooltip("The starting ball velocity")]
-    public float startingVelocity = 3.5f;   // sets the starting velocity
-    [Tooltip("The game manager")]
-    public GameManager gameManager;         // the game manager
-    private Rigidbody2D rb;                 // stores the ball Component
-    private bool frozen = true;            // determins if the ball is frozen or not
+    [Tooltip("Sets the bottom of the screen to determine a lost ball")]
+    public float minY = -5.5f;
+    
+    [Tooltip("Sets maximum total ball velocity")]
+    public float maxVelocity = 8f;
+    
+    [Tooltip("Sets the minimum ball velocity in the Y axis")]
+    public float minVelocityY = 3.0f;
+    
+    [Tooltip("Sets the initial ball velocity")]
+    public float startingVelocity = 3.5f;
+    
+    [Tooltip("Sets the game manager object")]
+    public GameManager gameManager;
+    
+    [Tooltip("Sets the ball Component object")]
+    private Rigidbody2D ball;
+    
+    [Tooltip("Sets the ball frozen state")]
+    private bool frozen = true;
 
 
     void Start()
     // Loads the ball component and sets the ball starting position at the start of the game
     {
-        rb = GetComponent<Rigidbody2D>();
+        ball = GetComponent<Rigidbody2D>();
         Reset();
     }
 
@@ -36,7 +44,7 @@ public class BallBehavior : MonoBehaviour
         // Don't update the ball if it is frozen
         if (frozen)
         {
-            rb.velocity = Vector2.zero;
+            ball.velocity = Vector2.zero;
             return;
         }    
         // Reset the ball position if it has fallen below the game Y axis
@@ -46,7 +54,7 @@ public class BallBehavior : MonoBehaviour
             Reset();
         }
         // Get the current velocity
-        Vector2 currentVelocity = rb.velocity;
+        Vector2 currentVelocity = ball.velocity;
 
         // Check the direction of travel (up or down)
         if (currentVelocity.y > 0)
@@ -55,7 +63,7 @@ public class BallBehavior : MonoBehaviour
             if (currentVelocity.y < minVelocityY)
             {
                 currentVelocity.y = minVelocityY;
-                rb.velocity = currentVelocity;
+                ball.velocity = currentVelocity;
             }
         }
         else if (currentVelocity.y < 0)
@@ -64,13 +72,13 @@ public class BallBehavior : MonoBehaviour
             if (currentVelocity.y > -minVelocityY)
             {
                 currentVelocity.y = -minVelocityY;
-                rb.velocity = currentVelocity;
+                ball.velocity = currentVelocity;
             }
         }
         // Constrain total velocity
-        if(rb.velocity.magnitude > maxVelocity)
+        if(ball.velocity.magnitude > maxVelocity)
         {
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxVelocity);
+            ball.velocity = Vector2.ClampMagnitude(ball.velocity, maxVelocity);
         }
     }
 
@@ -109,13 +117,18 @@ public class BallBehavior : MonoBehaviour
         {
             random = Random.Range(-4f, -2f);
             transform.position = new Vector2(random, 0f);
-            rb.velocity = new Vector2(1f, -1f) * startingVelocity;
+            ball.velocity = new Vector2(1f, -1f) * startingVelocity;
         }
         else
         {
             random = Random.Range(2f, 4f);
             transform.position = new Vector2(random, 0f);
-            rb.velocity = new Vector2(-1f, -1f) * startingVelocity;
+            ball.velocity = new Vector2(-1f, -1f) * startingVelocity;
         }
+    }
+
+    public void ChangeBallVelocity(float percent)
+    {
+        startingVelocity *= (1 + percent);
     }
 }

@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 53665333}
   - component: {fileID: 53665332}
   m_Layer: 5
-  m_Name: Main Menu
+  m_Name: Main Menu Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -383,7 +383,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 137572539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81817147a22a047b2bb852ffe1cac97f, type: 3}
+  m_Script: {fileID: 11500000, guid: c974bd2dfb1774cbe889e85237de6fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &137572542
@@ -430,7 +430,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 137572539}
+      - m_Target: {fileID: 53665331}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 1
@@ -2172,7 +2172,7 @@ GameObject:
   - component: {fileID: 1290547849}
   - component: {fileID: 1290547848}
   m_Layer: 5
-  m_Name: Leaderboard
+  m_Name: Leaderboard Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2241,7 +2241,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1290547849}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 53665332}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: Leaderboard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1290547849
 MonoBehaviour:
   m_ObjectHideFlags: 0

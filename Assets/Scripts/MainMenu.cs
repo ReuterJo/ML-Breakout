@@ -1,10 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+        private Image image;
+
+    void Start()
+    {
+        image = GetComponent<Image>();
+        if (image != null && image.enabled)
+        {
+            image.GetComponent<Button>().onClick.AddListener(OnClick);
+        }
+    }
+
+    void OnClick()
+    {
+        image.enabled = false;
+    }
 
     public void SinglePlayer()
     {
@@ -34,6 +50,11 @@ public class MainMenu : MonoBehaviour
     public void About()
     {
         SceneManager.LoadScene("About");
+    }
+
+    public void Leaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard");
     }
 
     public void ReturnToMain()
