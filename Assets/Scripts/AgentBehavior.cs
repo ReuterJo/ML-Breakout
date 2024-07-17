@@ -20,8 +20,7 @@ public class AgentBehavior : Agent
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
 
-    [Tooltip("Sets the paddleScale (width)")]
-    public Vector3 paddleScale = new Vector3(2.0f, 0.25f, 1.0f);
+    public float paddleWidth = 2.0f;
     
     [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not
@@ -148,7 +147,9 @@ public class AgentBehavior : Agent
         }
     }
 
-    public void ChangePaddleScale(float percent){
-        paddleScale.x *= percent;
+    public void ChangePaddleScale(float change){
+        transform.localScale = new Vector3(paddleWidth - change, 
+                                transform.localScale.y, 
+                                transform.localScale.z);
     }
 }
