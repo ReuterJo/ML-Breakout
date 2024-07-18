@@ -22,18 +22,21 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the LeaderboardManager script")]
     public LeaderboardManager leaderboardManager;
 
+    [Tooltip("Sets the game to multilevel mode")]
+    public bool multi_level = true;            // use to change single or multi-level game
+    [Tooltip("Sets the game to training mode")]
+    public bool training_mode = false;         // use to train the model vs play the game
+
     // game variables
-    private int score = 0;
+    private int score;
     private int brickValue = 10;
     private int bricksRemaining;
-    private int lives = 5;
-    private int level = 1;
+    private int lives;
+    private int level;
     private Rigidbody2D ballRb;
     private float levelStartTime;
 
     // configuration variables
-    private bool multi_level = true;            // use to change single or multi-level game
-    private bool training_mode = false;         // use to train the model vs play the game
     private int starting_level = 1;             // use to set starting level in multi-level mode
 
     // level variables
@@ -67,6 +70,8 @@ public class GameManager : MonoBehaviour
         // Set the game state to preparing
         State = GameState.Preparing;
         level = starting_level;
+        lives = 5;
+        score = 0;
         leaderboardManager.HideLeaderboard();
 
         // Generate level
@@ -247,6 +252,7 @@ public class GameManager : MonoBehaviour
         // Reload scene to restart game
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
+        
         StartGame();
     }
 

@@ -5,6 +5,8 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
+using System.Runtime.InteropServices;
 
 public class AgentBehavior : Agent
 {
@@ -24,6 +26,15 @@ public class AgentBehavior : Agent
     
     [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not
+
+    private bool trainingMode;
+    private PolygonCollider2D paddleCollider;
+    private Rigidbody2D ballRd;
+    private float colliderWidth;
+    private float ballLostReward = -5f;
+    private float ballMovingReward = 0.001f;
+    private float ballHitReward = 0.1f;
+    private float brickDestoryedReward = 1f;
 
     /// <summary>
     /// Reset back to initial position
@@ -54,7 +65,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BallLost()
     {
-        AddReward(-5f);
+        AddReward(ballLostReward);
     }
 
     /// <summary>
@@ -62,7 +73,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BrickDestoryed()
     {
-        AddReward(1f);
+        AddReward(brickDestoryedReward);
     }
 
     /// <summary>
@@ -70,7 +81,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BallMoving()
     {
-        AddReward(0.001f);
+        AddReward(ballMovingReward);
     }
 
     /// <summary>
@@ -79,6 +90,16 @@ public class AgentBehavior : Agent
     public void EndTrainingEpisode()
     {
         EndEpisode();
+    }
+
+    /// <summary>
+    /// Initialize the agent
+    /// </summary>
+    public override void Initialize()
+    {
+        ballRd = ballBehavior.GetComponent<Rigidbody2D>();
+        trainingMode = gameManager.training_mode;
+        if(!trainingMode) MaxStep = 0;
     }
 
     /// <summary>
@@ -115,13 +136,19 @@ public class AgentBehavior : Agent
     /// <param name="sensor">The vector sensor output</param>
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Paddle observations for x and y position and velocity
-        sensor.AddObservation(this.transform.position.x);
-        sensor.AddObservation(this.transform.position.y);
-
-        // Ball observations for x and y position and velocity
+        // Observations of ball x and y position
         sensor.AddObservation(ballBehavior.transform.position.x);
         sensor.AddObservation(ballBehavior.transform.position.y);
+
+        // Observations of ball x and y velocity
+        sensor.AddObservation(ballRd.velocity.x);
+        sensor.AddObservation(ballRd.velocity.y);
+
+        // Paddle observations for x position of left and right edge
+        paddleCollider = this.GetComponent<PolygonCollider2D>();
+        colliderWidth = paddleCollider.bounds.size.x;
+        sensor.AddObservation(this.transform.position.x + colliderWidth / 2);
+        sensor.AddObservation(this.transform.position.x - colliderWidth / 2);
     }
 
     /// <summary>
@@ -143,7 +170,7 @@ public class AgentBehavior : Agent
     {
         if (collision.gameObject.CompareTag("Ball"))
         {
-            AddReward(0.1f);
+            AddReward(ballHitReward);
         }
     }
 
