@@ -111,6 +111,7 @@ public class BallBehavior : MonoBehaviour
     public void Reset()
     // Randomly reset the ball position with position and velocity
     {
+        ball = GetComponent<Rigidbody2D>();
         float random = Random.Range(0f, 1f);  // stores randomly generated numbers  
         int side = Mathf.RoundToInt(random);  // stores a randomly generated 0 or 1
         if (side == 0)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,22 +19,26 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
 
+    [Tooltip("Sets the LeaderboardManager script")]
+    public LeaderboardManager leaderboardManager;
+
     // game variables
     private int score = 0;
     private int brickValue = 10;
     private int bricksRemaining;
     private int lives = 5;
+    private int level = 1;
     private Rigidbody2D ballRb;
     private float levelStartTime;
 
     // configuration variables
     private bool multi_level = true;            // use to change single or multi-level game
     private bool training_mode = false;         // use to train the model vs play the game
-    private int level = 1;                      // use to set starting level in multi-level mode
+    private int starting_level = 1;             // use to set starting level in multi-level mode
 
     // level variables
     private float levelPointMultiplier = 1.5f;
-    private float levelPaddleSizeMultiplier = 0.9f;
+    private float levelPaddleSizeSubtractor = 0.2f;
     private float levelBonusMultiplier = 1.5f;
     private float levelBallVelocityMultiplier = 0.2f;
 
@@ -45,6 +50,7 @@ public class GameManager : MonoBehaviour
         Default,
         Preparing,
         Playing,
+        Paused,
         Gameover
     }
 
@@ -54,33 +60,14 @@ public class GameManager : MonoBehaviour
     public GameState State { get; private set; } = GameState.Default;
 
     /// <summary>
-    /// Called when a brick is destroyed
-    /// </summary>
-    public void scoreBrick()
-    {   
-        score += brickValue;
-        uiController.ShowScore("Score " + score.ToString());
-        bricksRemaining -= 1;
-        agentBehavior.BrickDestoryed();
-    }
-
-    /// <summary>
-    /// Called when a life is lost
-    /// </summary>
-    public void loseLife()
-    {
-        lives--;
-        uiController.ShowLives(lives.ToString() + " Lives");
-        agentBehavior.BallLost();
-    }
-
-    /// <summary>
     /// Starts the game
     /// </summary>
     public void StartGame()
     {
         // Set the game state to preparing
         State = GameState.Preparing;
+        level = starting_level;
+        leaderboardManager.HideLeaderboard();
 
         // Generate level
 
@@ -94,6 +81,7 @@ public class GameManager : MonoBehaviour
             if (level == 1)
             {
                 bricksRemaining = levelGenerator.ChangeLevel(level);
+                uiController.ShowLevelUpText("Level " + level.ToString());
             }
             else
             {
@@ -129,6 +117,34 @@ public class GameManager : MonoBehaviour
         ballRb = ballBehavior.GetComponent<Rigidbody2D>();
     }
 
+        /// <summary>
+    /// Called when a brick is destroyed
+    /// </summary>
+    public void scoreBrick()
+    {   
+        score += brickValue;
+        uiController.ShowScore("Score " + score.ToString());
+        bricksRemaining -= 1;
+        agentBehavior.BrickDestoryed();
+    }
+
+    /// <summary>
+    /// Called when a life is lost
+    /// </summary>
+    public void loseLife()
+    {
+        lives--;
+        uiController.ShowLives(lives.ToString() + " Lives");
+        agentBehavior.BallLost();
+    }
+
+    private void PauseGame()
+    {
+        State = GameState.Paused;
+        ballBehavior.Freeze();
+        agentBehavior.Freeze();
+    }
+
     /// <summary>
     /// Ends the game
     /// </summary>
@@ -142,6 +158,9 @@ public class GameManager : MonoBehaviour
         // Freeze player and ball
         ballBehavior.Freeze();
         agentBehavior.Freeze();
+
+        // Check if the leaderboard needs to be updated
+        leaderboardManager.AddScore(score);
     }
 
     /// <summary>
@@ -183,7 +202,10 @@ public class GameManager : MonoBehaviour
                 // move to the next level
                 else
                 {
-                    if ((level == 1 && bricksRemaining == 27) || bricksRemaining == 0) ChangeLevel();
+                    if ((level == 1 && bricksRemaining == 27) || bricksRemaining == 0) 
+                    {
+                        ChangeLevel();
+                    }
                 }
             }
         }
@@ -191,6 +213,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
+        Debug.Log("Change to Level " + level);
         // increment level
         level += 1;
 
@@ -201,9 +224,10 @@ public class GameManager : MonoBehaviour
         float elapsed = Time.time - levelStartTime;
         int bonus = (int) ((level * levelBonusMultiplier * 1000) / elapsed);
         score += bonus;
+        levelStartTime = 0;
 
         // change paddle size
-        agentBehavior.ChangePaddleScale(level * levelPaddleSizeMultiplier);
+        agentBehavior.ChangePaddleScale(level * levelPaddleSizeSubtractor);
 
         // change ball velocity
         ballBehavior.ChangeBallVelocity(level * levelBallVelocityMultiplier);
@@ -213,6 +237,17 @@ public class GameManager : MonoBehaviour
 
         // update level UI display
         uiController.ShowLevel("Level " + level.ToString());
+
+        // show level up text
+        uiController.ShowLevelUpText("Level " + level.ToString());
+    }
+
+    public void RestartGame()
+    {
+        // Reload scene to restart game
+        string sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName);
+        StartGame();
     }
 
 }

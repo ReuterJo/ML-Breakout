@@ -14,14 +14,33 @@ public class UIController : MonoBehaviour
     [Tooltip("The level text")]
     public TextMeshProUGUI levelText;
 
+    public TextMeshProUGUI levelUpText;
+
     /// <summary>
     /// Shows lives text
     /// </summary>
     /// <param name="text">Text of lives</param>
+
+
+    public void Start()
+    {
+        levelUpText.gameObject.SetActive(false);
+    }
+
     public void ShowLives(string text)
     {
         livesText.text = text;
         livesText.gameObject.SetActive(true);
+    }
+
+    public IEnumerator ShowLevelUpText(string text)
+    {
+        Debug.Log("Level up text started");
+        levelUpText.text = text;
+        levelUpText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        levelUpText.gameObject.SetActive(false);
+        Debug.Log("Level up text ended");
     }
 
     /// <summary>
