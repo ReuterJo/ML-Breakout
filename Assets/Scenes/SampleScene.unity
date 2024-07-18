@@ -2303,10 +2303,22 @@ PrefabInstance:
     - target: {fileID: 959901211717886230, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 78eeecee0b8f9ea149a47d85efc662aa, type: 3}
+      objectReference: {fileID: 5022602860645237092, guid: ebdf35ddeaa908175af82caa667c6c7f, type: 3}
+    - target: {fileID: 959901211717886230, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: m_InferenceDevice
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 959901211717886230, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: m_BrainParameters.VectorObservationSize
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5162174386761009989, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: MaxStep
+      value: 5000
       objectReference: {fileID: 0}
     - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: gameManager
@@ -3157,6 +3169,8 @@ MonoBehaviour:
   agentBehavior: {fileID: 1113290055}
   levelGenerator: {fileID: 1056267042}
   leaderboardManager: {fileID: 507675807}
+  multi_level: 0
+  training_mode: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
