@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &125879317
 RectTransform:
   m_ObjectHideFlags: 0
@@ -273,7 +273,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &129963213
 RectTransform:
   m_ObjectHideFlags: 0
@@ -407,7 +407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &157500304
 RectTransform:
   m_ObjectHideFlags: 0
@@ -671,7 +671,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &198974669
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1216,9 +1216,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboardJsonFilePath: Assets/Files/Leaderboard.json
+  leaderboardHeader: {fileID: 125879318}
   leaderboardText: {fileID: 198974670}
   playerNameInput: {fileID: 1215891114}
-  leaderboardCanvas: {fileID: 1105322588}
+  resetButton: {fileID: 1077952038}
 --- !u!4 &507675808
 Transform:
   m_ObjectHideFlags: 0
@@ -1231,7 +1232,8 @@ Transform:
   m_LocalPosition: {x: 22.1637, y: -18.746925, z: 2.0279415}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1105322589}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -1868,7 +1870,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1035907721}
-  - {fileID: 1105322589}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1035907717
@@ -2071,7 +2072,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1077952037
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2204,7 +2205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1105322589
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2221,7 +2222,7 @@ RectTransform:
   - {fileID: 198974669}
   - {fileID: 125879317}
   - {fileID: 1215891113}
-  m_Father: {fileID: 995833448}
+  m_Father: {fileID: 507675808}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2835,7 +2836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1767132906
 RectTransform:
   m_ObjectHideFlags: 0

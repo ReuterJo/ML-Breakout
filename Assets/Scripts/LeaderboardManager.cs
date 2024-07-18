@@ -9,11 +9,13 @@ using UnityEngine.UI;
 public class LeaderboardManager : MonoBehaviour
 {
     public string leaderboardJsonFilePath = "Assets/Files/Leaderboard.json";
+    public TextMeshProUGUI leaderboardHeader;
     public TextMeshProUGUI leaderboardText;
+    public TMP_InputField playerNameInput;
+    public Button resetButton;
     private List<PlayerScore> leaderboard;
     private int minScore;
-    public TMP_InputField playerNameInput;
-    public GameObject leaderboardCanvas;
+    
 
     // create PlayerScore class to store and serialize scores
     [System.Serializable]
@@ -34,7 +36,7 @@ public class LeaderboardManager : MonoBehaviour
     void Start()
     {
         LoadLeaderboard();
-        DisplayLeaderboard();
+        PopulateLeaderBoard();
     }
 
     public void LoadLeaderboard()
@@ -64,7 +66,7 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
-    public void DisplayLeaderboard()
+    private void PopulateLeaderBoard()
     {
         leaderboardText.text = "";
         int count = 1;
@@ -73,12 +75,21 @@ public class LeaderboardManager : MonoBehaviour
             leaderboardText.text += count + ". Player: " + playerScore.name + "  Score: " + playerScore.score + "  Date: " + playerScore.date + "\n";
             count += 1;
         }
-        leaderboardCanvas.SetActive(true);
+    }
+
+    public void DisplayLeaderboard()
+    {
+        leaderboardHeader.gameObject.SetActive(true);
+        leaderboardText.gameObject.SetActive(true);
+        resetButton.gameObject.SetActive(true);
     }
 
     public void HideLeaderboard()
     {
-        leaderboardCanvas.SetActive(false);
+        leaderboardHeader.gameObject.SetActive(false);
+        leaderboardText.gameObject.SetActive(false);
+        playerNameInput.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
     }
 
     public void AddScore(int score)
