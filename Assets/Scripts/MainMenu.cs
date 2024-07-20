@@ -29,17 +29,17 @@ public class MainMenu : MonoBehaviour
 
     public void Beginner()
     {
-        SceneManager.LoadScene("Beginner");
+        SceneManager.LoadScene("PlayerAgentScene");
     }
 
     public void Intermediate()
     {
-        SceneManager.LoadScene("Intermediate");
+        SceneManager.LoadScene("PlayerAgentScene");
     }
 
     public void Advanced()
     {
-        SceneManager.LoadScene("Advanced");
+        SceneManager.LoadScene("PlayerAgentScene");
     }
 
     public void Training()

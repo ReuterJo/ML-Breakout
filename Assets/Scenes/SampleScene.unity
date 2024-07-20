@@ -1821,7 +1821,6 @@ MonoBehaviour:
   minY: -5.5
   maxVelocity: 8
   minVelocityY: 3
-  startingVelocity: 3.5
   gameManager: {fileID: 1938980521}
 --- !u!1 &995833446
 GameObject:
@@ -3169,6 +3168,9 @@ MonoBehaviour:
   agentBehavior: {fileID: 1113290055}
   levelGenerator: {fileID: 1056267042}
   leaderboardManager: {fileID: 507675807}
+  thisGame: {fileID: 1938980521}
+  opponentGame: {fileID: 0}
+  screenPosition: 1
   multi_level: 0
   training_mode: 0
 --- !u!1660057539 &9223372036854775807
