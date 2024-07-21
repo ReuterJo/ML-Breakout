@@ -154,6 +154,10 @@ PrefabInstance:
       propertyPath: screenPosition
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5709153462145927966, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
+      propertyPath: m_BehaviorType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6518784153099535536, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
