@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+
 
 public class BallBehavior : MonoBehaviour
 /**
@@ -13,13 +15,10 @@ public class BallBehavior : MonoBehaviour
     public float minY = -5.5f;
     
     [Tooltip("Sets maximum total ball velocity")]
-    public float maxVelocity = 8f;
+    public float maxVelocity = 7f;
     
     [Tooltip("Sets the minimum ball velocity in the Y axis")]
     public float minVelocityY = 3.0f;
-    
-    [Tooltip("Sets the initial ball velocity")]
-    public float startingVelocity = 3.5f;
     
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
@@ -112,24 +111,46 @@ public class BallBehavior : MonoBehaviour
     // Randomly reset the ball position with position and velocity
     {
         ball = GetComponent<Rigidbody2D>();
-        float random = Random.Range(0f, 1f);  // stores randomly generated numbers  
+        float random = UnityEngine.Random.Range(0f, 1f);  // stores randomly generated numbers  
         int side = Mathf.RoundToInt(random);  // stores a randomly generated 0 or 1
+        (float x, float y) leftSide = (0f, 0f);
+        (float x, float y) rightSide = (0f, 0f);
+        ScreenPosition screenPosition = gameManager.GetScreenPosition();
+        // Centered Game
+        if (screenPosition == ScreenPosition.Center)
+        {
+            leftSide = (-4f, -2f);
+            rightSide = (2f, 4f);
+        }
+        // Left Game
+        else if (screenPosition == ScreenPosition.Left)
+        {
+            leftSide = (-8f, -6f);
+            rightSide = (-2f, 0f);
+        }
+        // Right Game
+        else
+        {
+            leftSide = (0f, 2f);
+            rightSide = (6f, 8f);
+        }
         if (side == 0)
         {
-            random = Random.Range(-4f, -2f);
-            transform.position = new Vector2(random, 0f);
-            ball.velocity = new Vector2(1f, -1f) * startingVelocity;
+            random = UnityEngine.Random.Range(leftSide.x, leftSide.y);
+
         }
         else
         {
-            random = Random.Range(2f, 4f);
-            transform.position = new Vector2(random, 0f);
-            ball.velocity = new Vector2(-1f, -1f) * startingVelocity;
+            random = UnityEngine.Random.Range(rightSide.x, leftSide.y);
         }
+        // Start the ball position from the randomly generated settings above
+        transform.position = new Vector2(random, 0f);
+        // Set the ball velocity to 1/2 the maxVelocity split in 2 axis
+        ball.velocity = new Vector2(1f, -1f) * (maxVelocity / 2);
     }
 
     public void ChangeBallVelocity(float percent)
     {
-        startingVelocity *= (1 + percent);
+        maxVelocity *= (1 + percent);
     }
 }

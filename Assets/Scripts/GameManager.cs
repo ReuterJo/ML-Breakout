@@ -22,6 +22,15 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the LeaderboardManager script")]
     public LeaderboardManager leaderboardManager;
 
+    [Tooltip("Sets the game manager object for this game")]
+    public GameManager thisGame;
+
+    [Tooltip("Sets the game manager object for the opponent game")]
+    public GameManager opponentGame;
+
+    [Tooltip("Sets the Screen Position")]
+    public ScreenPosition screenPosition;
+
     [Tooltip("Sets the game to multilevel mode")]
     public bool multi_level = true;            // use to change single or multi-level game
     [Tooltip("Sets the game to training mode")]
@@ -61,6 +70,33 @@ public class GameManager : MonoBehaviour
     /// The current game state
     /// </summary>
     public GameState State { get; private set; } = GameState.Default;
+
+    void SetScreenPosition()
+    {
+        Vector3 newPosition = thisGame.transform.position;
+        float screenWidth = Screen.width;
+        float gameWidth = thisGame.GetComponent<Renderer>().bounds.size.x;
+
+        switch (screenPosition)
+        {
+            case ScreenPosition.Left:
+                newPosition.x = screenWidth * 0.25f;
+                break;
+            case ScreenPosition.Center:
+                newPosition.x = screenWidth * 0.5f;
+                break;
+            case ScreenPosition.Right:
+                newPosition.x = screenWidth * 0.75f;
+                break;
+        }
+
+        thisGame.transform.position = newPosition;
+    }
+
+    public ScreenPosition GetScreenPosition()
+    {
+        return this.screenPosition;
+    }
 
     /// <summary>
     /// Starts the game

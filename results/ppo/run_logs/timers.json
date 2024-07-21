@@ -1,0 +1,75 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1721330744",
+        "python_version": "3.10.8 (main, Nov 24 2022, 08:08:27) [Clang 14.0.6 ]",
+        "command_line_arguments": "/opt/homebrew/anaconda3/envs/mlagents/bin/mlagents-learn --force",
+        "mlagents_version": "0.30.0",
+        "mlagents_envs_version": "0.30.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "1.11.0",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1721330750"
+    },
+    "total": 5.968910208903253,
+    "count": 1,
+    "self": 0.006161917001008987,
+    "children": {
+        "run_training.setup": {
+            "total": 0.01220116694457829,
+            "count": 1,
+            "self": 0.01220116694457829
+        },
+        "TrainerController.start_learning": {
+            "total": 5.950547124957666,
+            "count": 1,
+            "self": 9.304098784923553e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 5.903958084061742,
+                    "count": 1,
+                    "self": 5.903958084061742
+                },
+                "TrainerController.advance": {
+                    "total": 0.02919254102744162,
+                    "count": 1,
+                    "self": 3.957189619541168e-06,
+                    "children": {
+                        "env_step": {
+                            "total": 0.02918858383782208,
+                            "count": 1,
+                            "self": 0.0001281679142266512,
+                            "children": {
+                                "SubprocessEnvManager._take_step": {
+                                    "total": 0.02906041592359543,
+                                    "count": 1,
+                                    "self": 1.591583713889122e-05,
+                                    "children": {
+                                        "TorchPolicy.evaluate": {
+                                            "total": 0.029044500086456537,
+                                            "count": 1,
+                                            "self": 0.029044500086456537
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "TrainerController._save_models": {
+                    "total": 0.017303458880633116,
+                    "count": 1,
+                    "self": 1.5417812392115593e-05,
+                    "children": {
+                        "RLTrainer._checkpoint": {
+                            "total": 0.017288041068241,
+                            "count": 1,
+                            "self": 0.017288041068241
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

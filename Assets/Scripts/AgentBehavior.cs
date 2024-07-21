@@ -13,14 +13,15 @@ public class AgentBehavior : Agent
     [Tooltip("Sets the paddle x axis speed")]
     public float speed = 10.0f;
     
-    [Tooltip("Sets the allowable maximum X value in gameplay")]
-    public float maxX = 4.5f;
-    
     [Tooltip("Sets the GameManager object")]
     public GameManager gameManager;
     
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
+    private ScreenPosition screenPosition;
+
+    private float minX;
+    private float maxX;
 
     public float paddleWidth = 2.0f;
     
@@ -36,12 +37,54 @@ public class AgentBehavior : Agent
     private float ballHitReward = 0.1f;
     private float brickDestoryedReward = 1f;
 
+    public void Start()
+    {
+        screenPosition = gameManager.GetScreenPosition();
+        // Left game
+        if (screenPosition == ScreenPosition.Left)
+        {
+            minX = -9f;
+            maxX = 0f;
+            transform.position = new Vector2(-4f, -4f);
+        }
+        // Right game
+        else if (screenPosition == ScreenPosition.Right)
+        {
+            minX = 0f;
+            maxX = 9f;
+            transform.position = new Vector2(4f, -4f);
+        }
+        // Centered game
+        else
+        {
+            minX = -4.5f;
+            maxX = 4.5f;
+            transform.position = new Vector2(0f, -4f);
+        }
+    }
+
     /// <summary>
     /// Reset back to initial position
     /// </summary>
     public void Reset()
     {
-        transform.position = new Vector2(0f, -4f);
+
+        screenPosition = gameManager.GetScreenPosition();
+        // Left game
+        if (screenPosition == ScreenPosition.Left)
+        {
+            transform.position = new Vector2(-4f, -4f);
+        }
+        // Right game
+        else if (screenPosition == ScreenPosition.Right)
+        {
+            transform.position = new Vector2(4f, -4f);
+        }
+        // Centered game
+        else
+        {
+            transform.position = new Vector2(0f, -4f);
+        }
     }
 
     /// <summary>
@@ -123,7 +166,7 @@ public class AgentBehavior : Agent
         float movementHorizontal = actions.ContinuousActions[0];
 
         // limit paddle to the boundaries of the screen window
-        if ((movementHorizontal > 0 && transform.position.x < maxX) || (movementHorizontal < 0 && transform.position.x > -maxX)) {
+        if ((movementHorizontal > 0 && transform.position.x < maxX) || (movementHorizontal < 0 && transform.position.x > minX)) {
             
             // vector of 1 in x and 0 in y, delta time ensures movement speed is time dependant across different devices
             transform.position += Vector3.right * movementHorizontal * speed * Time.deltaTime;
