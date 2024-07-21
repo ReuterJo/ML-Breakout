@@ -10,6 +10,7 @@ public class LevelGenerator : MonoBehaviour
     public Vector2 offset;
     public GameObject brickPrefab;
     public Gradient gradient;
+    public int layer = 0; // for default layer
     private List<GameObject> brickList;
 
     public int ChangeLevel(int level)
@@ -46,6 +47,7 @@ public class LevelGenerator : MonoBehaviour
             for (int j = 0; j < size.y; j++)
             {
                 GameObject newBrick = Instantiate(brickPrefab, transform);
+                newBrick.layer = layer;
                 newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
                 brickList.Add(newBrick);
