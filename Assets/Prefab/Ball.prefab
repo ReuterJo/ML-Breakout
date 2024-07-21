@@ -165,3 +165,4 @@ MonoBehaviour:
   maxVelocity: 8
   minVelocityY: 3
   gameManager: {fileID: 0}
+  onCollisionEffect: {fileID: 9163842254569548763, guid: faf3a77357d94917fb32a4700b36e7aa, type: 3}

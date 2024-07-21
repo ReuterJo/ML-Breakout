@@ -23,10 +23,10 @@ public class BallBehavior : MonoBehaviour
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
     
-    [Tooltip("Sets the ball Component object")]
-    private Rigidbody2D ball;
+    [Tooltip("The VFX created when a brick is destroyed")]
+    public GameObject onCollisionEffect;
     
-    [Tooltip("Sets the ball frozen state")]
+    private Rigidbody2D ball;
     private bool frozen = true;
 
 
@@ -87,6 +87,7 @@ public class BallBehavior : MonoBehaviour
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
+            Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
             gameManager.scoreBrick();
         }
     }
