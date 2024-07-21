@@ -2061,7 +2061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &629203359
 Transform:
   m_ObjectHideFlags: 0
@@ -2071,7 +2071,7 @@ Transform:
   m_GameObject: {fileID: 629203358}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.51, y: 0, z: 0}
+  m_LocalPosition: {x: -4.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2735,7 +2735,7 @@ MonoBehaviour:
   opponentGame: {fileID: 1938980521}
   screenPosition: 2
   multi_level: 0
-  training_mode: 0
+  training_mode: 1
 --- !u!4 &1002792514
 Transform:
   m_ObjectHideFlags: 0
@@ -3419,6 +3419,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1687438812}
     m_Modifications:
     - target: {fileID: 959901211717886230, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: m_BehaviorType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 959901211717886230, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: m_InferenceDevice
       value: 0
       objectReference: {fileID: 0}
@@ -3434,6 +3438,14 @@ PrefabInstance:
       propertyPath: MaxStep
       value: 5000
       objectReference: {fileID: 0}
+    - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: leftWall
+      value: 
+      objectReference: {fileID: 182110264}
+    - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: rightWall
+      value: 
+      objectReference: {fileID: 1277619749}
     - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: gameManager
       value: 
@@ -4247,6 +4259,14 @@ PrefabInstance:
       propertyPath: MaxStep
       value: 5000
       objectReference: {fileID: 0}
+    - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: leftWall
+      value: 
+      objectReference: {fileID: 1411362716}
+    - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
+      propertyPath: rightWall
+      value: 
+      objectReference: {fileID: 1221228113}
     - target: {fileID: 5255313182005810642, guid: b08d06a035434aa1d86ff81829dbfc99, type: 3}
       propertyPath: gameManager
       value: 
@@ -5806,7 +5826,7 @@ Transform:
   m_GameObject: {fileID: 2110427242}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.49, y: 0, z: 0}
+  m_LocalPosition: {x: 4.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

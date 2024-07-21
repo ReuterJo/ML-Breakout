@@ -43,15 +43,15 @@ public class AgentBehavior : Agent
         // Left game
         if (screenPosition == ScreenPosition.Left)
         {
-            minX = -8.5f;
-            maxX = -0.5f;
+            minX = -9f;
+            maxX = 0f;
             transform.position = new Vector2(-4f, -4f);
         }
         // Right game
         else if (screenPosition == ScreenPosition.Right)
         {
-            minX = 0.5f;
-            maxX = 8.5f;
+            minX = 0f;
+            maxX = 9f;
             transform.position = new Vector2(4f, -4f);
         }
         // Centered game
