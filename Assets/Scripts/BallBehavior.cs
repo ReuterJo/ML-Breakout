@@ -23,17 +23,19 @@ public class BallBehavior : MonoBehaviour
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
     
-    [Tooltip("Sets the ball Component object")]
-    private Rigidbody2D ball;
+    [Tooltip("The VFX created when a brick is destroyed")]
+    public GameObject onCollisionEffect;
     
-    [Tooltip("Sets the ball frozen state")]
+    private Rigidbody2D ball;
     private bool frozen = true;
+    private AudioSource ballAudio;
 
 
     void Start()
     // Loads the ball component and sets the ball starting position at the start of the game
     {
         ball = GetComponent<Rigidbody2D>();
+        ballAudio = GetComponent<AudioSource>();
         Reset();
     }
 
@@ -84,9 +86,11 @@ public class BallBehavior : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     // Function used for destroying bricks when the ball collides with them
     {
+        ballAudio.Play(0);
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
+            Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
             gameManager.scoreBrick();
         }
     }
