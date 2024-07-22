@@ -50,9 +50,9 @@ public class GameManager : MonoBehaviour
 
     // level variables
     private float levelPointMultiplier = 1.5f;
-    private float levelPaddleSizeSubtractor = 0.2f;
+    private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
-    private float levelBallVelocityMultiplier = 0.2f;
+    private float levelBallVelocityMultiplier = 0.1f;
 
     /// <summary>
     /// All possible game states
@@ -243,7 +243,9 @@ public class GameManager : MonoBehaviour
                 // move to the next level
                 else
                 {
-                    if ((this.level == 1 && this.bricksRemaining == 27) || this.bricksRemaining == 0) 
+                    if ((this.level == 1 && this.bricksRemaining == 49) || 
+                    (this.level == 2 && this.bricksRemaining == 45) || 
+                    this.bricksRemaining == 15) 
                     {
                         this.ChangeLevel();
                     }
@@ -254,9 +256,9 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        Debug.Log("Change to Level " + this.level);
         // increment level
         this.level += 1;
+        Debug.Log("Change to Level " + this.level);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);

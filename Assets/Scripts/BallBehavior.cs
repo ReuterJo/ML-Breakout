@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using TMPro;
 
 public class BallBehavior : MonoBehaviour
 /**
@@ -25,6 +25,8 @@ public class BallBehavior : MonoBehaviour
     
     [Tooltip("The VFX created when a brick is destroyed")]
     public GameObject onCollisionEffect;
+
+    public TextMeshProUGUI velocityText;
     
     private Rigidbody2D ball;
     private bool frozen = true;
@@ -36,6 +38,7 @@ public class BallBehavior : MonoBehaviour
     {
         this.ball = GetComponent<Rigidbody2D>();
         this.ballAudio = GetComponent<AudioSource>();
+        velocityText.text = "";
         this.Reset();
     }
 
@@ -81,6 +84,10 @@ public class BallBehavior : MonoBehaviour
         {
             this.ball.velocity = Vector2.ClampMagnitude(this.ball.velocity, this.maxVelocity);
         }
+        float xVelocity = ball.velocity.x;
+        float yVelocity = ball.velocity.y;
+        float totalVelocity = ball.velocity.magnitude;
+        velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {totalVelocity:F2}";
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
