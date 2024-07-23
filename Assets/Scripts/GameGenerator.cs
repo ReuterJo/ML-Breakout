@@ -10,8 +10,14 @@ public class GameGenerator : MonoBehaviour
     public bool training_mode = false;         // use to train the model vs play the game
     public bool debug = false;
     public PlayerType playerType;
-    private string model_path;
+    private string model_path = "";
     public Difficulty difficulty;
+
+    private GameObject game1;
+    private GameManager gameManager1;
+    private GameObject game2;
+    private GameManager gameManager2;
+
 
     void Start()
     {
@@ -20,7 +26,6 @@ public class GameGenerator : MonoBehaviour
 
     void InitializeGameManagers()
     {
-        this.model_path = "";
         switch (this.difficulty)
         {
             case Difficulty.Beginner:
@@ -36,54 +41,50 @@ public class GameGenerator : MonoBehaviour
 
         if (training_mode)
         {
-            GameObject game1 = Instantiate(gamePrefab);
-            GameManager gameManager1 = game1.GetComponent<GameManager>();
-            gameManager1.GameInitializer(this.multi_level, 
+            this.game1 = Instantiate(gamePrefab);
+            this.gameManager1 = game1.GetComponent<GameManager>();
+            this.gameManager1.GameInitializer(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Single, 
-                                    ScreenPosition.Center, 
                                     null,
                                     this.model_path);
 
         }
         else if (playerType == PlayerType.Single)
         {
-            GameObject game1 = Instantiate(gamePrefab);
-            GameManager gameManager1 = game1.GetComponent<GameManager>();
-            gameManager1.GameInitializer(this.multi_level, 
+            this.game1 = Instantiate(gamePrefab);
+            this.gameManager1 = game1.GetComponent<GameManager>();
+            this.gameManager1.GameInitializer(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Single, 
-                                    ScreenPosition.Center, 
                                     null,
                                     null);
         }
         else
         {
             // Create the player GameManager instance
-            GameObject game1 = Instantiate(gamePrefab);
-            GameManager gameManager1 = game1.GetComponent<GameManager>();
+            this.game1 = Instantiate(gamePrefab);
+            this.gameManager1 = game1.GetComponent<GameManager>();
 
             // Create the agent GameManager instance
-            GameObject game2 = Instantiate(gamePrefab);
-            GameManager gameManager2 = game2.GetComponent<GameManager>();
+            this.game2 = Instantiate(gamePrefab);
+            this.gameManager2 = game2.GetComponent<GameManager>();
 
             // Initialize the player gameManager settings
-            gameManager1.GameInitializer(this.multi_level, 
+            this.gameManager1.GameInitializer(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Player, 
-                                    ScreenPosition.Left, 
                                     gameManager2,
                                     null);
 
             // Initialize the agent gameManager settings
-            gameManager2.GameInitializer(this.multi_level, 
+            this.gameManager2.GameInitializer(this.multi_level, 
                             this.training_mode, 
                             this.debug, 
                             PlayerType.Agent, 
-                            ScreenPosition.Right, 
                             gameManager1,
                             this.model_path);
         }

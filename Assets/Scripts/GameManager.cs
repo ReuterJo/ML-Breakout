@@ -71,7 +71,6 @@ public class GameManager : MonoBehaviour
                     bool training_mode, 
                     bool debug, 
                     PlayerType playerType, 
-                    ScreenPosition screenPosition,
                     GameManager opponentGame,
                     string model_path
                     )
@@ -80,7 +79,6 @@ public class GameManager : MonoBehaviour
         this.training_mode = training_mode;
         this.debug = debug;
         this.playerType = playerType;
-        this.screenPosition = screenPosition;
         this.opponentGame = opponentGame;
 
         // call to load correct agent model
