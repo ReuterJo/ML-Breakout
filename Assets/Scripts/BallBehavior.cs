@@ -99,7 +99,8 @@ public class BallBehavior : MonoBehaviour
         {
             Destroy(collision.gameObject);
             // VFX of brick break
-            Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
+            GameObject explosion = Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
+            Destroy(explosion, 1);
             this.gameManager.scoreBrick();
         }
     }
