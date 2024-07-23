@@ -13,7 +13,6 @@ public class UIController : MonoBehaviour
 
     [Tooltip("The level text")]
     public TextMeshProUGUI levelText;
-
     public TextMeshProUGUI levelUpText;
 
     /// <summary>
@@ -35,12 +34,16 @@ public class UIController : MonoBehaviour
 
     public IEnumerator ShowLevelUpText(string text)
     {
-        Debug.Log("Level up text started");
         this.levelUpText.text = text;
         this.levelUpText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(2f);
         this.levelUpText.gameObject.SetActive(false);
-        Debug.Log("Level up text ended");
+    }
+
+    public void GameOverText(string text)
+    {
+        this.levelUpText.text = text;
+        this.levelUpText.gameObject.SetActive(true);
     }
 
     /// <summary>

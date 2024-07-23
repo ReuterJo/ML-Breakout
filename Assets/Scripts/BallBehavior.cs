@@ -84,10 +84,14 @@ public class BallBehavior : MonoBehaviour
         }
         magnitude = MathF.Abs(this.ball.velocity.x) + MathF.Abs(this.ball.velocity.y);
 
-        // FOR DEV - update velocity display
-        float xVelocity = ball.velocity.x;
-        float yVelocity = ball.velocity.y;
-        velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {magnitude:F2}";
+        if (gameManager.debug)
+        {
+            // FOR DEV - update velocity display
+            float xVelocity = ball.velocity.x;
+            float yVelocity = ball.velocity.y;
+            velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {magnitude:F2}";
+        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

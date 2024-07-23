@@ -37,6 +37,10 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the game to training mode")]
     public bool training_mode = false;         // use to train the model vs play the game
 
+    public bool debug = false;
+
+    public PlayerType playerType;
+
     public TextMeshProUGUI levelText;
 
     // game variables
@@ -110,7 +114,9 @@ public class GameManager : MonoBehaviour
         this.level = starting_level;
         this.lives = 5;
         this.score = 0;
+        this.levelText.text = "";
         this.leaderboardManager.HideLeaderboard();
+        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString()));
 
         // Generate level
 
@@ -201,8 +207,17 @@ public class GameManager : MonoBehaviour
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
 
-        // Check if the leaderboard needs to be updated
-        this.leaderboardManager.AddScore(this.score);
+        if (playerType == PlayerType.Agent)
+        {
+            this.uiController.ShowLevelUpText("Game Ended");
+        }
+        else
+        {
+            // Check if the leaderboard needs to be updated
+            this.leaderboardManager.AddScore(this.score);
+        }
+
+
     }
 
     /// <summary>
@@ -258,22 +273,24 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        float seconds = Time.time - this.levelStartTime;
-        levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}";
+        if (debug)
+        {
+            float seconds = Time.time - this.levelStartTime;
+            levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}";
+        }
     }
 
     public void ChangeLevel()
     {
         // increment level
         this.level += 1;
-        Debug.Log("Change to Level " + this.level);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
 
         // give level bonus points based on time to complete level
         float elapsed = Time.time - levelStartTime;
-        int bonus = (int) ((level * levelBonusMultiplier * 1000) / elapsed);
+        int bonus = (int) ((level * levelBonusMultiplier * 5000) / elapsed);
         this.score += bonus;
         this.levelStartTime = Time.time;
 
@@ -290,7 +307,7 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowLevel("Level " + this.level.ToString());
 
         // show level up text
-        this.uiController.ShowLevelUpText("Level " + this.level.ToString());
+        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus));
     }
 
     public void RestartGame()
