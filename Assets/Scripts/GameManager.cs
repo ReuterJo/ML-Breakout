@@ -260,9 +260,7 @@ public class GameManager : MonoBehaviour
                 // move to the next level
                 else
                 {
-                    if ((this.level == 1 && this.bricksRemaining == 27) || 
-                    (this.level == 2 && this.bricksRemaining == 0) || 
-                    this.bricksRemaining == 0) 
+                    if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
                         if (ballBehavior.GetBallYPosition() < 0.0f)
                         {
@@ -276,7 +274,7 @@ public class GameManager : MonoBehaviour
         if (debug)
         {
             float seconds = Time.time - this.levelStartTime;
-            levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}";
+            this.levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}\nLevel: {this.level}";
         }
     }
 
