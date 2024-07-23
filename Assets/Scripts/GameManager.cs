@@ -142,9 +142,12 @@ public class GameManager : MonoBehaviour
             this.uiController.ShowLevel("Level " + level.ToString());
         }
 
-        // Begin countdown timer
+        // Begin countdown timer if not in training
+        if (training_mode)
+        {
         this.uiController.CountdownTimer(this.playerType);
         await Task.Delay(5000);
+        }
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
