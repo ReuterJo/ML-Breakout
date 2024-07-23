@@ -1,5 +1,6 @@
 public enum PlayerType
 {
     Player,
-    Agent
+    Agent,
+    Single
 }

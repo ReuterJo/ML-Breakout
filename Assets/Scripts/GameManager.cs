@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     public PlayerType playerType;
     public TextMeshProUGUI levelText;
 
+    private bool change_level = false;
+
     // game variables
     private int score;
     private int brickValue = 10;
@@ -65,13 +67,32 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public GameState State { get; private set; } = GameState.Default;
 
+    public void GameInitializer(bool multi_level, 
+                    bool training_mode, 
+                    bool debug, 
+                    PlayerType playerType, 
+                    ScreenPosition screenPosition,
+                    GameManager opponentGame,
+                    string model_path
+                    )
+    {
+        this.multi_level = multi_level;
+        this.training_mode = training_mode;
+        this.debug = debug;
+        this.playerType = playerType;
+        this.screenPosition = screenPosition;
+        this.opponentGame = opponentGame;
+
+        // call to load correct agent model
+    }
+
     void SetScreenPosition()
     {
         Vector3 newPosition = thisGame.transform.position;
         float screenWidth = Screen.width;
         float gameWidth = thisGame.GetComponent<Renderer>().bounds.size.x;
 
-        switch (screenPosition)
+        switch (this.screenPosition)
         {
             case ScreenPosition.Left:
                 newPosition.x = screenWidth * 0.25f;
@@ -281,9 +302,13 @@ public class GameManager : MonoBehaviour
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
-                        if (ballBehavior.GetBallYPosition() < 0.0f)
+                        // change game dynamics and points immediately
+                        this.ChangeLevel();
+                        if (this.change_level && ballBehavior.GetBallYPosition() < 0.0f)
                         {
-                            this.ChangeLevel();
+                            // change bricks once ball is out of brick generator area
+                            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                            this.change_level = false;
                         }
 
                     }
@@ -318,7 +343,7 @@ public class GameManager : MonoBehaviour
         this.ballBehavior.ChangeBallVelocity();
 
         // generate blocks
-        this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+        this.change_level = true;
 
         // update level UI display
         this.uiController.ShowLevel("Level " + this.level.ToString());

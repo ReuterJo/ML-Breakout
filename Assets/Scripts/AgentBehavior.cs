@@ -7,6 +7,8 @@ using Unity.MLAgents.Sensors;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices;
+using Unity.MLAgents.Policies;
+using Unity.Barracuda;
 
 public class AgentBehavior : Agent
 {
@@ -18,6 +20,8 @@ public class AgentBehavior : Agent
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
     private ScreenPosition screenPosition;
+
+    private BehaviorParameters behaviorParameters;
 
     private float minX;
     private float maxX;
@@ -37,7 +41,7 @@ public class AgentBehavior : Agent
     private float brickDestoryedReward = 1f;
 
     public void Start()
-    {
+    {   
         this.screenPosition = gameManager.GetScreenPosition();
         // Left game
         if (this.screenPosition == ScreenPosition.Left)
@@ -59,6 +63,36 @@ public class AgentBehavior : Agent
             this.minX = -4.5f;
             this.maxX = 4.5f;
             transform.position = new Vector2(0f, -4f);
+        }
+    }
+
+    void AgentInitializer(string model_path)
+    {
+        if (model_path != null)
+        {
+            this.behaviorParameters = GetComponent<BehaviorParameters>();
+            if (this.behaviorParameters != null)
+            {
+                if (System.IO.File.Exists(model_path))
+                    {
+                        // Load the model
+                        NNModel model = Resources.Load<NNModel>(model_path);
+                    
+                        behaviorParameters.Model = model;
+                        Debug.Log("Model loaded and applied successfully.");
+                        if (model != null)
+                        {
+                            // Set the model to the Behavior Parameters
+                            behaviorParameters.Model = model;
+                            Debug.Log("Model loaded and applied successfully.");
+                        }
+                        else
+                        {
+                            Debug.LogError($"Model file not found at {model_path}");
+                        }
+                    }
+
+            }
         }
     }
 
