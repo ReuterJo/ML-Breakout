@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelText;
 
     private bool change_level = false;
+    private bool configured = false;
 
     // game variables
     private int score;
@@ -67,7 +68,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public GameState State { get; private set; } = GameState.Default;
 
-    public void GameInitializer(bool multi_level, 
+    public void Configure(bool multi_level, 
                     bool training_mode, 
                     bool debug, 
                     PlayerType playerType, 
@@ -75,13 +76,16 @@ public class GameManager : MonoBehaviour
                     string model_path
                     )
     {
+        Debug.Log("Game Configure Called.");
         this.multi_level = multi_level;
         this.training_mode = training_mode;
         this.debug = debug;
         this.playerType = playerType;
         this.opponentGame = opponentGame;
-
+        Debug.Log("Game Configured.");
         // call to load correct agent model
+        this.agentBehavior.Configure(model_path);
+        this.configured = true;
     }
 
     void SetScreenPosition()
@@ -111,11 +115,19 @@ public class GameManager : MonoBehaviour
         return this.screenPosition;
     }
 
+    private IEnumerator WaitForConfiguration()
+    {
+        // Wait until the condition is met
+        Debug.Log("Waiting to start.");
+        yield return new WaitUntil(() => configured);
+    }
+
     /// <summary>
     /// Starts the game
     /// </summary>
     public async void StartGame()
     {
+        if (!this.configured) StartCoroutine(this.WaitForConfiguration());
         // Set the game state to preparing
         State = GameState.Preparing;
         this.level = starting_level;

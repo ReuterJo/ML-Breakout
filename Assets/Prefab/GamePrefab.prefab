@@ -589,6 +589,10 @@ PrefabInstance:
       value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2239415346309199123, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2239415346309199123, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_BehaviorType
       value: 1
       objectReference: {fileID: 0}
@@ -749,7 +753,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 11129007289122748, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
       propertyPath: debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11129007289122748, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
       propertyPath: levelText

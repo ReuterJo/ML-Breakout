@@ -66,8 +66,9 @@ public class AgentBehavior : Agent
         }
     }
 
-    void AgentInitializer(string model_path)
+    public void Configure(string model_path)
     {
+        Debug.Log("Agent configure called with path." + model_path);
         if (model_path != null)
         {
             this.behaviorParameters = GetComponent<BehaviorParameters>();

@@ -9,10 +9,9 @@ public class GameGenerator : MonoBehaviour
     public bool multi_level = true;            // use to change single or multi-level game
     public bool training_mode = false;         // use to train the model vs play the game
     public bool debug = false;
-    public PlayerType playerType;
+    public GameMode gameMode;
     private string model_path = "";
     public Difficulty difficulty;
-
     private GameObject game1;
     private GameManager gameManager1;
     private GameObject game2;
@@ -39,11 +38,12 @@ public class GameGenerator : MonoBehaviour
                 break;
         }
 
-        if (training_mode)
+        if (this.gameMode == GameMode.Training)
         {
             this.game1 = Instantiate(gamePrefab);
             this.gameManager1 = game1.GetComponent<GameManager>();
-            this.gameManager1.GameInitializer(this.multi_level, 
+            Debug.Log("Configuration Called.");
+            this.gameManager1.Configure(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Single, 
@@ -51,11 +51,11 @@ public class GameGenerator : MonoBehaviour
                                     this.model_path);
 
         }
-        else if (playerType == PlayerType.Single)
+        else if (this.gameMode == GameMode.Single)
         {
             this.game1 = Instantiate(gamePrefab);
             this.gameManager1 = game1.GetComponent<GameManager>();
-            this.gameManager1.GameInitializer(this.multi_level, 
+            this.gameManager1.Configure(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Single, 
@@ -73,7 +73,7 @@ public class GameGenerator : MonoBehaviour
             this.gameManager2 = game2.GetComponent<GameManager>();
 
             // Initialize the player gameManager settings
-            this.gameManager1.GameInitializer(this.multi_level, 
+            this.gameManager1.Configure(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
                                     PlayerType.Player, 
@@ -81,7 +81,7 @@ public class GameGenerator : MonoBehaviour
                                     null);
 
             // Initialize the agent gameManager settings
-            this.gameManager2.GameInitializer(this.multi_level, 
+            this.gameManager2.Configure(this.multi_level, 
                             this.training_mode, 
                             this.debug, 
                             PlayerType.Agent, 
