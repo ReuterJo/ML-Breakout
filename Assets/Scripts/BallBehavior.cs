@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using TMPro;
 
 public class BallBehavior : MonoBehaviour
 /**
@@ -11,20 +11,17 @@ public class BallBehavior : MonoBehaviour
  * @return void.
  */
 {
-    [Tooltip("Sets the bottom of the screen to determine a lost ball")]
-    public float minY = -5.5f;
-    
-    [Tooltip("Sets maximum total ball velocity")]
-    public float maxVelocity = 7f;
-    
-    [Tooltip("Sets the minimum ball velocity in the Y axis")]
-    public float minVelocityY = 3.0f;
+    private float minY = -5.5f;
+    private float maxVelocity = 7.0f;
+    private float minVelocityY = 3.5f;
     
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
     
     [Tooltip("The VFX created when a brick is destroyed")]
     public GameObject onCollisionEffect;
+
+    public TextMeshProUGUI velocityText;
     
     private Rigidbody2D ball;
     private bool frozen = true;
@@ -34,64 +31,76 @@ public class BallBehavior : MonoBehaviour
     void Start()
     // Loads the ball component and sets the ball starting position at the start of the game
     {
-        ball = GetComponent<Rigidbody2D>();
-        ballAudio = GetComponent<AudioSource>();
-        Reset();
+        this.ball = GetComponent<Rigidbody2D>();
+        this.ballAudio = GetComponent<AudioSource>();
+        velocityText.text = "";
+        this.Reset();
+        if (gameManager.debug) velocityText.gameObject.SetActive(true);
+        else velocityText.gameObject.SetActive(false);
     }
 
     void Update()
     // Regulates the ball position and velocity while in play
     {
         // Don't update the ball if it is frozen
-        if (frozen)
+        if (this.frozen)
         {
-            ball.velocity = Vector2.zero;
+            this.ball.velocity = Vector2.zero;
             return;
         }    
         // Reset the ball position if it has fallen below the game Y axis
         if(transform.position.y < minY) 
         {
-            gameManager.loseLife();
+            this.gameManager.loseLife();
             Reset();
         }
-        // Get the current velocity
-        Vector2 currentVelocity = ball.velocity;
 
-        // Check the direction of travel (up or down)
-        if (currentVelocity.y > 0)
-        {
-            // Ensure minimum Y velocity if moving upwards
-            if (currentVelocity.y < minVelocityY)
+        // NOTE: The ball will gain velocity when hitting the edge of an object (brick) or object with 
+        // exiting velocity (moving paddle).  These functions enforce a set magnitude with a minimum Y 
+        // axis velocity.
+
+        Vector2 corrected;
+        // depreciated - float factor = maxVelocity / ball.velocity.magnitude;
+        // depreciated - corrected = new Vector2(this.ball.velocity.x * factor, this.ball.velocity.y * factor);
+        corrected = ball.velocity.normalized * maxVelocity;
+        this.ball.velocity = corrected;
+
+        // Clamp the ball y magnitude to a minimum value
+        if (Mathf.Abs(this.ball.velocity.y) < this.minVelocityY) {
+            float diff = this.minVelocityY - Mathf.Abs(this.ball.velocity.y);
+
+            // If the ball is going upwards, shift the vector upwards
+            if (this.ball.velocity.y >= 0)
             {
-                currentVelocity.y = minVelocityY;
-                ball.velocity = currentVelocity;
+                corrected = new Vector2(this.ball.velocity.x - diff, this.ball.velocity.y + diff);
             }
-        }
-        else if (currentVelocity.y < 0)
-        {
-            // Ensure minimum Y velocity if moving downwards
-            if (currentVelocity.y > -minVelocityY)
+            else
             {
-                currentVelocity.y = -minVelocityY;
-                ball.velocity = currentVelocity;
+                corrected = new Vector2(this.ball.velocity.x - diff, this.ball.velocity.y - diff);
             }
+            this.ball.velocity = corrected;
         }
-        // Constrain total velocity
-        if(ball.velocity.magnitude > maxVelocity)
+
+        if (gameManager.debug)
         {
-            ball.velocity = Vector2.ClampMagnitude(ball.velocity, maxVelocity);
+            // FOR DEV - update velocity display
+            float xVelocity = ball.velocity.x;
+            float yVelocity = ball.velocity.y;
+            velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {ball.velocity.magnitude:F2}";
         }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     // Function used for destroying bricks when the ball collides with them
     {
-        ballAudio.Play(0);
+        this.ballAudio.Play(0);
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
+            // VFX of brick break
             Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
-            gameManager.scoreBrick();
+            this.gameManager.scoreBrick();
         }
     }
 
@@ -100,7 +109,7 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Freeze()
     {
-        frozen = true;
+        this.frozen = true;
     }
 
     /// <summary>
@@ -108,13 +117,13 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Unfreeze()
     {
-        frozen = false;
+        this.frozen = false;
     }
 
     public void Reset()
     // Randomly reset the ball position with position and velocity
     {
-        ball = GetComponent<Rigidbody2D>();
+        this.ball = GetComponent<Rigidbody2D>();
         float random = UnityEngine.Random.Range(0f, 1f);  // stores randomly generated numbers  
         int side = Mathf.RoundToInt(random);  // stores a randomly generated 0 or 1
         (float x, float y) leftSide = (0f, 0f);
@@ -148,13 +157,19 @@ public class BallBehavior : MonoBehaviour
             random = UnityEngine.Random.Range(rightSide.x, leftSide.y);
         }
         // Start the ball position from the randomly generated settings above
-        transform.position = new Vector2(random, 0f);
+        this.transform.position = new Vector2(random, 0f);
         // Set the ball velocity to 1/2 the maxVelocity split in 2 axis
-        ball.velocity = new Vector2(1f, -1f) * (maxVelocity / 2);
+        this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2);
     }
 
-    public void ChangeBallVelocity(float percent)
+    public void ChangeBallVelocity()
     {
-        maxVelocity *= (1 + percent);
+        this.maxVelocity += 1;
+        this.minVelocityY += 0.5f;
+    }
+
+    public float GetBallYPosition()
+    {
+        return this.ball.transform.position.y;
     }
 }

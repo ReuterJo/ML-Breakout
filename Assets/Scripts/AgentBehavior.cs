@@ -10,8 +10,7 @@ using System.Runtime.InteropServices;
 
 public class AgentBehavior : Agent
 {
-    [Tooltip("Sets the paddle x axis speed")]
-    public float speed = 10.0f;
+    private float speed = 10.0f;
     
     [Tooltip("Sets the GameManager object")]
     public GameManager gameManager;
@@ -23,7 +22,7 @@ public class AgentBehavior : Agent
     private float minX;
     private float maxX;
 
-    public float paddleWidth = 2.0f;
+    private float paddleWidth = 2.0f;
     
     [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not
@@ -39,26 +38,26 @@ public class AgentBehavior : Agent
 
     public void Start()
     {
-        screenPosition = gameManager.GetScreenPosition();
+        this.screenPosition = gameManager.GetScreenPosition();
         // Left game
-        if (screenPosition == ScreenPosition.Left)
+        if (this.screenPosition == ScreenPosition.Left)
         {
-            minX = -9f;
-            maxX = 0f;
+            this.minX = -9f;
+            this.maxX = 0f;
             transform.position = new Vector2(-4f, -4f);
         }
         // Right game
-        else if (screenPosition == ScreenPosition.Right)
+        else if (this.screenPosition == ScreenPosition.Right)
         {
-            minX = 0f;
-            maxX = 9f;
+            this.minX = 0f;
+            this.maxX = 9f;
             transform.position = new Vector2(4f, -4f);
         }
         // Centered game
         else
         {
-            minX = -4.5f;
-            maxX = 4.5f;
+            this.minX = -4.5f;
+            this.maxX = 4.5f;
             transform.position = new Vector2(0f, -4f);
         }
     }
@@ -69,14 +68,14 @@ public class AgentBehavior : Agent
     public void Reset()
     {
 
-        screenPosition = gameManager.GetScreenPosition();
+        this.screenPosition = gameManager.GetScreenPosition();
         // Left game
-        if (screenPosition == ScreenPosition.Left)
+        if (this.screenPosition == ScreenPosition.Left)
         {
             transform.position = new Vector2(-4f, -4f);
         }
         // Right game
-        else if (screenPosition == ScreenPosition.Right)
+        else if (this.screenPosition == ScreenPosition.Right)
         {
             transform.position = new Vector2(4f, -4f);
         }
@@ -92,7 +91,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void Freeze()
     {
-        frozen = true;
+        this.frozen = true;
     }
 
     /// <summary>
@@ -100,7 +99,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void Unfreeze()
     {
-        frozen = false;
+        this.frozen = false;
     }
 
     /// <summary>
@@ -108,7 +107,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BallLost()
     {
-        AddReward(ballLostReward);
+        this.AddReward(this.ballLostReward);
     }
 
     /// <summary>
@@ -116,7 +115,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BrickDestoryed()
     {
-        AddReward(brickDestoryedReward);
+        this.AddReward(this.brickDestoryedReward);
     }
 
     /// <summary>
@@ -124,7 +123,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void BallMoving()
     {
-        AddReward(ballMovingReward);
+        this.AddReward(this.ballMovingReward);
     }
 
     /// <summary>
@@ -132,7 +131,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public void EndTrainingEpisode()
     {
-        EndEpisode();
+        this.EndEpisode();
     }
 
     /// <summary>
@@ -140,9 +139,9 @@ public class AgentBehavior : Agent
     /// </summary>
     public override void Initialize()
     {
-        ballRd = ballBehavior.GetComponent<Rigidbody2D>();
-        trainingMode = gameManager.training_mode;
-        if(!trainingMode) MaxStep = 0;
+        this.ballRd = this.ballBehavior.GetComponent<Rigidbody2D>();
+        this.trainingMode = gameManager.training_mode;
+        if(!this.trainingMode) MaxStep = 0;
     }
 
     /// <summary>
@@ -150,7 +149,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public override void OnEpisodeBegin()
     {
-        gameManager.StartGame();
+        this.gameManager.StartGame();
     }
 
     /// <summary>
@@ -160,7 +159,7 @@ public class AgentBehavior : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         // Don't update the paddle if it is frozen
-        if (frozen) return;
+        if (this.frozen) return;
 
         // get horizontal input from model
         float movementHorizontal = actions.ContinuousActions[0];
