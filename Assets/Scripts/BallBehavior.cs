@@ -11,14 +11,9 @@ public class BallBehavior : MonoBehaviour
  * @return void.
  */
 {
-    [Tooltip("Sets the bottom of the screen to determine a lost ball")]
-    public float minY = -5.5f;
-    
-    [Tooltip("Sets maximum total ball velocity")]
-    public float maxVelocity = 9.0f;
-    
-    [Tooltip("Sets the minimum ball velocity in the Y axis")]
-    public float minVelocityY = 3.5f;
+    private float minY = -5.5f;
+    private float maxVelocity = 7.0f;
+    private float minVelocityY = 3.5f;
     
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
@@ -40,6 +35,8 @@ public class BallBehavior : MonoBehaviour
         this.ballAudio = GetComponent<AudioSource>();
         velocityText.text = "";
         this.Reset();
+        if (gameManager.debug) velocityText.gameObject.SetActive(true);
+        else velocityText.gameObject.SetActive(false);
     }
 
     void Update()
@@ -61,10 +58,11 @@ public class BallBehavior : MonoBehaviour
         // NOTE: The ball will gain velocity when hitting the edge of an object (brick) or object with 
         // exiting velocity (moving paddle).  These functions enforce a set magnitude with a minimum Y 
         // axis velocity.
+
         Vector2 corrected;
-        float magnitude = MathF.Abs(this.ball.velocity.x) + MathF.Abs(this.ball.velocity.y);
-        float factor = maxVelocity / magnitude;
-        corrected = new Vector2(this.ball.velocity.x * factor, this.ball.velocity.y * factor);
+        // depreciated - float factor = maxVelocity / ball.velocity.magnitude;
+        // depreciated - corrected = new Vector2(this.ball.velocity.x * factor, this.ball.velocity.y * factor);
+        corrected = ball.velocity.normalized * maxVelocity;
         this.ball.velocity = corrected;
 
         // Clamp the ball y magnitude to a minimum value
@@ -82,14 +80,13 @@ public class BallBehavior : MonoBehaviour
             }
             this.ball.velocity = corrected;
         }
-        magnitude = MathF.Abs(this.ball.velocity.x) + MathF.Abs(this.ball.velocity.y);
 
         if (gameManager.debug)
         {
             // FOR DEV - update velocity display
             float xVelocity = ball.velocity.x;
             float yVelocity = ball.velocity.y;
-            velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {magnitude:F2}";
+            velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {ball.velocity.magnitude:F2}";
         }
 
     }

@@ -10,8 +10,7 @@ using System.Runtime.InteropServices;
 
 public class AgentBehavior : Agent
 {
-    [Tooltip("Sets the paddle x axis speed")]
-    public float speed = 10.0f;
+    private float speed = 10.0f;
     
     [Tooltip("Sets the GameManager object")]
     public GameManager gameManager;
@@ -23,7 +22,7 @@ public class AgentBehavior : Agent
     private float minX;
     private float maxX;
 
-    public float paddleWidth = 2.0f;
+    private float paddleWidth = 2.0f;
     
     [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not

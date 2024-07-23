@@ -5,6 +5,8 @@ using UnityEngine.Scripting;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Threading.Tasks;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,11 +39,8 @@ public class GameManager : MonoBehaviour
     public bool multi_level = true;            // use to change single or multi-level game
     [Tooltip("Sets the game to training mode")]
     public bool training_mode = false;         // use to train the model vs play the game
-
     public bool debug = false;
-
     public PlayerType playerType;
-
     public TextMeshProUGUI levelText;
 
     // game variables
@@ -60,18 +59,6 @@ public class GameManager : MonoBehaviour
     private float levelPointMultiplier = 1.5f;
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
-
-    /// <summary>
-    /// All possible game states
-    /// </summary>
-    public enum GameState
-    {
-        Default,
-        Preparing,
-        Playing,
-        Paused,
-        Gameover
-    }
 
     /// <summary>
     /// The current game state
@@ -153,6 +140,9 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.uiController.ShowScore("Score " + this.score.ToString());
 
+        if (debug) this.levelText.gameObject.SetActive(true);
+        else this.levelText.gameObject.SetActive(true);
+
         // Begin the level timer
         this.levelStartTime = Time.time;
 
@@ -196,8 +186,17 @@ public class GameManager : MonoBehaviour
     private void PauseGame()
     {
         State = GameState.Paused;
+        Time.timeScale = 0f;
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
+    }
+
+    private void ResumeGame()
+    {
+        State = GameState.Playing;
+        Time.timeScale = 1f;
+        this.ballBehavior.Unfreeze();
+        this.agentBehavior.Unfreeze();
     }
 
     /// <summary>
@@ -232,6 +231,19 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        // Check if the Escape key is pressed to pause/unpause game
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (State == GameState.Playing)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ResumeGame();
+            }
+        }
+
         if (State == GameState.Playing)
         {
             // Reward agent for ball moving
@@ -320,7 +332,6 @@ public class GameManager : MonoBehaviour
         // Reload scene to restart game
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
-        
         this.StartGame();
     }
 
