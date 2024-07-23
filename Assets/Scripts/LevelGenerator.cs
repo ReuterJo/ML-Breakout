@@ -21,7 +21,7 @@ public class LevelGenerator : MonoBehaviour
         }
         else if (level == 2) 
         {
-            // pass
+            return 27;
         }
         else if (level == 3) 
         {
@@ -75,6 +75,7 @@ public class LevelGenerator : MonoBehaviour
                 if ((i + j) % 2 == 0)
                 {
                 GameObject newBrick = Instantiate(brickPrefab, transform);
+                newBrick.layer = layer;
                 newBrick.transform.position = transform.position + new Vector3((float) ((size.x-1)*0.5f-i) * offset.x, j * offset.y, 0);
                 newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
                 this.brickList.Add(newBrick);
@@ -107,6 +108,7 @@ public class LevelGenerator : MonoBehaviour
                 if (checkerboard[index] == 1)
                 {
                     GameObject newBrick = Instantiate(brickPrefab, transform);
+                    newBrick.layer = layer;
                     newBrick.transform.position = transform.position + new Vector3(((size.x - 1) * 0.5f - i) * offset.x, j * offset.y, 0);
                     newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
                     this.brickList.Add(newBrick);
@@ -139,6 +141,7 @@ public class LevelGenerator : MonoBehaviour
                 if (checkerboard[index] == 1)
                 {
                     GameObject newBrick = Instantiate(brickPrefab, transform);
+                    newBrick.layer = layer;
                     newBrick.transform.position = transform.position + new Vector3(((size.x - 1) * 0.5f - i) * offset.x, j * offset.y, 0);
                     newBrick.GetComponent<SpriteRenderer>().color = gradient.Evaluate((float)j/(size.y-1));
                     this.brickList.Add(newBrick);
@@ -158,5 +161,16 @@ public class LevelGenerator : MonoBehaviour
             if (!brick.IsDestroyed()) Destroy(brick);
         }
         this.brickList.Clear();
+    }
+
+    public int getBrickCount()
+    {
+        int count = 0;
+        foreach (GameObject brick in this.brickList)
+        {
+
+            if (!brick.IsDestroyed()) count++;
+        }
+        return count;
     }
 }

@@ -15,10 +15,10 @@ public class BallBehavior : MonoBehaviour
     public float minY = -5.5f;
     
     [Tooltip("Sets maximum total ball velocity")]
-    public float maxVelocity = 7f;
+    public float maxVelocity = 8.0f;
     
     [Tooltip("Sets the minimum ball velocity in the Y axis")]
-    public float minVelocityY = 3.0f;
+    public float minVelocityY = 3.5f;
     
     [Tooltip("Sets the game manager object")]
     public GameManager gameManager;
@@ -57,37 +57,37 @@ public class BallBehavior : MonoBehaviour
             this.gameManager.loseLife();
             Reset();
         }
-        // Get the current velocity
-        Vector2 currentVelocity = ball.velocity;
 
-        // Check the direction of travel (up or down)
-        if (currentVelocity.y > 0)
-        {
-            // Ensure minimum Y velocity if moving upwards
-            if (currentVelocity.y < this.minVelocityY)
+        // NOTE: The ball will gain velocity when hitting the edge of an object (brick) or object with 
+        // exiting velocity (moving paddle).  These functions enforce a set magnitude with a minimum Y 
+        // axis velocity.
+        Vector2 corrected;
+        float magnitude = MathF.Abs(this.ball.velocity.x) + MathF.Abs(this.ball.velocity.y);
+        float factor = maxVelocity / magnitude;
+        corrected = new Vector2(this.ball.velocity.x * factor, this.ball.velocity.y * factor);
+        this.ball.velocity = corrected;
+
+        // Clamp the ball y magnitude to a minimum value
+        if (Mathf.Abs(this.ball.velocity.y) < this.minVelocityY) {
+            float diff = this.minVelocityY - Mathf.Abs(this.ball.velocity.y);
+
+            // If the ball is going upwards, shift the vector upwards
+            if (this.ball.velocity.y >= 0)
             {
-                currentVelocity.y = this.minVelocityY;
-                this.ball.velocity = currentVelocity;
+                corrected = new Vector2(this.ball.velocity.x - diff, this.ball.velocity.y + diff);
             }
-        }
-        else if (currentVelocity.y < 0)
-        {
-            // Ensure minimum Y velocity if moving downwards
-            if (currentVelocity.y > -this.minVelocityY)
+            else
             {
-                currentVelocity.y = -minVelocityY;
-                this.ball.velocity = currentVelocity;
+                corrected = new Vector2(this.ball.velocity.x - diff, this.ball.velocity.y - diff);
             }
+            this.ball.velocity = corrected;
         }
-        // Constrain total velocity
-        if(this.ball.velocity.magnitude > this.maxVelocity)
-        {
-            this.ball.velocity = Vector2.ClampMagnitude(this.ball.velocity, this.maxVelocity);
-        }
+        magnitude = MathF.Abs(this.ball.velocity.x) + MathF.Abs(this.ball.velocity.y);
+
+        // FOR DEV - update velocity display
         float xVelocity = ball.velocity.x;
         float yVelocity = ball.velocity.y;
-        float totalVelocity = ball.velocity.magnitude;
-        velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {totalVelocity:F2}";
+        velocityText.text = $"X: {xVelocity:F2}\nY: {yVelocity:F2}\nTotal: {magnitude:F2}";
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -97,6 +97,7 @@ public class BallBehavior : MonoBehaviour
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
+            // VFX of brick break
             Instantiate(onCollisionEffect, collision.transform.position, collision.transform.rotation);
             this.gameManager.scoreBrick();
         }
@@ -160,8 +161,8 @@ public class BallBehavior : MonoBehaviour
         this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2);
     }
 
-    public void ChangeBallVelocity(float percent)
+    public void ChangeBallVelocity()
     {
-        this.maxVelocity *= (1 + percent);
+        this.maxVelocity += 1;
     }
 }

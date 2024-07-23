@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the game to training mode")]
     public bool training_mode = false;         // use to train the model vs play the game
 
+    public TextMeshProUGUI levelText;
+
     // game variables
     private int score;
     private int brickValue = 10;
@@ -52,7 +55,6 @@ public class GameManager : MonoBehaviour
     private float levelPointMultiplier = 1.5f;
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
-    private float levelBallVelocityMultiplier = 0.1f;
 
     /// <summary>
     /// All possible game states
@@ -165,7 +167,6 @@ public class GameManager : MonoBehaviour
     {   
         this.score += this.brickValue;
         this.uiController.ShowScore("Score " + this.score.ToString());
-        this.bricksRemaining -= 1;
         this.agentBehavior.BrickDestoryed();
     }
 
@@ -220,6 +221,7 @@ public class GameManager : MonoBehaviour
                 if (!this.training_mode) EndGame();
                 else this.agentBehavior.EndTrainingEpisode();   
             }
+            this.bricksRemaining = levelGenerator.getBrickCount();
 
             // Single level game
             if (!this.multi_level)
@@ -243,15 +245,17 @@ public class GameManager : MonoBehaviour
                 // move to the next level
                 else
                 {
-                    if ((this.level == 1 && this.bricksRemaining == 49) || 
-                    (this.level == 2 && this.bricksRemaining == 45) || 
-                    this.bricksRemaining == 15) 
+                    if ((this.level == 1 && this.bricksRemaining == 27) || 
+                    (this.level == 2 && this.bricksRemaining == 0) || 
+                    this.bricksRemaining == 0) 
                     {
                         this.ChangeLevel();
                     }
                 }
             }
         }
+        float seconds = -1 * this.levelStartTime - Time.time;
+        levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}";
     }
 
     public void ChangeLevel()
@@ -267,13 +271,13 @@ public class GameManager : MonoBehaviour
         float elapsed = Time.time - levelStartTime;
         int bonus = (int) ((level * levelBonusMultiplier * 1000) / elapsed);
         this.score += bonus;
-        this.levelStartTime = 0;
+        this.levelStartTime = 0f;
 
         // change paddle size
         this.agentBehavior.ChangePaddleScale(this.level * this.levelPaddleSizeSubtractor);
 
         // change ball velocity
-        this.ballBehavior.ChangeBallVelocity(this.level * this.levelBallVelocityMultiplier);
+        this.ballBehavior.ChangeBallVelocity();
 
         // generate blocks
         this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
