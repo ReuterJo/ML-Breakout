@@ -94,7 +94,8 @@ public class BallBehavior : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     // Function used for destroying bricks when the ball collides with them
     {
-        this.ballAudio.Play(0);
+        // Only play audio for the player game
+        if(this.gameManager.playerType == PlayerType.Player) this.ballAudio.Play(0);
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);
