@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
 
 public class UIController : MonoBehaviour
 {
@@ -37,6 +38,21 @@ public class UIController : MonoBehaviour
         this.levelUpText.text = text;
         this.levelUpText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2f);
+        this.levelUpText.gameObject.SetActive(false);
+    }
+
+    public async void CountdownTimer(PlayerType playerType)
+    {
+        int counter = 5;
+        string player = "Player Game\nStarting In:\n";
+        if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
+        this.levelUpText.gameObject.SetActive(true);
+        while (counter != 0)
+        {
+            this.levelUpText.text = player + counter;
+            await Task.Delay(1000);
+            counter--;
+        }
         this.levelUpText.gameObject.SetActive(false);
     }
 

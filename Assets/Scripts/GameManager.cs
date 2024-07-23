@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -107,7 +108,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Starts the game
     /// </summary>
-    public void StartGame()
+    public async void StartGame()
     {
         // Set the game state to preparing
         State = GameState.Preparing;
@@ -116,7 +117,6 @@ public class GameManager : MonoBehaviour
         this.score = 0;
         this.levelText.text = "";
         this.leaderboardManager.HideLeaderboard();
-        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString()));
 
         // Generate level
 
@@ -141,6 +141,10 @@ public class GameManager : MonoBehaviour
             
             this.uiController.ShowLevel("Level " + level.ToString());
         }
+
+        // Begin countdown timer
+        this.uiController.CountdownTimer(this.playerType);
+        await Task.Delay(5000);
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");

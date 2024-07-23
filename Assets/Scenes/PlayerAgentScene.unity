@@ -392,6 +392,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6208416793554320597, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
+      propertyPath: m_text
+      value: Player Game
+      objectReference: {fileID: 0}
     - target: {fileID: 6313688878647053964, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_LocalScale.y
       value: 11
@@ -478,7 +482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7736296760760101328, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7792650890694309647, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_Name
@@ -1304,6 +1308,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AgentGameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6208416793554320597, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
+      propertyPath: m_text
+      value: Agent Game
+      objectReference: {fileID: 0}
     - target: {fileID: 6313688878647053964, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_LocalScale.y
       value: 11
@@ -1362,7 +1370,7 @@ PrefabInstance:
       objectReference: {fileID: 460542518}
     - target: {fileID: 7736296760760101328, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7792650890694309647, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_Name

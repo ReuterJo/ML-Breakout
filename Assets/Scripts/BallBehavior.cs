@@ -15,7 +15,7 @@ public class BallBehavior : MonoBehaviour
     public float minY = -5.5f;
     
     [Tooltip("Sets maximum total ball velocity")]
-    public float maxVelocity = 8.0f;
+    public float maxVelocity = 9.0f;
     
     [Tooltip("Sets the minimum ball velocity in the Y axis")]
     public float minVelocityY = 3.5f;
@@ -168,6 +168,7 @@ public class BallBehavior : MonoBehaviour
     public void ChangeBallVelocity()
     {
         this.maxVelocity += 1;
+        this.minVelocityY += 0.5f;
     }
 
     public float GetBallYPosition()
