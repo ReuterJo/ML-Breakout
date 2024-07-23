@@ -249,12 +249,16 @@ public class GameManager : MonoBehaviour
                     (this.level == 2 && this.bricksRemaining == 0) || 
                     this.bricksRemaining == 0) 
                     {
-                        this.ChangeLevel();
+                        if (ballBehavior.GetBallYPosition() < 0.0f)
+                        {
+                            this.ChangeLevel();
+                        }
+
                     }
                 }
             }
         }
-        float seconds = -1 * this.levelStartTime - Time.time;
+        float seconds = Time.time - this.levelStartTime;
         levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}";
     }
 
@@ -271,7 +275,7 @@ public class GameManager : MonoBehaviour
         float elapsed = Time.time - levelStartTime;
         int bonus = (int) ((level * levelBonusMultiplier * 1000) / elapsed);
         this.score += bonus;
-        this.levelStartTime = 0f;
+        this.levelStartTime = Time.time;
 
         // change paddle size
         this.agentBehavior.ChangePaddleScale(this.level * this.levelPaddleSizeSubtractor);

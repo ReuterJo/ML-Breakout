@@ -165,4 +165,9 @@ public class BallBehavior : MonoBehaviour
     {
         this.maxVelocity += 1;
     }
+
+    public float GetBallYPosition()
+    {
+        return this.ball.transform.position.y;
+    }
 }
