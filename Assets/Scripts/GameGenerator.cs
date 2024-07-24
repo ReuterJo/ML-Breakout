@@ -28,13 +28,13 @@ public class GameGenerator : MonoBehaviour
         switch (this.difficulty)
         {
             case Difficulty.Beginner:
-                this.model_path = "Assets/NNModels/AgentBehavior.onnx";
+                this.model_path = "NNModels/AgentBehavior";
                 break;
             case Difficulty.Intermediate:
-                this.model_path = "Assets/NNModels/AgentBehavior.onnx";
+                this.model_path = "NNModels/AgentBehavior";
                 break;
             case Difficulty.Advanced:
-                this.model_path = "Assets/NNModels/AgentBehavior.onnx";
+                this.model_path = "NNModels/AgentBehavior";
                 break;
         }
 
@@ -66,11 +66,11 @@ public class GameGenerator : MonoBehaviour
         {
             // Create the player GameManager instance
             this.game1 = Instantiate(gamePrefab);
-            this.gameManager1 = game1.GetComponent<GameManager>();
+            this.gameManager1 = this.game1.GetComponentInChildren<GameManager>();
 
             // Create the agent GameManager instance
             this.game2 = Instantiate(gamePrefab);
-            this.gameManager2 = game2.GetComponent<GameManager>();
+            this.gameManager2 = this.game2.GetComponentInChildren<GameManager>();
 
             // Initialize the player gameManager settings
             this.gameManager1.Configure(this.multi_level, 

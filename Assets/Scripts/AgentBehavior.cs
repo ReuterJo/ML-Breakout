@@ -68,32 +68,42 @@ public class AgentBehavior : Agent
 
     public void Configure(string model_path)
     {
-        Debug.Log("Agent configure called with path." + model_path);
-        if (model_path != null)
+        this.behaviorParameters = GetComponent<BehaviorParameters>();
+        if(this.gameManager.playerType == PlayerType.Player)
         {
-            this.behaviorParameters = GetComponent<BehaviorParameters>();
-            if (this.behaviorParameters != null)
-            {
-                if (System.IO.File.Exists(model_path))
-                    {
-                        // Load the model
-                        NNModel model = Resources.Load<NNModel>(model_path);
-                    
-                        behaviorParameters.Model = model;
-                        Debug.Log("Model loaded and applied successfully.");
-                        if (model != null)
-                        {
-                            // Set the model to the Behavior Parameters
-                            behaviorParameters.Model = model;
-                            Debug.Log("Model loaded and applied successfully.");
-                        }
-                        else
-                        {
-                            Debug.LogError($"Model file not found at {model_path}");
-                        }
-                    }
+            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
+            Debug.Log("I am a player");
+        }
+        else
+        {
+            Debug.Log("I am an agent");
+            behaviorParameters.BehaviorType = BehaviorType.Default;
+            NNModel model = Resources.Load<NNModel>("NNModels/AgentBehavior");
+            this.SetModel("AgentBehavior", model);
 
-            }
+            //Debug.Log("Agent configure called with path." + model_path);
+            //if (model_path != null)
+            //{
+            //    if (this.behaviorParameters != null)
+            //    {
+            //        if (System.IO.File.Exists(model_path))
+            //            {
+            //                // Load the model
+            //                NNModel model = Resources.Load<NNModel>("NNModels/AgentBehavior");
+            //            
+            //                if (model != null)
+            //                {
+            //                    // Set the model to the Behavior Parameters
+            //                    behaviorParameters.Model = model;
+            //                    Debug.Log("Model loaded and applied successfully.");
+            //                }
+            //                else
+            //                {
+            //                    Debug.LogError($"Model file not found at {model_path}");
+            //                }
+            //            }
+            //    }
+            //}
         }
     }
 
