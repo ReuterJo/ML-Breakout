@@ -162,10 +162,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2707269834632005924}
   - {fileID: 740986889277226230}
-  - {fileID: 7559066855127185025}
-  - {fileID: 6177758868931693727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -313,7 +310,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5030056149188107851}
+    m_TransformParent: {fileID: 740986889277226230}
     m_Modifications:
     - target: {fileID: 1596492910633416144, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -357,7 +354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7095384316252485270, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: m_Name
-      value: PlayerUIController
+      value: UIController
       objectReference: {fileID: 0}
     - target: {fileID: 7095384316252485270, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: m_Layer
@@ -369,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7202857309528129010, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 430
+      value: 427.5
       objectReference: {fileID: 0}
     - target: {fileID: 7202857309528129010, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -457,15 +454,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5030056149188107851}
+    m_TransformParent: {fileID: 740986889277226230}
     m_Modifications:
     - target: {fileID: 753251695619326859, guid: ff8acbd2f502e914aad8656aef002c04, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.1637
+      value: 22.163696
       objectReference: {fileID: 0}
     - target: {fileID: 753251695619326859, guid: ff8acbd2f502e914aad8656aef002c04, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -18.746925
+      value: -21.246918
       objectReference: {fileID: 0}
     - target: {fileID: 753251695619326859, guid: ff8acbd2f502e914aad8656aef002c04, type: 3}
       propertyPath: m_LocalPosition.z
@@ -574,7 +571,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5030056149188107851}
+    m_TransformParent: {fileID: 740986889277226230}
     m_Modifications:
     - target: {fileID: 443846778431717998, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_Layer
@@ -595,6 +592,10 @@ PrefabInstance:
     - target: {fileID: 2239415346309199123, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_BehaviorType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2972630644173954597, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3317713867968738415, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: layer
@@ -642,7 +643,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5609898636278869319, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5609898636278869319, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -676,6 +677,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5701178448223041490, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5962453387290934508, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -700,6 +705,18 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 7780099912448798392}
+    - target: {fileID: 7012453221266320133, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7632095222869324905, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8518296966299737913, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -793,7 +810,7 @@ PrefabInstance:
       objectReference: {fileID: 982197123276607317}
     - target: {fileID: 2174140078283529385, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
       propertyPath: m_Name
-      value: PlayerGameManager
+      value: GameManager
       objectReference: {fileID: 0}
     - target: {fileID: 2174140078283529385, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
       propertyPath: m_Layer
@@ -841,7 +858,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7032227632489065970, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2707269834632005924}
+    - targetCorrespondingSourceObject: {fileID: 7032227632489065970, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7559066855127185025}
+    - targetCorrespondingSourceObject: {fileID: 7032227632489065970, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6177758868931693727}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9e67ca942f75c1c39c8f4bea03c5c36, type: 3}
 --- !u!4 &740986889277226230 stripped

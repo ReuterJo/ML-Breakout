@@ -43,25 +43,27 @@ public class AgentBehavior : Agent
     public void Start()
     {   
         this.screenPosition = gameManager.GetScreenPosition();
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * Screen.width / Screen.height;
         // Left game
         if (this.screenPosition == ScreenPosition.Left)
         {
-            this.minX = -9f;
+            this.minX = -horzExtent;
             this.maxX = 0f;
-            transform.position = new Vector2(-4f, -4f);
+            transform.position = new Vector2(-horzExtent / 2f, -4f);
         }
         // Right game
         else if (this.screenPosition == ScreenPosition.Right)
         {
             this.minX = 0f;
-            this.maxX = 9f;
-            transform.position = new Vector2(4f, -4f);
+            this.maxX = horzExtent;
+            transform.position = new Vector2(horzExtent / 2f, -4f);
         }
         // Centered game
         else
         {
-            this.minX = -4.5f;
-            this.maxX = 4.5f;
+            this.minX = -horzExtent / 2f;
+            this.maxX = horzExtent / 2f;
             transform.position = new Vector2(0f, -4f);
         }
     }
@@ -69,41 +71,15 @@ public class AgentBehavior : Agent
     public void Configure(string model_path)
     {
         this.behaviorParameters = GetComponent<BehaviorParameters>();
-        if(this.gameManager.playerType == PlayerType.Player)
+        if(this.gameManager.playerType == PlayerType.Agent)
         {
-            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
-            Debug.Log("I am a player");
-        }
-        else
-        {
-            Debug.Log("I am an agent");
             behaviorParameters.BehaviorType = BehaviorType.Default;
             NNModel model = Resources.Load<NNModel>("NNModels/AgentBehavior");
             this.SetModel("AgentBehavior", model);
-
-            //Debug.Log("Agent configure called with path." + model_path);
-            //if (model_path != null)
-            //{
-            //    if (this.behaviorParameters != null)
-            //    {
-            //        if (System.IO.File.Exists(model_path))
-            //            {
-            //                // Load the model
-            //                NNModel model = Resources.Load<NNModel>("NNModels/AgentBehavior");
-            //            
-            //                if (model != null)
-            //                {
-            //                    // Set the model to the Behavior Parameters
-            //                    behaviorParameters.Model = model;
-            //                    Debug.Log("Model loaded and applied successfully.");
-            //                }
-            //                else
-            //                {
-            //                    Debug.LogError($"Model file not found at {model_path}");
-            //                }
-            //            }
-            //    }
-            //}
+        }
+        else
+        {
+            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
         }
     }
 

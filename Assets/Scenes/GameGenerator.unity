@@ -183,8 +183,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 54
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 5.1
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -292,7 +292,7 @@ MonoBehaviour:
   multi_level: 1
   training_mode: 1
   debug: 0
-  gameMode: 2
+  gameMode: 1
   difficulty: 0
 --- !u!4 &489430280
 Transform:

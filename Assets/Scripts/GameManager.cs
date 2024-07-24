@@ -81,7 +81,24 @@ public class GameManager : MonoBehaviour
         this.training_mode = training_mode;
         this.debug = debug;
         this.playerType = playerType;
+        this.thisGame = this;
         this.opponentGame = opponentGame;
+        
+        // Determine screen position and set it
+        switch (this.playerType)
+        {
+            case PlayerType.Agent:
+                this.screenPosition = ScreenPosition.Right;
+                break;
+            case PlayerType.Player:
+                this.screenPosition = ScreenPosition.Left;
+                break;
+            case PlayerType.Single:
+                this.screenPosition = ScreenPosition.Center;
+                break;
+        }
+        SetScreenPosition();
+
         Debug.Log("Game Configured.");
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
@@ -90,24 +107,26 @@ public class GameManager : MonoBehaviour
 
     void SetScreenPosition()
     {
-        Vector3 newPosition = thisGame.transform.position;
-        float screenWidth = Screen.width;
-        float gameWidth = thisGame.GetComponent<Renderer>().bounds.size.x;
+        GameObject gameArea = GameObject.Find("GameArea");
+
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * Screen.width / Screen.height;
+        
+        Vector3 newPosition = gameArea.transform.position;
 
         switch (this.screenPosition)
         {
             case ScreenPosition.Left:
-                newPosition.x = screenWidth * 0.25f;
+                newPosition = new Vector3(-horzExtent / 2f, newPosition.y, newPosition.z);
                 break;
             case ScreenPosition.Center:
-                newPosition.x = screenWidth * 0.5f;
+                newPosition = new Vector3(0f, newPosition.y, newPosition.z);
                 break;
             case ScreenPosition.Right:
-                newPosition.x = screenWidth * 0.75f;
+                newPosition = new Vector3(horzExtent / 2f, newPosition.y, newPosition.z);
                 break;
         }
-
-        this.thisGame.transform.position = newPosition;
+        gameArea.transform.position = newPosition;
     }
 
     public ScreenPosition GetScreenPosition()

@@ -41,7 +41,7 @@ public class GameGenerator : MonoBehaviour
         if (this.gameMode == GameMode.Training)
         {
             this.game1 = Instantiate(gamePrefab);
-            this.gameManager1 = game1.GetComponent<GameManager>();
+            this.gameManager1 = game1.GetComponentInChildren<GameManager>();
             Debug.Log("Configuration Called.");
             this.gameManager1.Configure(this.multi_level, 
                                     this.training_mode, 
@@ -54,7 +54,7 @@ public class GameGenerator : MonoBehaviour
         else if (this.gameMode == GameMode.Single)
         {
             this.game1 = Instantiate(gamePrefab);
-            this.gameManager1 = game1.GetComponent<GameManager>();
+            this.gameManager1 = game1.GetComponentInChildren<GameManager>();
             this.gameManager1.Configure(this.multi_level, 
                                     this.training_mode, 
                                     this.debug, 
@@ -66,11 +66,11 @@ public class GameGenerator : MonoBehaviour
         {
             // Create the player GameManager instance
             this.game1 = Instantiate(gamePrefab);
-            this.gameManager1 = this.game1.GetComponentInChildren<GameManager>();
+            gameManager1 = this.game1.GetComponentInChildren<GameManager>();
 
             // Create the agent GameManager instance
             this.game2 = Instantiate(gamePrefab);
-            this.gameManager2 = this.game2.GetComponentInChildren<GameManager>();
+            gameManager2 = this.game2.GetComponentInChildren<GameManager>();
 
             // Initialize the player gameManager settings
             this.gameManager1.Configure(this.multi_level, 
