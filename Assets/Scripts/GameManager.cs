@@ -86,33 +86,12 @@ public class GameManager : MonoBehaviour
         this.thisGame = this;
         this.opponentGame = opponentGame;
 
+        // call to load correct agent model
+        this.agentBehavior.Configure(model_path);
+
         // Configure audio
         this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
         this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
-
-        // Determine screen position and set it
-        switch (this.playerType)
-        {
-            case PlayerType.Agent:
-                this.screenPosition = ScreenPosition.Right;
-                break;
-            case PlayerType.Player:
-                this.screenPosition = ScreenPosition.Left;
-                break;
-            case PlayerType.Single:
-                this.screenPosition = ScreenPosition.Center;
-                break;
-        }
-        this.SetScreenPosition();
-        // call to load correct agent model
-        this.agentBehavior.Configure(model_path);
-        
-        // set color of agent to be different than player
-        if (this.playerType == PlayerType.Agent)
-        {
-            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
-            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
-        }
     }
 
     void SetScreenPosition()
@@ -162,14 +141,40 @@ public class GameManager : MonoBehaviour
     {
         // Set the game state to preparing
         State = GameState.Preparing;
+
+        // Determine screen position and set it
+        switch (this.playerType)
+        {
+            case PlayerType.Agent:
+                this.screenPosition = ScreenPosition.Right;
+                break;
+            case PlayerType.Player:
+                this.screenPosition = ScreenPosition.Left;
+                break;
+            case PlayerType.Single:
+                this.screenPosition = ScreenPosition.Center;
+                break;
+        }
+        this.SetScreenPosition();
+        
+        // set color of agent to be different than player
+        if (this.playerType == PlayerType.Agent)
+        {
+            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
+            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
+        }
+
         this.level = starting_level;
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
         this.leaderboardManager.HideLeaderboard();
 
-        // Generate level
+        // Update lives and score
+        this.uiController.ShowLives(this.lives.ToString() + " Lives");
+        this.uiController.ShowScore("Score " + this.score.ToString());
 
+        // Generate level
         if (!multi_level)
         {
             this.uiController.HideLevel();
@@ -192,6 +197,10 @@ public class GameManager : MonoBehaviour
             this.uiController.ShowLevel("Level " + level.ToString());
         }
 
+        // Reset paddle ball
+        this.ballBehavior.Reset();
+        this.agentBehavior.Reset();
+
         // Begin countdown timer if not in training
         if (!training_mode)
         {
@@ -199,19 +208,11 @@ public class GameManager : MonoBehaviour
         await Task.Delay(5000);
         }
 
-        // Update lives and score
-        this.uiController.ShowLives(this.lives.ToString() + " Lives");
-        this.uiController.ShowScore("Score " + this.score.ToString());
-
         if (debug) this.levelText.gameObject.SetActive(true);
         else this.levelText.gameObject.SetActive(false);
 
         // Begin the level timer
         this.levelStartTime = Time.time;
-
-        // Reset paddle ball
-        this.ballBehavior.Reset();
-        this.agentBehavior.Reset();
 
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();

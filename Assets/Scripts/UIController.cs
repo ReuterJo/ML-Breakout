@@ -23,7 +23,7 @@ public class UIController : MonoBehaviour
 
     public void Start()
     {
-        this.levelUpText.gameObject.SetActive(false);
+        this.levelUpText.gameObject.SetActive(true);
     }
 
     public void SetScreenPosition(float xShift)
