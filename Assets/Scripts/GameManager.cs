@@ -7,6 +7,7 @@ using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -63,6 +64,9 @@ public class GameManager : MonoBehaviour
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
 
+    private AudioSource levelUpAudio;
+    private AudioSource lifeLostAudio;
+
     /// <summary>
     /// The current game state
     /// </summary>
@@ -83,7 +87,11 @@ public class GameManager : MonoBehaviour
         this.playerType = playerType;
         this.thisGame = this;
         this.opponentGame = opponentGame;
-        
+
+        // Configure audio
+        this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
+        this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
+
         // Determine screen position and set it
         switch (this.playerType)
         {
@@ -242,6 +250,7 @@ public class GameManager : MonoBehaviour
         this.lives--;
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.agentBehavior.BallLost();
+        if(this.playerType == PlayerType.Player) this.lifeLostAudio.Play(0);
     }
 
     private void PauseGame()
@@ -366,6 +375,11 @@ public class GameManager : MonoBehaviour
     {
         // increment level
         this.level += 1;
+
+        Debug.Log("The value of the level is " + this.level.ToString());
+
+        // Play level up sound
+        if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
