@@ -110,6 +110,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Configured.");
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
+        // set color of agent to be different than player
+        if (this.playerType == PlayerType.Agent)
+        {
+            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
+            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
+        }
         this.configured = true;
     }
 
