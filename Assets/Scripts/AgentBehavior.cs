@@ -7,6 +7,8 @@ using Unity.MLAgents.Sensors;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices;
+using Unity.MLAgents.Policies;
+using Unity.Barracuda;
 
 public class AgentBehavior : Agent
 {
@@ -18,6 +20,8 @@ public class AgentBehavior : Agent
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
     private ScreenPosition screenPosition;
+
+    private BehaviorParameters behaviorParameters;
 
     private float minX;
     private float maxX;
@@ -37,28 +41,46 @@ public class AgentBehavior : Agent
     private float brickDestoryedReward = 1f;
 
     public void Start()
-    {
+    {   
         this.screenPosition = gameManager.GetScreenPosition();
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * Screen.width / Screen.height;
         // Left game
         if (this.screenPosition == ScreenPosition.Left)
         {
-            this.minX = -9f;
+            this.minX = -horzExtent;
             this.maxX = 0f;
-            transform.position = new Vector2(-4f, -4f);
+            transform.position = new Vector2(-horzExtent / 2f, -4f);
         }
         // Right game
         else if (this.screenPosition == ScreenPosition.Right)
         {
             this.minX = 0f;
-            this.maxX = 9f;
-            transform.position = new Vector2(4f, -4f);
+            this.maxX = horzExtent;
+            transform.position = new Vector2(horzExtent / 2f, -4f);
         }
         // Centered game
         else
         {
-            this.minX = -4.5f;
-            this.maxX = 4.5f;
+            this.minX = -horzExtent / 2f;
+            this.maxX = horzExtent / 2f;
             transform.position = new Vector2(0f, -4f);
+        }
+    }
+
+    public void Configure(string model_path)
+    {
+        Debug.Log("Agent Configuration started with: " + model_path);
+        this.behaviorParameters = GetComponent<BehaviorParameters>();
+        if(this.gameManager.playerType == PlayerType.Agent)
+        {
+            behaviorParameters.BehaviorType = BehaviorType.Default;
+            NNModel model = Resources.Load<NNModel>(model_path);
+            this.SetModel("AgentBehavior", model);
+        }
+        else
+        {
+            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
         }
     }
 

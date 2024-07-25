@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class BallBehavior : MonoBehaviour
 /**
@@ -131,37 +132,42 @@ public class BallBehavior : MonoBehaviour
         (float x, float y) leftSide = (0f, 0f);
         (float x, float y) rightSide = (0f, 0f);
         ScreenPosition screenPosition = gameManager.GetScreenPosition();
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * Screen.width / Screen.height;
+
+        Debug.Log("HorzExtent is " + horzExtent.ToString());
         // Centered Game
         if (screenPosition == ScreenPosition.Center)
         {
-            leftSide = (-4f, -2f);
-            rightSide = (2f, 4f);
+            leftSide = (-horzExtent/2f + 1f, -horzExtent/2f + 1f);
+            rightSide = (horzExtent/2f - 1f, horzExtent/2f - 1f);
         }
         // Left Game
         else if (screenPosition == ScreenPosition.Left)
         {
-            leftSide = (-8f, -6f);
-            rightSide = (-2f, 0f);
+            leftSide = (-horzExtent + 1f, -horzExtent/2f - 1f);
+            rightSide = (-horzExtent/2f + 1f, -1f);
         }
         // Right Game
         else
         {
-            leftSide = (0f, 2f);
-            rightSide = (6f, 8f);
+            leftSide = (1f, horzExtent/2f - 1f);
+            rightSide = (horzExtent + 1f, horzExtent - 1f);
         }
         if (side == 0)
         {
             random = UnityEngine.Random.Range(leftSide.x, leftSide.y);
-
+            // Set the ball velocity to 1/2 the maxVelocity split in 2 axis
+            this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2);
         }
         else
         {
-            random = UnityEngine.Random.Range(rightSide.x, leftSide.y);
+            random = UnityEngine.Random.Range(rightSide.x, rightSide.y);
+            this.ball.velocity = new Vector2(-1f, -1f) * (this.maxVelocity / 2);
         }
         // Start the ball position from the randomly generated settings above
         this.transform.position = new Vector2(random, 0f);
-        // Set the ball velocity to 1/2 the maxVelocity split in 2 axis
-        this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2);
+        
     }
 
     public void ChangeBallVelocity()

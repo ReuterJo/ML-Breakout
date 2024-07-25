@@ -7,6 +7,7 @@ using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -43,6 +44,8 @@ public class GameManager : MonoBehaviour
     public PlayerType playerType;
     public TextMeshProUGUI levelText;
 
+    private bool change_level = false;
+
     // game variables
     private int score;
     private int brickValue = 10;
@@ -60,31 +63,91 @@ public class GameManager : MonoBehaviour
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
 
+    private AudioSource levelUpAudio;
+    private AudioSource lifeLostAudio;
+
     /// <summary>
     /// The current game state
     /// </summary>
     public GameState State { get; private set; } = GameState.Default;
 
-    void SetScreenPosition()
+    public void Configure(bool multi_level, 
+                    bool training_mode, 
+                    bool debug, 
+                    PlayerType playerType, 
+                    GameManager opponentGame,
+                    string model_path
+                    )
     {
-        Vector3 newPosition = thisGame.transform.position;
-        float screenWidth = Screen.width;
-        float gameWidth = thisGame.GetComponent<Renderer>().bounds.size.x;
+        this.multi_level = multi_level;
+        this.training_mode = training_mode;
+        this.debug = debug;
+        this.playerType = playerType;
+        this.thisGame = this;
+        this.opponentGame = opponentGame;
 
-        switch (screenPosition)
+        // Configure audio
+        this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
+        this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
+
+        // Determine screen position and set it
+        switch (this.playerType)
         {
-            case ScreenPosition.Left:
-                newPosition.x = screenWidth * 0.25f;
+            case PlayerType.Agent:
+                this.screenPosition = ScreenPosition.Right;
                 break;
-            case ScreenPosition.Center:
-                newPosition.x = screenWidth * 0.5f;
+            case PlayerType.Player:
+                this.screenPosition = ScreenPosition.Left;
                 break;
-            case ScreenPosition.Right:
-                newPosition.x = screenWidth * 0.75f;
+            case PlayerType.Single:
+                this.screenPosition = ScreenPosition.Center;
                 break;
         }
+        this.SetScreenPosition();
+        // call to load correct agent model
+        this.agentBehavior.Configure(model_path);
+        
+        // set color of agent to be different than player
+        if (this.playerType == PlayerType.Agent)
+        {
+            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
+            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
+        }
+    }
 
-        this.thisGame.transform.position = newPosition;
+    void SetScreenPosition()
+    {
+        // Update Game Area GameObject position
+        GameObject gameArea = GameObject.Find("GameArea");
+
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * Screen.width / Screen.height;
+        
+        Vector3 newPosition = gameArea.transform.position;
+
+        // UI shift is hardcoded to match previous scene
+        switch (this.screenPosition)
+        {
+            case ScreenPosition.Left:
+                newPosition = new Vector3(-horzExtent / 2f, newPosition.y, newPosition.z);
+                this.uiController.SetScreenPosition(0f);
+                this.levelText.transform.position += new Vector3(0, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(0, 0, 0);
+                break;
+            case ScreenPosition.Center:
+                newPosition = new Vector3(0f, newPosition.y, newPosition.z);
+                this.uiController.SetScreenPosition(482f);
+                this.levelText.transform.position += new Vector3(482f, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(482f, 0, 0);
+                break;
+            case ScreenPosition.Right:
+                newPosition = new Vector3(horzExtent / 2f, newPosition.y, newPosition.z);
+                this.uiController.SetScreenPosition(964f);
+                this.levelText.transform.position += new Vector3(964f, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
+                break;
+        }
+        gameArea.transform.position = newPosition;
     }
 
     public ScreenPosition GetScreenPosition()
@@ -130,7 +193,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Begin countdown timer if not in training
-        if (training_mode)
+        if (!training_mode)
         {
         this.uiController.CountdownTimer(this.playerType);
         await Task.Delay(5000);
@@ -141,7 +204,7 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowScore("Score " + this.score.ToString());
 
         if (debug) this.levelText.gameObject.SetActive(true);
-        else this.levelText.gameObject.SetActive(true);
+        else this.levelText.gameObject.SetActive(false);
 
         // Begin the level timer
         this.levelStartTime = Time.time;
@@ -181,6 +244,7 @@ public class GameManager : MonoBehaviour
         this.lives--;
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.agentBehavior.BallLost();
+        if(this.playerType == PlayerType.Player) this.lifeLostAudio.Play(0);
     }
 
     private void PauseGame()
@@ -281,9 +345,13 @@ public class GameManager : MonoBehaviour
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
-                        if (ballBehavior.GetBallYPosition() < 0.0f)
+                        // change game dynamics and points immediately
+                        this.ChangeLevel();
+                        if (this.change_level && ballBehavior.GetBallYPosition() < 0.0f)
                         {
-                            this.ChangeLevel();
+                            // change bricks once ball is out of brick generator area
+                            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                            this.change_level = false;
                         }
 
                     }
@@ -302,6 +370,9 @@ public class GameManager : MonoBehaviour
         // increment level
         this.level += 1;
 
+        // Play level up sound
+        if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
+
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
 
@@ -318,7 +389,7 @@ public class GameManager : MonoBehaviour
         this.ballBehavior.ChangeBallVelocity();
 
         // generate blocks
-        this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+        this.change_level = true;
 
         // update level UI display
         this.uiController.ShowLevel("Level " + this.level.ToString());
