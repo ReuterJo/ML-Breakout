@@ -29,13 +29,13 @@ public class GameGenerator : MonoBehaviour
         switch (this.difficulty)
         {
             case Difficulty.Beginner:
-                this.model_path = "NNModels/AgentBehavior";
+                this.model_path = "NNModels/AgentBeginner";
                 break;
             case Difficulty.Intermediate:
-                this.model_path = "NNModels/AgentBehavior";
+                this.model_path = "NNModels/AgentIntermediate";
                 break;
             case Difficulty.Advanced:
-                this.model_path = "NNModels/AgentBehavior";
+                this.model_path = "NNModels/AgentAdvanced";
                 break;
         }
     }

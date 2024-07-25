@@ -70,11 +70,12 @@ public class AgentBehavior : Agent
 
     public void Configure(string model_path)
     {
+        Debug.Log("Agent Configuration started with: " + model_path);
         this.behaviorParameters = GetComponent<BehaviorParameters>();
         if(this.gameManager.playerType == PlayerType.Agent)
         {
             behaviorParameters.BehaviorType = BehaviorType.Default;
-            NNModel model = Resources.Load<NNModel>("NNModels/AgentBehavior");
+            NNModel model = Resources.Load<NNModel>(model_path);
             this.SetModel("AgentBehavior", model);
         }
         else
