@@ -291,8 +291,8 @@ MonoBehaviour:
   gamePrefab: {fileID: 3192609349291507319, guid: be7b2065fd2b8468cbfc014099dd77f3, type: 3}
   multi_level: 1
   training_mode: 1
-  debug: 0
-  gameMode: 1
+  debug: 1
+  gameMode: 2
   difficulty: 0
 --- !u!4 &489430280
 Transform:

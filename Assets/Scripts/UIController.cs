@@ -21,10 +21,17 @@ public class UIController : MonoBehaviour
     /// </summary>
     /// <param name="text">Text of lives</param>
 
-
     public void Start()
     {
         this.levelUpText.gameObject.SetActive(false);
+    }
+
+    public void SetScreenPosition(float xShift)
+    {
+        livesText.transform.position += new Vector3(xShift, 0, 0);
+        scoreText.transform.position += new Vector3(xShift, 0, 0);
+        levelText.transform.position += new Vector3(xShift, 0, 0);
+        levelUpText.transform.position += new Vector3(xShift, 0, 0);
     }
 
     public void ShowLives(string text)

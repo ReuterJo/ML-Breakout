@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
 
     void SetScreenPosition()
     {
+        // Update Game Area GameObject position
         GameObject gameArea = GameObject.Find("GameArea");
 
         float vertExtent = Camera.main.orthographicSize;
@@ -114,16 +115,26 @@ public class GameManager : MonoBehaviour
         
         Vector3 newPosition = gameArea.transform.position;
 
+        // UI shift is hardcoded to match previous scene
         switch (this.screenPosition)
         {
             case ScreenPosition.Left:
                 newPosition = new Vector3(-horzExtent / 2f, newPosition.y, newPosition.z);
+                uiController.SetScreenPosition(0f);
+                levelText.transform.position += new Vector3(0, 0, 0);
+                ballBehavior.velocityText.transform.position += new Vector3(0, 0, 0);
                 break;
             case ScreenPosition.Center:
                 newPosition = new Vector3(0f, newPosition.y, newPosition.z);
+                uiController.SetScreenPosition(482f);
+                levelText.transform.position += new Vector3(482f, 0, 0);
+                ballBehavior.velocityText.transform.position += new Vector3(482f, 0, 0);
                 break;
             case ScreenPosition.Right:
                 newPosition = new Vector3(horzExtent / 2f, newPosition.y, newPosition.z);
+                uiController.SetScreenPosition(964f);
+                levelText.transform.position += new Vector3(964f, 0, 0);
+                ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
                 break;
         }
         gameArea.transform.position = newPosition;
@@ -191,7 +202,7 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowScore("Score " + this.score.ToString());
 
         if (debug) this.levelText.gameObject.SetActive(true);
-        else this.levelText.gameObject.SetActive(true);
+        else this.levelText.gameObject.SetActive(false);
 
         // Begin the level timer
         this.levelStartTime = Time.time;
