@@ -28,10 +28,10 @@ public class UIController : MonoBehaviour
 
     public void SetScreenPosition(float xShift)
     {
-        livesText.transform.position += new Vector3(xShift, 0, 0);
-        scoreText.transform.position += new Vector3(xShift, 0, 0);
-        levelText.transform.position += new Vector3(xShift, 0, 0);
-        levelUpText.transform.position += new Vector3(xShift, 0, 0);
+        this.livesText.transform.position += new Vector3(xShift, 0, 0);
+        this.scoreText.transform.position += new Vector3(xShift, 0, 0);
+        this.levelText.transform.position += new Vector3(xShift, 0, 0);
+        this.levelUpText.transform.position += new Vector3(xShift, 0, 0);
     }
 
     public void ShowLives(string text)
@@ -50,6 +50,7 @@ public class UIController : MonoBehaviour
 
     public async void CountdownTimer(PlayerType playerType)
     {
+        Debug.Log("Countdown Called");
         int counter = 5;
         string player = "Player Game\nStarting In:\n";
         if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";

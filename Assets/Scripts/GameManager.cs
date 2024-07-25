@@ -45,7 +45,6 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelText;
 
     private bool change_level = false;
-    private bool configured = false;
 
     // game variables
     private int score;
@@ -80,7 +79,6 @@ public class GameManager : MonoBehaviour
                     string model_path
                     )
     {
-        Debug.Log("Game Configure Called.");
         this.multi_level = multi_level;
         this.training_mode = training_mode;
         this.debug = debug;
@@ -105,18 +103,16 @@ public class GameManager : MonoBehaviour
                 this.screenPosition = ScreenPosition.Center;
                 break;
         }
-        SetScreenPosition();
-
-        Debug.Log("Game Configured.");
+        this.SetScreenPosition();
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
+        
         // set color of agent to be different than player
         if (this.playerType == PlayerType.Agent)
         {
             SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
             agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
         }
-        this.configured = true;
     }
 
     void SetScreenPosition()
@@ -134,21 +130,21 @@ public class GameManager : MonoBehaviour
         {
             case ScreenPosition.Left:
                 newPosition = new Vector3(-horzExtent / 2f, newPosition.y, newPosition.z);
-                uiController.SetScreenPosition(0f);
-                levelText.transform.position += new Vector3(0, 0, 0);
-                ballBehavior.velocityText.transform.position += new Vector3(0, 0, 0);
+                this.uiController.SetScreenPosition(0f);
+                this.levelText.transform.position += new Vector3(0, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(0, 0, 0);
                 break;
             case ScreenPosition.Center:
                 newPosition = new Vector3(0f, newPosition.y, newPosition.z);
-                uiController.SetScreenPosition(482f);
-                levelText.transform.position += new Vector3(482f, 0, 0);
-                ballBehavior.velocityText.transform.position += new Vector3(482f, 0, 0);
+                this.uiController.SetScreenPosition(482f);
+                this.levelText.transform.position += new Vector3(482f, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(482f, 0, 0);
                 break;
             case ScreenPosition.Right:
                 newPosition = new Vector3(horzExtent / 2f, newPosition.y, newPosition.z);
-                uiController.SetScreenPosition(964f);
-                levelText.transform.position += new Vector3(964f, 0, 0);
-                ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
+                this.uiController.SetScreenPosition(964f);
+                this.levelText.transform.position += new Vector3(964f, 0, 0);
+                this.ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
                 break;
         }
         gameArea.transform.position = newPosition;
@@ -159,19 +155,11 @@ public class GameManager : MonoBehaviour
         return this.screenPosition;
     }
 
-    private IEnumerator WaitForConfiguration()
-    {
-        // Wait until the condition is met
-        Debug.Log("Waiting to start.");
-        yield return new WaitUntil(() => configured);
-    }
-
     /// <summary>
     /// Starts the game
     /// </summary>
     public async void StartGame()
     {
-        if (!this.configured) StartCoroutine(this.WaitForConfiguration());
         // Set the game state to preparing
         State = GameState.Preparing;
         this.level = starting_level;
@@ -205,7 +193,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Begin countdown timer if not in training
-        if (training_mode)
+        if (!training_mode)
         {
         this.uiController.CountdownTimer(this.playerType);
         await Task.Delay(5000);
@@ -381,8 +369,6 @@ public class GameManager : MonoBehaviour
     {
         // increment level
         this.level += 1;
-
-        Debug.Log("The value of the level is " + this.level.ToString());
 
         // Play level up sound
         if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
