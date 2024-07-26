@@ -19,8 +19,8 @@ public class GameGenerator : MonoBehaviour
     private GameObject game2;
     private GameManager gameManager2;
     public Canvas menuCanvas;
-
     public Canvas aboutCanvas;
+    public Canvas leaderboardCanvas;
 
     public void SinglePlayer()
     {
@@ -59,19 +59,21 @@ public class GameGenerator : MonoBehaviour
 
     public void About()
     {
-        this.aboutCanvas.enabled = false;
-        this.menuCanvas.enabled = true;
+        this.aboutCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
     }
 
     public void Leaderboard()
     {
-        SceneManager.LoadScene("Leaderboard");
+        this.leaderboardCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
     }
 
     public void ReturnToMenu()
     {
         this.menuCanvas.enabled = true;
         this.aboutCanvas.enabled = false;
+        this.leaderboardCanvas.enabled = false;
     }
 
     void StartGame()
@@ -86,6 +88,7 @@ public class GameGenerator : MonoBehaviour
     {
         this.menuCanvas.enabled = true;
         this.aboutCanvas.enabled = false;
+        this.leaderboardCanvas.enabled = false;
     }
 
     void SetAgentModel()
