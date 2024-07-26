@@ -77,21 +77,6 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
-    public void DisplayLeaderboard()
-    {
-        leaderboardHeader.gameObject.SetActive(true);
-        leaderboardText.gameObject.SetActive(true);
-        resetButton.gameObject.SetActive(true);
-    }
-
-    public void HideLeaderboard()
-    {
-        leaderboardHeader.gameObject.SetActive(false);
-        leaderboardText.gameObject.SetActive(false);
-        playerNameInput.gameObject.SetActive(false);
-        resetButton.gameObject.SetActive(false);
-    }
-
     public void AddScore(int score)
     {
         if (score > minScore)
@@ -113,7 +98,6 @@ public class LeaderboardManager : MonoBehaviour
             // Save and display leaderboard
             SaveLeaderboard();
         }
-        DisplayLeaderboard();
     }
 
     public void SaveLeaderboard()

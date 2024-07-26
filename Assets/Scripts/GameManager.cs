@@ -263,10 +263,17 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        this.uiController.HidePauseCanvas();
         State = GameState.Playing;
-        Time.timeScale = 1f;
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
+        if (opponentGame != null)
+        {
+            opponentGame.ballBehavior.Unfreeze();
+            opponentGame.agentBehavior.Unfreeze();
+            opponentGame.uiController.HidePauseCanvas();
+        }
+        Time.timeScale = 1f;
     }
 
     /// <summary>
@@ -288,8 +295,11 @@ public class GameManager : MonoBehaviour
             this.score += ballBonus;
             this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
             await Task.Delay(2000);
-            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
-            else this.uiController.ShowLevelUpText("Player Wins!");
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+                else this.uiController.ShowLevelUpText("Player Wins!");
+            }
             await Task.Delay(2000);
             // Check if the leaderboard needs to be updated
             this.gameGenerator.AddToLeaderboard(this.score);
@@ -304,8 +314,11 @@ public class GameManager : MonoBehaviour
             this.score += ballBonus;
             this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
             await Task.Delay(2000);
-            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
-            else this.uiController.ShowLevelUpText("Player Wins!");
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+                else this.uiController.ShowLevelUpText("Player Wins!");
+            }
             await Task.Delay(2000);
             // Check if the leaderboard needs to be updated
             this.gameGenerator.AddToLeaderboard(this.score);
@@ -424,8 +437,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        // Reload scene to restart game
-        this.gameGenerator.Restart();
+        this.StartGame();
     }
 
     public int GetScore()

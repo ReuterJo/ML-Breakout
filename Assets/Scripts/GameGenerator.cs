@@ -7,22 +7,27 @@ using UnityEngine.SceneManagement;
 public class GameGenerator : MonoBehaviour
 {
 
-    public GameObject gamePrefab; // Assign this in the Unity Inspector 
-    public bool multi_level = true;            // use to change single or multi-level game
+    // Game Objects
+    public GameObject gamePrefab;
+    public Canvas menuCanvas;
+    public Canvas aboutCanvas;
+    public Canvas leaderboardCanvas;
+    public LeaderboardManager leaderboardManager;
+
+    // Game Configurations
+    public bool multi_level = true;
     public bool debug = false;
-    public GameMode gameMode;
-    private string model_path = "";
-    public Difficulty difficulty;
+    public GameMode gameMode = GameMode.Single;
+    public Difficulty difficulty = Difficulty.Intermediate;
+    
+    // Game Variables
     private bool training_mode = false;
+    private string model_path = "";
     private GameObject game1;
     private GameManager gameManager1;
     private GameObject game2;
     private GameManager gameManager2;
-    public Canvas menuCanvas;
-    public Canvas aboutCanvas;
-    public Canvas leaderboardCanvas;
 
-    public LeaderboardManager leaderboardManager;
 
     public void SinglePlayer()
     {
@@ -80,8 +85,7 @@ public class GameGenerator : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        this.Reset();
-        this.Start();
+        SceneManager.LoadScene("gameGenerator");
     }
 
     public void StartGame()

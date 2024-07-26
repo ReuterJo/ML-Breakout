@@ -71,6 +71,11 @@ public class UIController : MonoBehaviour
         this.pauseCanvas.enabled = true;
     }
 
+    public void HidePauseCanvas()
+    {
+        this.pauseCanvas.enabled = false;
+    }
+
     public void GameOverText(string text)
     {
         this.levelUpText.text = text;
