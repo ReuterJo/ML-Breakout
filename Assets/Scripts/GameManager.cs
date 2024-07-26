@@ -272,25 +272,35 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Ends the game
     /// </summary>
-    private void EndGame()
+    private async void EndGame()
     {
         // Set the game state to game over
         State = GameState.Gameover;
 
-        if (this.playerType == PlayerType.Player)
+        // TODO: WILL NEED TO REVERSE THESE PLAYERS ONCE BRICKS ARE FIXED
+        if (this.playerType == PlayerType.Agent)
         {
             Debug.Log("Player End Game");
-            this.PauseGame();
+            State = GameState.Paused;
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
             int ballBonus = this.lives - 1 * 1000;
             this.score += ballBonus;
-            this.uiController.ShowScore("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            await Task.Delay(2000);
+            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+            else this.uiController.ShowLevelUpText("Player Wins!");
+            await Task.Delay(2000);
             // Check if the leaderboard needs to be updated
             this.leaderboardManager.AddScore(this.score);
         }
         else
         {
-            Debug.Log("Agent End Game");
-            opponentGame.PauseGame();
+            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Player Wins!");
+            else this.uiController.ShowLevelUpText("Agent Wins!");
+            State = GameState.Paused;
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
         }
 
 
@@ -410,6 +420,11 @@ public class GameManager : MonoBehaviour
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
         this.StartGame();
+    }
+
+    public int GetScore()
+    {
+        return this.score;
     }
 
 }

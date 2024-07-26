@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameGenerator : MonoBehaviour
 {
@@ -16,12 +18,74 @@ public class GameGenerator : MonoBehaviour
     private GameManager gameManager1;
     private GameObject game2;
     private GameManager gameManager2;
+    public Canvas menuCanvas;
+
+    public Canvas aboutCanvas;
+
+    public void SinglePlayer()
+    {
+        this.gameMode = GameMode.Single;
+        this.difficulty = Difficulty.Beginner;
+        this.StartGame();
+    }
+
+    public void Beginner()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Beginner;
+        this.StartGame();
+    }
+
+    public void Intermediate()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Intermediate;
+        this.StartGame();
+    }
+
+    public void Advanced()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Advanced;
+        this.StartGame();
+    }
+
+    public void Training()
+    {
+        this.gameMode = GameMode.Training;
+        this.difficulty = Difficulty.Advanced;
+        this.StartGame();
+    }
+
+    public void About()
+    {
+        this.aboutCanvas.enabled = false;
+        this.menuCanvas.enabled = true;
+    }
+
+    public void Leaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard");
+    }
+
+    public void ReturnToMenu()
+    {
+        this.menuCanvas.enabled = true;
+        this.aboutCanvas.enabled = false;
+    }
+
+    void StartGame()
+    {
+        this.menuCanvas.enabled = false;
+        this.SetAgentModel();
+        this.GenerateGame();
+    }
 
 
     void Start()
     {
-        this.SetAgentModel();
-        this.GenerateGame();
+        this.menuCanvas.enabled = true;
+        this.aboutCanvas.enabled = false;
     }
 
     void SetAgentModel()
