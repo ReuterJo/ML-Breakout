@@ -138,7 +138,8 @@ public class GameGenerator : MonoBehaviour
                                 this.debug, 
                                 PlayerType.Agent, 
                                 null,
-                                this.model_path);
+                                this.model_path,
+                                this);
 
     }
 
@@ -152,7 +153,8 @@ public class GameGenerator : MonoBehaviour
                                 this.debug, 
                                 PlayerType.Single, 
                                 null,
-                                null);
+                                null,
+                                this);
     }
 
     void DoubleGame()
@@ -173,7 +175,8 @@ public class GameGenerator : MonoBehaviour
                                 this.debug, 
                                 PlayerType.Player, 
                                 gameManager2,
-                                null);
+                                null,
+                                this);
 
         // Initialize the agent gameManager settings
         this.gameManager2.Configure(this.multi_level, 
@@ -181,6 +184,7 @@ public class GameGenerator : MonoBehaviour
                         this.debug, 
                         PlayerType.Agent, 
                         gameManager1,
-                        this.model_path);
+                        this.model_path,
+                        this);
     }
 }

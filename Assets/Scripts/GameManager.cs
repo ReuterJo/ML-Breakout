@@ -43,8 +43,9 @@ public class GameManager : MonoBehaviour
     public bool debug = false;
     public PlayerType playerType;
     public TextMeshProUGUI levelText;
-
     private bool change_level = false;
+
+    private GameGenerator gameGenerator;
 
     // game variables
     private int score;
@@ -76,7 +77,8 @@ public class GameManager : MonoBehaviour
                     bool debug, 
                     PlayerType playerType, 
                     GameManager opponentGame,
-                    string model_path
+                    string model_path,
+                    GameGenerator gameGenerator
                     )
     {
         this.multi_level = multi_level;
@@ -85,6 +87,7 @@ public class GameManager : MonoBehaviour
         this.playerType = playerType;
         this.thisGame = this;
         this.opponentGame = opponentGame;
+        this.gameGenerator = gameGenerator;
 
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
@@ -259,6 +262,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
+        this.uiController.ShowPauseCanvas();
     }
 
     private void ResumeGame()
@@ -425,6 +429,12 @@ public class GameManager : MonoBehaviour
     public int GetScore()
     {
         return this.score;
+    }
+
+    public void MainMenu()
+    {
+        this.PauseGame();
+        SceneManager.LoadScene("GameManager");
     }
 
 }
