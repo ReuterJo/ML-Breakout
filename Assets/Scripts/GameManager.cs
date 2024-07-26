@@ -437,7 +437,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        this.StartGame();
+        this.uiController.HidePauseCanvas();
+        this.gameGenerator.Restart();
     }
 
     public int GetScore()
