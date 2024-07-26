@@ -42,6 +42,8 @@ public class GameGenerator : MonoBehaviour
 
     void GenerateGame()
     {
+        this.game1 = Instantiate(gamePrefab);
+        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
         switch (this.gameMode)
         {
             case GameMode.Training:
@@ -61,9 +63,9 @@ public class GameGenerator : MonoBehaviour
 
     void TrainingGame()
     {
+        this.game1.name = "AgentGame";
+        this.gameManager1.name = "AgentManager";
         this.training_mode = true;
-        this.game1 = Instantiate(gamePrefab);
-        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
         this.gameManager1.Configure(this.multi_level, 
                                 this.training_mode, 
                                 this.debug, 
@@ -76,8 +78,8 @@ public class GameGenerator : MonoBehaviour
 
     void SingleGame()
     {
-        this.game1 = Instantiate(gamePrefab);
-        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
+        this.game1.name = "PlayerGame";
+        this.gameManager1.name = "PlayerManager";
         this.gameManager1.Configure(this.multi_level, 
                                 this.training_mode, 
                                 this.debug, 
@@ -88,13 +90,15 @@ public class GameGenerator : MonoBehaviour
 
     void DoubleGame()
     {
-        // Create the player GameManager instance
-        this.game1 = Instantiate(gamePrefab);
-        gameManager1 = this.game1.GetComponentInChildren<GameManager>();
+        this.game1.name = "PlayerGame";
+        this.gameManager1.name = "PlayerManager";
 
         // Create the agent GameManager instance
         this.game2 = Instantiate(gamePrefab);
+        this.game2.name = "AgentGame";
         gameManager2 = this.game2.GetComponentInChildren<GameManager>();
+        this.gameManager2.name = "AgentManager";
+
 
         // Initialize the player gameManager settings
         this.gameManager1.Configure(this.multi_level, 

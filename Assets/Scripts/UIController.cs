@@ -50,7 +50,6 @@ public class UIController : MonoBehaviour
 
     public async void CountdownTimer(PlayerType playerType)
     {
-        Debug.Log("Countdown Called");
         int counter = 5;
         string player = "Player Game\nStarting In:\n";
         if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";

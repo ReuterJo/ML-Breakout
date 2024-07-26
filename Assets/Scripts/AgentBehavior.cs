@@ -70,7 +70,6 @@ public class AgentBehavior : Agent
 
     public void Configure(string model_path)
     {
-        Debug.Log("Agent Configuration started with: " + model_path);
         this.behaviorParameters = GetComponent<BehaviorParameters>();
         if(this.gameManager.playerType == PlayerType.Agent)
         {

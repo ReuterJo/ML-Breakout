@@ -174,6 +174,8 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.uiController.ShowScore("Score " + this.score.ToString());
 
+        ballBehavior.gameObject.SetActive(false);
+
         // Generate level
         if (!multi_level)
         {
@@ -197,9 +199,7 @@ public class GameManager : MonoBehaviour
             this.uiController.ShowLevel("Level " + level.ToString());
         }
 
-        // Reset paddle ball
-        this.ballBehavior.Reset();
-        this.agentBehavior.Reset();
+
 
         // Begin countdown timer if not in training
         if (!training_mode)
@@ -213,6 +213,11 @@ public class GameManager : MonoBehaviour
 
         // Begin the level timer
         this.levelStartTime = Time.time;
+
+        // Reset paddle ball
+        this.ballBehavior.Reset();
+        this.agentBehavior.Reset();
+        ballBehavior.gameObject.SetActive(true);
 
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();
@@ -272,20 +277,20 @@ public class GameManager : MonoBehaviour
         // Set the game state to game over
         State = GameState.Gameover;
 
-        // Deconstruct level
-
-        // Freeze player and ball
-        this.ballBehavior.Freeze();
-        this.agentBehavior.Freeze();
-
-        if (playerType == PlayerType.Agent)
+        if (this.playerType == PlayerType.Player)
         {
-            this.uiController.ShowLevelUpText("Game Ended");
+            Debug.Log("Player End Game");
+            this.PauseGame();
+            int ballBonus = this.lives - 1 * 1000;
+            this.score += ballBonus;
+            this.uiController.ShowScore("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            // Check if the leaderboard needs to be updated
+            this.leaderboardManager.AddScore(this.score);
         }
         else
         {
-            // Check if the leaderboard needs to be updated
-            this.leaderboardManager.AddScore(this.score);
+            Debug.Log("Agent End Game");
+            opponentGame.PauseGame();
         }
 
 
