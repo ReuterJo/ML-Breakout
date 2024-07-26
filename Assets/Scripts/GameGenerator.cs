@@ -22,6 +22,8 @@ public class GameGenerator : MonoBehaviour
     public Canvas aboutCanvas;
     public Canvas leaderboardCanvas;
 
+    public LeaderboardManager leaderboardManager;
+
     public void SinglePlayer()
     {
         this.gameMode = GameMode.Single;
@@ -69,14 +71,20 @@ public class GameGenerator : MonoBehaviour
         this.menuCanvas.enabled = false;
     }
 
-    public void ReturnToMenu()
+    public void AddToLeaderboard(int score)
     {
-        this.menuCanvas.enabled = true;
-        this.aboutCanvas.enabled = false;
-        this.leaderboardCanvas.enabled = false;
+        this.leaderboardManager.AddScore(score);
+        this.leaderboardCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
     }
 
-    void StartGame()
+    public void ReturnToMenu()
+    {
+        this.Reset();
+        this.Start();
+    }
+
+    public void StartGame()
     {
         this.menuCanvas.enabled = false;
         this.SetAgentModel();
@@ -84,11 +92,23 @@ public class GameGenerator : MonoBehaviour
     }
 
 
-    void Start()
+    public void Start()
     {
         this.menuCanvas.enabled = true;
         this.aboutCanvas.enabled = false;
         this.leaderboardCanvas.enabled = false;
+    }
+
+    public void Reset()
+    {
+        if (game1 != null) Destroy(game1);
+        if (game2 != null) Destroy(game2);
+    }
+
+    public void Restart()
+    {
+        this.Reset();
+        this.StartGame();
     }
 
     void SetAgentModel()

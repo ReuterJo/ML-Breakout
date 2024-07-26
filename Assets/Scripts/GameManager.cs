@@ -24,9 +24,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
 
-    [Tooltip("Sets the LeaderboardManager script")]
-    public LeaderboardManager leaderboardManager;
-
     [Tooltip("Sets the game manager object for this game")]
     public GameManager thisGame;
 
@@ -45,7 +42,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI levelText;
     private bool change_level = false;
 
-    private GameGenerator gameGenerator;
+    public GameGenerator gameGenerator;
 
     // game variables
     private int score;
@@ -171,7 +168,6 @@ public class GameManager : MonoBehaviour
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
-        this.leaderboardManager.HideLeaderboard();
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
@@ -265,7 +261,7 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowPauseCanvas();
     }
 
-    private void ResumeGame()
+    public void ResumeGame()
     {
         State = GameState.Playing;
         Time.timeScale = 1f;
@@ -281,7 +277,7 @@ public class GameManager : MonoBehaviour
         // Set the game state to game over
         State = GameState.Gameover;
 
-        // TODO: WILL NEED TO REVERSE THESE PLAYERS ONCE BRICKS ARE FIXED
+        // TODO: WILL NEED TO FIX THESE ONCE BRICKS ARE FIXED - USED FOR BEHAVIOR TESTING
         if (this.playerType == PlayerType.Agent)
         {
             Debug.Log("Player End Game");
@@ -296,15 +292,23 @@ public class GameManager : MonoBehaviour
             else this.uiController.ShowLevelUpText("Player Wins!");
             await Task.Delay(2000);
             // Check if the leaderboard needs to be updated
-            this.leaderboardManager.AddScore(this.score);
+            this.gameGenerator.AddToLeaderboard(this.score);
         }
         else
         {
-            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Player Wins!");
-            else this.uiController.ShowLevelUpText("Agent Wins!");
+            Debug.Log("Agent End Game");
             State = GameState.Paused;
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
+            int ballBonus = this.lives - 1 * 1000;
+            this.score += ballBonus;
+            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            await Task.Delay(2000);
+            if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+            else this.uiController.ShowLevelUpText("Player Wins!");
+            await Task.Delay(2000);
+            // Check if the leaderboard needs to be updated
+            this.gameGenerator.AddToLeaderboard(this.score);
         }
 
 
@@ -421,9 +425,7 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         // Reload scene to restart game
-        string sceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(sceneName);
-        this.StartGame();
+        this.gameGenerator.Restart();
     }
 
     public int GetScore()
@@ -433,8 +435,7 @@ public class GameManager : MonoBehaviour
 
     public void MainMenu()
     {
-        this.PauseGame();
-        SceneManager.LoadScene("GameManager");
+        this.gameGenerator.ReturnToMenu();
     }
 
 }

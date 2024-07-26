@@ -934,6 +934,7 @@ MonoBehaviour:
   menuCanvas: {fileID: 1680094487}
   aboutCanvas: {fileID: 43340432}
   leaderboardCanvas: {fileID: 2094298722}
+  leaderboardManager: {fileID: 2094298724}
 --- !u!4 &489430280
 Transform:
   m_ObjectHideFlags: 0
