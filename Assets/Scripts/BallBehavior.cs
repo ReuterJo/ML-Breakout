@@ -27,6 +27,7 @@ public class BallBehavior : MonoBehaviour
     private Rigidbody2D ball;
     private bool frozen = true;
     private AudioSource ballAudio;
+    private Vector2 previousVelocity;
 
 
     void Start()
@@ -35,7 +36,6 @@ public class BallBehavior : MonoBehaviour
         this.ball = GetComponent<Rigidbody2D>();
         this.ballAudio = GetComponent<AudioSource>();
         velocityText.text = "";
-        this.Reset();
         if (gameManager.debug) velocityText.gameObject.SetActive(true);
         else velocityText.gameObject.SetActive(false);
     }
@@ -46,7 +46,6 @@ public class BallBehavior : MonoBehaviour
         // Don't update the ball if it is frozen
         if (this.frozen)
         {
-            this.ball.velocity = Vector2.zero;
             return;
         }    
         // Reset the ball position if it has fallen below the game Y axis
@@ -112,6 +111,8 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Freeze()
     {
+        this.previousVelocity = this.ball.velocity;
+        this.ball.velocity = Vector2.zero;
         this.frozen = true;
     }
 
@@ -120,6 +121,7 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Unfreeze()
     {
+        this.ball.velocity = this.previousVelocity;
         this.frozen = false;
     }
 
@@ -129,8 +131,8 @@ public class BallBehavior : MonoBehaviour
         this.ball = GetComponent<Rigidbody2D>();
         float random = UnityEngine.Random.Range(0f, 1f);  // stores randomly generated numbers  
         int side = Mathf.RoundToInt(random);  // stores a randomly generated 0 or 1
-        (float x, float y) leftSide = (0f, 0f);
-        (float x, float y) rightSide = (0f, 0f);
+        Vector2 leftSide;
+        Vector2 rightSide;
         ScreenPosition screenPosition = gameManager.GetScreenPosition();
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
@@ -139,35 +141,34 @@ public class BallBehavior : MonoBehaviour
         // Centered Game
         if (screenPosition == ScreenPosition.Center)
         {
-            leftSide = (-horzExtent/2f + 1f, -1f);
-            rightSide = (1f, horzExtent/2f - 1f);
+            leftSide = new Vector2(-horzExtent/2f + 1f, -1f);
+            rightSide = new Vector2(1f, horzExtent/2f - 1f);
         }
         // Left Game
         else if (screenPosition == ScreenPosition.Left)
         {
-            leftSide = (-horzExtent + 1f, -horzExtent/2f - 1f);
-            rightSide = (-horzExtent/2f + 1f, -1f);
+            leftSide = new Vector2(-horzExtent + 1f, -horzExtent/2f - 1f);
+            rightSide = new Vector2(-horzExtent/2f + 1f, -1f);
         }
         // Right Game
         else
         {
-            leftSide = (1f, horzExtent/2f - 1f);
-            rightSide = (horzExtent/2f + 1f, horzExtent - 1f);
+            leftSide = new Vector2(1f, horzExtent/2f - 1f);
+            rightSide = new Vector2(horzExtent/2f + 1f, horzExtent - 1f);
         }
         if (side == 0)
         {
             random = UnityEngine.Random.Range(leftSide.x, leftSide.y);
             // Set the ball velocity to 1/2 the maxVelocity split in 2 axis
-            this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2);
+            this.ball.velocity = new Vector2(1f, -1f) * (this.maxVelocity / 2f);
         }
         else
         {
             random = UnityEngine.Random.Range(rightSide.x, rightSide.y);
-            this.ball.velocity = new Vector2(-1f, -1f) * (this.maxVelocity / 2);
+            this.ball.velocity = new Vector2(-1f, -1f) * (this.maxVelocity / 2f);
         }
         // Start the ball position from the randomly generated settings above
         this.transform.position = new Vector2(random, 0f);
-        
     }
 
     public void ChangeBallVelocity()

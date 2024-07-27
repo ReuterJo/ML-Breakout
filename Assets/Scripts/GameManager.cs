@@ -142,6 +142,14 @@ public class GameManager : MonoBehaviour
         // Set the game state to preparing
         State = GameState.Preparing;
 
+        // Reset paddle ball
+        this.ballBehavior.Reset();
+        this.agentBehavior.Reset();
+
+        // Freeze all game assets
+        ballBehavior.Freeze();
+        agentBehavior.Freeze();
+
         // Determine screen position and set it
         switch (this.playerType)
         {
@@ -174,8 +182,6 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.uiController.ShowScore("Score " + this.score.ToString());
 
-        ballBehavior.gameObject.SetActive(false);
-
         // Generate level
         if (!multi_level)
         {
@@ -199,8 +205,6 @@ public class GameManager : MonoBehaviour
             this.uiController.ShowLevel("Level " + level.ToString());
         }
 
-
-
         // Begin countdown timer if not in training
         if (!training_mode)
         {
@@ -213,11 +217,6 @@ public class GameManager : MonoBehaviour
 
         // Begin the level timer
         this.levelStartTime = Time.time;
-
-        // Reset paddle ball
-        this.ballBehavior.Reset();
-        this.agentBehavior.Reset();
-        ballBehavior.gameObject.SetActive(true);
 
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();
