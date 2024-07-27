@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
         this.lives--;
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.agentBehavior.BallLost();
-        if(this.playerType == PlayerType.Player) this.lifeLostAudio.Play(0);
+        if(this.playerType == PlayerType.Player || this.playerType == PlayerType.Single) this.lifeLostAudio.Play(0);
     }
 
     private void PauseGame()
@@ -408,7 +408,8 @@ public class GameManager : MonoBehaviour
         this.level += 1;
 
         // Play level up sound
-        if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
+        if(this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
+            if(this.level > starting_level) this.levelUpAudio.Play(0);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
