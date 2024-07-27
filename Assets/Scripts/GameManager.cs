@@ -156,6 +156,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
         this.SetScreenPosition();
+        this.agentBehavior.SetScreenPosition();
         
         // set color of agent to be different than player
         if (this.playerType == PlayerType.Agent)

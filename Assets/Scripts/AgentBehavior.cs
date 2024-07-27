@@ -42,7 +42,12 @@ public class AgentBehavior : Agent
 
     public void Start()
     {   
-        this.screenPosition = gameManager.GetScreenPosition();
+        // Not used        
+    }
+
+    public void SetScreenPosition()
+    {
+        this.screenPosition = this.gameManager.screenPosition;        
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
         // Left game
@@ -50,21 +55,21 @@ public class AgentBehavior : Agent
         {
             this.minX = -horzExtent;
             this.maxX = 0f;
-            transform.position = new Vector2(-horzExtent / 2f, -4f);
+            this.transform.position = new Vector2(-horzExtent / 2f, -4f);
         }
         // Right game
         else if (this.screenPosition == ScreenPosition.Right)
         {
             this.minX = 0f;
             this.maxX = horzExtent;
-            transform.position = new Vector2(horzExtent / 2f, -4f);
+            this.transform.position = new Vector2(horzExtent / 2f, -4f);
         }
         // Centered game
         else
         {
             this.minX = -horzExtent / 2f;
             this.maxX = horzExtent / 2f;
-            transform.position = new Vector2(0f, -4f);
+            this.transform.position = new Vector2(0f, -4f);
         }
     }
 
