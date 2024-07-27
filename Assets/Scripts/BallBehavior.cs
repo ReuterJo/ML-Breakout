@@ -139,8 +139,8 @@ public class BallBehavior : MonoBehaviour
         // Centered Game
         if (screenPosition == ScreenPosition.Center)
         {
-            leftSide = (-horzExtent/2f + 1f, -horzExtent/2f + 1f);
-            rightSide = (horzExtent/2f - 1f, horzExtent/2f - 1f);
+            leftSide = (-horzExtent/2f + 1f, -1f);
+            rightSide = (1f, horzExtent/2f - 1f);
         }
         // Left Game
         else if (screenPosition == ScreenPosition.Left)
@@ -152,7 +152,7 @@ public class BallBehavior : MonoBehaviour
         else
         {
             leftSide = (1f, horzExtent/2f - 1f);
-            rightSide = (horzExtent + 1f, horzExtent - 1f);
+            rightSide = (horzExtent/2f + 1f, horzExtent - 1f);
         }
         if (side == 0)
         {
