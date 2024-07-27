@@ -15,12 +15,12 @@ public class GameGenerator : MonoBehaviour
     public LeaderboardManager leaderboardManager;
 
     // Game Configurations
-    public bool multi_level = true;
     public bool debug = false;
     public GameMode gameMode = GameMode.Single;
     public Difficulty difficulty = Difficulty.Intermediate;
     
     // Game Variables
+    private bool multi_level = true;
     private bool training_mode = false;
     private string model_path = "";
     private GameObject game1;
