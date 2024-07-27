@@ -137,7 +137,6 @@ public class BallBehavior : MonoBehaviour
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
 
-        Debug.Log("HorzExtent is " + horzExtent.ToString());
         // Centered Game
         if (screenPosition == ScreenPosition.Center)
         {

@@ -97,12 +97,15 @@ public class GameManager : MonoBehaviour
     void SetScreenPosition()
     {
         // Update Game Area GameObject position
-        GameObject gameArea = GameObject.Find("GameArea");
+        // using the incorrect logic here
+
+
+        Transform gameAreaTransform = this.transform.Find("GameArea");
 
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
         
-        Vector3 newPosition = gameArea.transform.position;
+        Vector3 newPosition = gameAreaTransform.position;
 
         // UI shift is hardcoded to match previous scene
         switch (this.screenPosition)
@@ -126,7 +129,7 @@ public class GameManager : MonoBehaviour
                 this.ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
                 break;
         }
-        gameArea.transform.position = newPosition;
+        gameAreaTransform.position = newPosition;
     }
 
     public ScreenPosition GetScreenPosition()
