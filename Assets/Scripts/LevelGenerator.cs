@@ -34,19 +34,16 @@ public class LevelGenerator : MonoBehaviour
         {
             this.DeconstructLevel();
             this.GenerateLevelThree();
-            return getBrickCount();
         }
         else if (level == 4) 
         {
             this.DeconstructLevel();
             this.GenerateLevelFour();
-            return getBrickCount();
         }
         else if (level == 5) 
         {
             this.DeconstructLevel();
             this.GenerateLevelFive();
-            return getBrickCount();
         }
         return this.brickList.Count;
     }

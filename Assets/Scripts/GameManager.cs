@@ -211,8 +211,8 @@ public class GameManager : MonoBehaviour
         // Begin countdown timer if not in training
         if (!training_mode)
         {
-        this.uiController.CountdownTimer(this.playerType);
-        await Task.Delay(5000);
+            this.uiController.CountdownTimer(this.playerType);
+            await Task.Delay(5000);
         }
 
         if (debug) this.levelText.gameObject.SetActive(true);
@@ -336,6 +336,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        // Do nothing if the game is preparing
+        if (State == GameState.Preparing) return;
+
         // Check if the Escape key is pressed to pause/unpause game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
