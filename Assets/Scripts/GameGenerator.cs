@@ -133,8 +133,11 @@ public class GameGenerator : MonoBehaviour
 
     void GenerateGame()
     {
+        Debug.Log("Before the game gets created");
         this.game1 = Instantiate(gamePrefab);
+        Debug.Log("Right after the game gets created");
         this.gameManager1 = game1.GetComponentInChildren<GameManager>();
+        Debug.Log("The game mode is " + this.gameMode.ToString());
         switch (this.gameMode)
         {
             case GameMode.Training:
@@ -164,7 +167,6 @@ public class GameGenerator : MonoBehaviour
                                 null,
                                 this.model_path,
                                 this);
-
     }
 
 
@@ -172,6 +174,7 @@ public class GameGenerator : MonoBehaviour
     {
         this.game1.name = "PlayerGame";
         this.gameManager1.name = "PlayerManager";
+        Debug.Log("About to configure");
         this.gameManager1.Configure(this.multi_level, 
                                 this.training_mode, 
                                 this.debug, 
@@ -179,6 +182,7 @@ public class GameGenerator : MonoBehaviour
                                 null,
                                 null,
                                 this);
+        Debug.Log("Done configuring");
     }
 
     void DoubleGame()

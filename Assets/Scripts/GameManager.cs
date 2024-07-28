@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using System.Runtime.CompilerServices;
 
 public class GameManager : MonoBehaviour
 {
@@ -86,12 +87,38 @@ public class GameManager : MonoBehaviour
         this.opponentGame = opponentGame;
         this.gameGenerator = gameGenerator;
 
+        Debug.Log("Configure of game manager is called!");
+
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
 
         // Configure audio
         this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
         this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
+
+        Debug.Log("The Player Type is " + this.playerType.ToString());
+        // Determine screen position and set it
+        switch (this.playerType)
+        {
+            case PlayerType.Agent:
+                this.screenPosition = ScreenPosition.Right;
+                break;
+            case PlayerType.Player:
+                this.screenPosition = ScreenPosition.Left;
+                break;
+            case PlayerType.Single:
+                this.screenPosition = ScreenPosition.Center;
+                break;
+        }
+        this.SetScreenPosition();
+        this.agentBehavior.SetScreenPosition();
+        
+        // set color of agent to be different than player
+        if (this.playerType == PlayerType.Agent)
+        {
+            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
+            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
+        }
     }
 
     void SetScreenPosition()
@@ -142,6 +169,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public async void StartGame()
     {
+        Debug.Log("StartGame in the game manager has been called!");
         // Set the game state to preparing
         State = GameState.Preparing;
 
@@ -153,33 +181,12 @@ public class GameManager : MonoBehaviour
         ballBehavior.Freeze();
         agentBehavior.Freeze();
 
-        // Determine screen position and set it
-        switch (this.playerType)
-        {
-            case PlayerType.Agent:
-                this.screenPosition = ScreenPosition.Right;
-                break;
-            case PlayerType.Player:
-                this.screenPosition = ScreenPosition.Left;
-                break;
-            case PlayerType.Single:
-                this.screenPosition = ScreenPosition.Center;
-                break;
-        }
-        this.SetScreenPosition();
-        this.agentBehavior.SetScreenPosition();
-        
-        // set color of agent to be different than player
-        if (this.playerType == PlayerType.Agent)
-        {
-            SpriteRenderer agentSpriteRender = this.agentBehavior.GetComponent<SpriteRenderer>();
-            agentSpriteRender.color = new Color(243f/255f, 83f/255f, 132f/255f, 255f/255f);
-        }
-
         this.level = starting_level;
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
+
+        Debug.Log("The level is " + this.level.ToString());
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
@@ -221,12 +228,14 @@ public class GameManager : MonoBehaviour
         // Begin the level timer
         this.levelStartTime = Time.time;
 
+        Debug.Log("Unfreezing ball and paddle");
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
 
         // Set the game state to playing
         State = GameState.Playing;
+        Time.timeScale = 1f;
     }
 
     private void Awake()

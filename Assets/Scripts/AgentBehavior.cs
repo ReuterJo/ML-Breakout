@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using System.Runtime.InteropServices;
 using Unity.MLAgents.Policies;
 using Unity.Barracuda;
+using System.Threading.Tasks;
 
 public class AgentBehavior : Agent
 {
@@ -174,8 +175,10 @@ public class AgentBehavior : Agent
     /// <summary>
     /// Define what happens at the beginning of a training episode
     /// </summary>
-    public override void OnEpisodeBegin()
+    public override async void OnEpisodeBegin()
     {
+        Debug.Log("The Agent has called StartGame");
+        await Task.Delay(100);
         this.gameManager.StartGame();
     }
 
