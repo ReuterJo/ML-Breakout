@@ -1,27 +1,118 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameGenerator : MonoBehaviour
 {
 
-    public GameObject gamePrefab; // Assign this in the Unity Inspector 
-    public bool multi_level = true;            // use to change single or multi-level game
+    // Game Objects
+    public GameObject gamePrefab;
+    public Canvas menuCanvas;
+    public Canvas aboutCanvas;
+    public Canvas leaderboardCanvas;
+    public LeaderboardManager leaderboardManager;
+
+    // Game Configurations
     public bool debug = false;
-    public GameMode gameMode;
-    private string model_path = "";
-    public Difficulty difficulty;
+    public GameMode gameMode = GameMode.Single;
+    public Difficulty difficulty = Difficulty.Intermediate;
+    
+    // Game Variables
+    private bool multi_level = true;
     private bool training_mode = false;
+    private string model_path = "";
     private GameObject game1;
     private GameManager gameManager1;
     private GameObject game2;
     private GameManager gameManager2;
 
 
-    void Start()
+    public void SinglePlayer()
     {
+        this.gameMode = GameMode.Single;
+        this.difficulty = Difficulty.Beginner;
+        this.StartGame();
+    }
+
+    public void Beginner()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Beginner;
+        this.StartGame();
+    }
+
+    public void Intermediate()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Intermediate;
+        this.StartGame();
+    }
+
+    public void Advanced()
+    {
+        this.gameMode = GameMode.Double;
+        this.difficulty = Difficulty.Advanced;
+        this.StartGame();
+    }
+
+    public void Training()
+    {
+        this.gameMode = GameMode.Training;
+        this.difficulty = Difficulty.Advanced;
+        this.StartGame();
+    }
+
+    public void About()
+    {
+        this.aboutCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
+    }
+
+    public void Leaderboard()
+    {
+        this.leaderboardCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
+    }
+
+    public void AddToLeaderboard(int score)
+    {
+        this.leaderboardManager.AddScore(score);
+        this.leaderboardCanvas.enabled = true;
+        this.menuCanvas.enabled = false;
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("gameGenerator");
+    }
+
+    public void StartGame()
+    {
+        this.menuCanvas.enabled = false;
         this.SetAgentModel();
         this.GenerateGame();
+    }
+
+
+    public void Start()
+    {
+        this.menuCanvas.enabled = true;
+        this.aboutCanvas.enabled = false;
+        this.leaderboardCanvas.enabled = false;
+    }
+
+    public void Reset()
+    {
+        if (game1 != null) Destroy(game1);
+        if (game2 != null) Destroy(game2);
+    }
+
+    public void Restart()
+    {
+        this.Reset();
+        this.StartGame();
     }
 
     void SetAgentModel()
@@ -42,6 +133,11 @@ public class GameGenerator : MonoBehaviour
 
     void GenerateGame()
     {
+        Debug.Log("Before the game gets created");
+        this.game1 = Instantiate(gamePrefab);
+        Debug.Log("Right after the game gets created");
+        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
+        Debug.Log("The game mode is " + this.gameMode.ToString());
         switch (this.gameMode)
         {
             case GameMode.Training:
@@ -61,40 +157,45 @@ public class GameGenerator : MonoBehaviour
 
     void TrainingGame()
     {
+        this.game1.name = "AgentGame";
+        this.gameManager1.name = "AgentManager";
         this.training_mode = true;
-        this.game1 = Instantiate(gamePrefab);
-        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
         this.gameManager1.Configure(this.multi_level, 
                                 this.training_mode, 
                                 this.debug, 
                                 PlayerType.Agent, 
                                 null,
-                                this.model_path);
-
+                                this.model_path,
+                                this);
     }
 
 
     void SingleGame()
     {
-        this.game1 = Instantiate(gamePrefab);
-        this.gameManager1 = game1.GetComponentInChildren<GameManager>();
+        this.game1.name = "PlayerGame";
+        this.gameManager1.name = "PlayerManager";
+        Debug.Log("About to configure");
         this.gameManager1.Configure(this.multi_level, 
                                 this.training_mode, 
                                 this.debug, 
                                 PlayerType.Single, 
                                 null,
-                                null);
+                                null,
+                                this);
+        Debug.Log("Done configuring");
     }
 
     void DoubleGame()
     {
-        // Create the player GameManager instance
-        this.game1 = Instantiate(gamePrefab);
-        gameManager1 = this.game1.GetComponentInChildren<GameManager>();
+        this.game1.name = "PlayerGame";
+        this.gameManager1.name = "PlayerManager";
 
         // Create the agent GameManager instance
         this.game2 = Instantiate(gamePrefab);
+        this.game2.name = "AgentGame";
         gameManager2 = this.game2.GetComponentInChildren<GameManager>();
+        this.gameManager2.name = "AgentManager";
+
 
         // Initialize the player gameManager settings
         this.gameManager1.Configure(this.multi_level, 
@@ -102,7 +203,8 @@ public class GameGenerator : MonoBehaviour
                                 this.debug, 
                                 PlayerType.Player, 
                                 gameManager2,
-                                null);
+                                null,
+                                this);
 
         // Initialize the agent gameManager settings
         this.gameManager2.Configure(this.multi_level, 
@@ -110,6 +212,7 @@ public class GameGenerator : MonoBehaviour
                         this.debug, 
                         PlayerType.Agent, 
                         gameManager1,
-                        this.model_path);
+                        this.model_path,
+                        this);
     }
 }

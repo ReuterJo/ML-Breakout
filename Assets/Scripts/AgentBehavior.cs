@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using System.Runtime.InteropServices;
 using Unity.MLAgents.Policies;
 using Unity.Barracuda;
+using System.Threading.Tasks;
 
 public class AgentBehavior : Agent
 {
@@ -42,35 +43,40 @@ public class AgentBehavior : Agent
 
     public void Start()
     {   
-        this.screenPosition = gameManager.GetScreenPosition();
+        // Not used        
+    }
+
+    public void SetScreenPosition()
+    {
+        this.screenPosition = this.gameManager.screenPosition;        
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
+        Debug.Log("The screen position is " + this.screenPosition.ToString());
         // Left game
         if (this.screenPosition == ScreenPosition.Left)
         {
             this.minX = -horzExtent;
             this.maxX = 0f;
-            transform.position = new Vector2(-horzExtent / 2f, -4f);
+            //this.transform.position = new Vector2(-horzExtent / 2f, -4f);
         }
         // Right game
         else if (this.screenPosition == ScreenPosition.Right)
         {
             this.minX = 0f;
             this.maxX = horzExtent;
-            transform.position = new Vector2(horzExtent / 2f, -4f);
+            //this.transform.position = new Vector2(horzExtent / 2f, -4f);
         }
         // Centered game
         else
         {
             this.minX = -horzExtent / 2f;
             this.maxX = horzExtent / 2f;
-            transform.position = new Vector2(0f, -4f);
+            //this.transform.position = new Vector2(0f, -4f);
         }
     }
 
     public void Configure(string model_path)
     {
-        Debug.Log("Agent Configuration started with: " + model_path);
         this.behaviorParameters = GetComponent<BehaviorParameters>();
         if(this.gameManager.playerType == PlayerType.Agent)
         {
@@ -169,8 +175,10 @@ public class AgentBehavior : Agent
     /// <summary>
     /// Define what happens at the beginning of a training episode
     /// </summary>
-    public override void OnEpisodeBegin()
+    public override async void OnEpisodeBegin()
     {
+        Debug.Log("The Agent has called StartGame");
+        await Task.Delay(100);
         this.gameManager.StartGame();
     }
 

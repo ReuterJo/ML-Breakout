@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using System.Runtime.CompilerServices;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,9 +24,6 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
-
-    [Tooltip("Sets the LeaderboardManager script")]
-    public LeaderboardManager leaderboardManager;
 
     [Tooltip("Sets the game manager object for this game")]
     public GameManager thisGame;
@@ -43,8 +41,9 @@ public class GameManager : MonoBehaviour
     public bool debug = false;
     public PlayerType playerType;
     public TextMeshProUGUI levelText;
-
     private bool change_level = false;
+
+    public GameGenerator gameGenerator;
 
     // game variables
     private int score;
@@ -76,7 +75,8 @@ public class GameManager : MonoBehaviour
                     bool debug, 
                     PlayerType playerType, 
                     GameManager opponentGame,
-                    string model_path
+                    string model_path,
+                    GameGenerator gameGenerator
                     )
     {
         this.multi_level = multi_level;
@@ -85,11 +85,18 @@ public class GameManager : MonoBehaviour
         this.playerType = playerType;
         this.thisGame = this;
         this.opponentGame = opponentGame;
+        this.gameGenerator = gameGenerator;
+
+        Debug.Log("Configure of game manager is called!");
+
+        // call to load correct agent model
+        this.agentBehavior.Configure(model_path);
 
         // Configure audio
         this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
         this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
 
+        Debug.Log("The Player Type is " + this.playerType.ToString());
         // Determine screen position and set it
         switch (this.playerType)
         {
@@ -104,8 +111,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
         this.SetScreenPosition();
-        // call to load correct agent model
-        this.agentBehavior.Configure(model_path);
+        this.agentBehavior.SetScreenPosition();
         
         // set color of agent to be different than player
         if (this.playerType == PlayerType.Agent)
@@ -118,12 +124,15 @@ public class GameManager : MonoBehaviour
     void SetScreenPosition()
     {
         // Update Game Area GameObject position
-        GameObject gameArea = GameObject.Find("GameArea");
+        // using the incorrect logic here
+
+
+        Transform gameAreaTransform = this.transform.Find("GameArea");
 
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
         
-        Vector3 newPosition = gameArea.transform.position;
+        Vector3 newPosition = gameAreaTransform.position;
 
         // UI shift is hardcoded to match previous scene
         switch (this.screenPosition)
@@ -147,7 +156,7 @@ public class GameManager : MonoBehaviour
                 this.ballBehavior.velocityText.transform.position += new Vector3(964f, 0, 0);
                 break;
         }
-        gameArea.transform.position = newPosition;
+        gameAreaTransform.position = newPosition;
     }
 
     public ScreenPosition GetScreenPosition()
@@ -160,16 +169,30 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public async void StartGame()
     {
+        Debug.Log("StartGame in the game manager has been called!");
         // Set the game state to preparing
         State = GameState.Preparing;
+
+        // Reset paddle ball
+        this.ballBehavior.Reset();
+        this.agentBehavior.Reset();
+
+        // Freeze all game assets
+        ballBehavior.Freeze();
+        agentBehavior.Freeze();
+
         this.level = starting_level;
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
-        this.leaderboardManager.HideLeaderboard();
+
+        Debug.Log("The level is " + this.level.ToString());
+
+        // Update lives and score
+        this.uiController.ShowLives(this.lives.ToString() + " Lives");
+        this.uiController.ShowScore("Score " + this.score.ToString());
 
         // Generate level
-
         if (!multi_level)
         {
             this.uiController.HideLevel();
@@ -199,26 +222,20 @@ public class GameManager : MonoBehaviour
         await Task.Delay(5000);
         }
 
-        // Update lives and score
-        this.uiController.ShowLives(this.lives.ToString() + " Lives");
-        this.uiController.ShowScore("Score " + this.score.ToString());
-
         if (debug) this.levelText.gameObject.SetActive(true);
         else this.levelText.gameObject.SetActive(false);
 
         // Begin the level timer
         this.levelStartTime = Time.time;
 
-        // Reset paddle ball
-        this.ballBehavior.Reset();
-        this.agentBehavior.Reset();
-
+        Debug.Log("Unfreezing ball and paddle");
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
 
         // Set the game state to playing
         State = GameState.Playing;
+        Time.timeScale = 1f;
     }
 
     private void Awake()
@@ -244,7 +261,7 @@ public class GameManager : MonoBehaviour
         this.lives--;
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.agentBehavior.BallLost();
-        if(this.playerType == PlayerType.Player) this.lifeLostAudio.Play(0);
+        if(this.playerType == PlayerType.Player || this.playerType == PlayerType.Single) this.lifeLostAudio.Play(0);
     }
 
     private void PauseGame()
@@ -253,38 +270,70 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
+        this.uiController.ShowPauseCanvas();
     }
 
-    private void ResumeGame()
+    public void ResumeGame()
     {
+        this.uiController.HidePauseCanvas();
         State = GameState.Playing;
-        Time.timeScale = 1f;
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
+        if (opponentGame != null)
+        {
+            opponentGame.ballBehavior.Unfreeze();
+            opponentGame.agentBehavior.Unfreeze();
+            opponentGame.uiController.HidePauseCanvas();
+        }
+        Time.timeScale = 1f;
     }
 
     /// <summary>
     /// Ends the game
     /// </summary>
-    private void EndGame()
+    private async void EndGame()
     {
         // Set the game state to game over
         State = GameState.Gameover;
 
-        // Deconstruct level
-
-        // Freeze player and ball
-        this.ballBehavior.Freeze();
-        this.agentBehavior.Freeze();
-
-        if (playerType == PlayerType.Agent)
+        // TODO: WILL NEED TO FIX THESE ONCE BRICKS ARE FIXED - USED FOR BEHAVIOR TESTING
+        if (this.playerType == PlayerType.Agent)
         {
-            this.uiController.ShowLevelUpText("Game Ended");
+            Debug.Log("Player End Game");
+            State = GameState.Paused;
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            int ballBonus = this.lives - 1 * 1000;
+            this.score += ballBonus;
+            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            await Task.Delay(2000);
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+                else this.uiController.ShowLevelUpText("Player Wins!");
+            }
+            await Task.Delay(2000);
+            // Check if the leaderboard needs to be updated
+            this.gameGenerator.AddToLeaderboard(this.score);
         }
         else
         {
+            Debug.Log("Agent End Game");
+            State = GameState.Paused;
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            int ballBonus = this.lives - 1 * 1000;
+            this.score += ballBonus;
+            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            await Task.Delay(2000);
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
+                else this.uiController.ShowLevelUpText("Player Wins!");
+            }
+            await Task.Delay(2000);
             // Check if the leaderboard needs to be updated
-            this.leaderboardManager.AddScore(this.score);
+            this.gameGenerator.AddToLeaderboard(this.score);
         }
 
 
@@ -371,7 +420,8 @@ public class GameManager : MonoBehaviour
         this.level += 1;
 
         // Play level up sound
-        if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
+        if(this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
+            if(this.level > starting_level) this.levelUpAudio.Play(0);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
@@ -400,10 +450,18 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        // Reload scene to restart game
-        string sceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(sceneName);
-        this.StartGame();
+        this.uiController.HidePauseCanvas();
+        this.gameGenerator.Restart();
+    }
+
+    public int GetScore()
+    {
+        return this.score;
+    }
+
+    public void MainMenu()
+    {
+        this.gameGenerator.ReturnToMenu();
     }
 
 }

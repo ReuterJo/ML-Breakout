@@ -6,12 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class LevelGenerator : MonoBehaviour
 {
-    public Vector2Int size;
-    public Vector2 offset;
+    private Vector2Int size;
+    private Vector2 offset;
     public GameObject brickPrefab;
     public Gradient gradient;
     public int layer = 0; // for default layer
     private List<GameObject> brickList;
+
+    void Start()
+    {
+        this.size = new Vector2Int(9, 6);
+        this.offset = new Vector2(0.7f, 0.25f);
+    }
+
 
     public int ChangeLevel(int level)
     {

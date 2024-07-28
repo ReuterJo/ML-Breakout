@@ -16,6 +16,8 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI levelUpText;
 
+    public Canvas pauseCanvas;
+
     /// <summary>
     /// Shows lives text
     /// </summary>
@@ -23,7 +25,8 @@ public class UIController : MonoBehaviour
 
     public void Start()
     {
-        this.levelUpText.gameObject.SetActive(false);
+        this.levelUpText.gameObject.SetActive(true);
+        this.pauseCanvas.enabled = false;
     }
 
     public void SetScreenPosition(float xShift)
@@ -50,7 +53,6 @@ public class UIController : MonoBehaviour
 
     public async void CountdownTimer(PlayerType playerType)
     {
-        Debug.Log("Countdown Called");
         int counter = 5;
         string player = "Player Game\nStarting In:\n";
         if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
@@ -62,6 +64,16 @@ public class UIController : MonoBehaviour
             counter--;
         }
         this.levelUpText.gameObject.SetActive(false);
+    }
+
+    public void ShowPauseCanvas()
+    {
+        this.pauseCanvas.enabled = true;
+    }
+
+    public void HidePauseCanvas()
+    {
+        this.pauseCanvas.enabled = false;
     }
 
     public void GameOverText(string text)
