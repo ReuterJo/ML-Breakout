@@ -41,7 +41,6 @@ public class GameManager : MonoBehaviour
     public bool debug = false;
     public PlayerType playerType;
     public TextMeshProUGUI levelText;
-    private bool change_level = false;
 
     public GameGenerator gameGenerator;
 
@@ -87,8 +86,6 @@ public class GameManager : MonoBehaviour
         this.opponentGame = opponentGame;
         this.gameGenerator = gameGenerator;
 
-        Debug.Log("Configure of game manager is called!");
-
         // call to load correct agent model
         this.agentBehavior.Configure(model_path);
 
@@ -96,7 +93,6 @@ public class GameManager : MonoBehaviour
         this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
         this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
 
-        Debug.Log("The Player Type is " + this.playerType.ToString());
         // Determine screen position and set it
         switch (this.playerType)
         {
@@ -169,7 +165,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public async void StartGame()
     {
-        Debug.Log("StartGame in the game manager has been called!");
         // Set the game state to preparing
         State = GameState.Preparing;
 
@@ -185,8 +180,6 @@ public class GameManager : MonoBehaviour
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
-
-        Debug.Log("The level is " + this.level.ToString());
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
@@ -218,8 +211,8 @@ public class GameManager : MonoBehaviour
         // Begin countdown timer if not in training
         if (!training_mode)
         {
-        this.uiController.CountdownTimer(this.playerType);
-        await Task.Delay(5000);
+            this.uiController.CountdownTimer(this.playerType);
+            await Task.Delay(5000);
         }
 
         if (debug) this.levelText.gameObject.SetActive(true);
@@ -228,7 +221,6 @@ public class GameManager : MonoBehaviour
         // Begin the level timer
         this.levelStartTime = Time.time;
 
-        Debug.Log("Unfreezing ball and paddle");
         // Unfreeze player and ball
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
@@ -344,6 +336,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        // Do nothing if the game is preparing
+        if (State == GameState.Preparing) return;
+
         // Check if the Escape key is pressed to pause/unpause game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -394,13 +389,12 @@ public class GameManager : MonoBehaviour
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
-                        // change game dynamics and points immediately
-                        this.ChangeLevel();
-                        if (this.change_level && ballBehavior.GetBallYPosition() < 0.0f)
+                        if (ballBehavior.GetBallYPosition() < 0.0f)
                         {
                             // change bricks once ball is out of brick generator area
+                            this.ChangeLevel();
                             this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
-                            this.change_level = false;
+                            // change game dynamics and points immediately
                         }
 
                     }
@@ -437,9 +431,6 @@ public class GameManager : MonoBehaviour
 
         // change ball velocity
         this.ballBehavior.ChangeBallVelocity();
-
-        // generate blocks
-        this.change_level = true;
 
         // update level UI display
         this.uiController.ShowLevel("Level " + this.level.ToString());
