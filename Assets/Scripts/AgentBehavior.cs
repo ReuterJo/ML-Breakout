@@ -46,6 +46,11 @@ public class AgentBehavior : Agent
         // Not used        
     }
 
+    void Update()
+    {
+        RequestDecision();
+    }
+
     public void SetScreenPosition()
     {
         this.screenPosition = this.gameManager.screenPosition;        
