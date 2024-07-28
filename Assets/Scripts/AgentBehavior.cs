@@ -56,7 +56,6 @@ public class AgentBehavior : Agent
         this.screenPosition = this.gameManager.screenPosition;        
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
-        Debug.Log("The screen position is " + this.screenPosition.ToString());
         // Left game
         if (this.screenPosition == ScreenPosition.Left)
         {
@@ -182,7 +181,6 @@ public class AgentBehavior : Agent
     /// </summary>
     public override async void OnEpisodeBegin()
     {
-        Debug.Log("The Agent has called StartGame");
         await Task.Delay(100);
         this.gameManager.StartGame();
     }
