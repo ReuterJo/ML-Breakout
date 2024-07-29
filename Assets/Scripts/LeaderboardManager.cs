@@ -37,6 +37,7 @@ public class LeaderboardManager : MonoBehaviour
     {
         LoadLeaderboard();
         PopulateLeaderBoard();
+        playerNameInput.gameObject.SetActive(false);
     }
 
     public void LoadLeaderboard()
@@ -50,20 +51,21 @@ public class LeaderboardManager : MonoBehaviour
             // Initialize min and max scores with the first score
             if (leaderboard != null && leaderboard.Count > 0)
             {
-                minScore = leaderboard[0].score;
+                this.minScore = leaderboard[0].score;
 
                 foreach (PlayerScore scoreEntry in leaderboard)
                 {
-                    if (scoreEntry.score < minScore)
-                        minScore = scoreEntry.score;
+                    if (scoreEntry.score < this.minScore)
+                        this.minScore = scoreEntry.score;
                 }
             }
         }
         else
         {
-            minScore = int.MinValue; // Reset minScore to lowest possible integer value if leaderboard is empty
+            this.minScore = 0; // Reset minScore to lowest possible integer value if leaderboard is empty
             leaderboard = new List<PlayerScore>();
         }
+        Debug.Log("Min Score: " + minScore);
     }
 
     private void PopulateLeaderBoard()
@@ -79,12 +81,18 @@ public class LeaderboardManager : MonoBehaviour
 
     public void AddScore(int score)
     {
-        if (score > minScore)
+        // Add score if it is above the minimum or if less than 8 total scores
+        if (score > this.minScore || leaderboard.Count < 8)
         {
+            Debug.Log("High Score Entry");
             // Get player name
             playerNameInput.gameObject.SetActive(true);
-            // TODO playerNameInput.onEndEdit.AddListener();
+            //playerNameInput.onEndEdit.AddListener();
             playerNameInput.gameObject.SetActive(false);
+            if (playerNameInput.text == "")
+            {
+                playerNameInput.text = "Unknown";
+            }
             // Save and add the score
             PlayerScore newScore = new PlayerScore { name = playerNameInput.text, score = score, date = DateTime.Now.ToString("MM-dd-yyyy") };
             leaderboard.Add(newScore);
@@ -97,6 +105,7 @@ public class LeaderboardManager : MonoBehaviour
             }
             // Save and display leaderboard
             SaveLeaderboard();
+            LoadLeaderboard();
         }
     }
 

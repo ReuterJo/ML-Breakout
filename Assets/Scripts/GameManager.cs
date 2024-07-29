@@ -285,38 +285,54 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private async void EndGame()
     {
-        // Set the game state to game over
-        State = GameState.Gameover;
 
-        // TODO: WILL NEED TO FIX THESE ONCE BRICKS ARE FIXED - USED FOR BEHAVIOR TESTING
-        if (this.playerType == PlayerType.Agent)
+        if (this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
         {
             Debug.Log("Player End Game");
-            State = GameState.Paused;
+            // Pause Player Game
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
-            int ballBonus = this.lives - 1 * 1000;
-            this.score += ballBonus;
-            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
-            await Task.Delay(2000);
+            State = GameState.Paused;
+
+            // Player completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            }
+            // Two Player Winner Display
             if (opponentGame != null)
             {
                 if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
                 else this.uiController.ShowLevelUpText("Player Wins!");
             }
+            // Single Player Game Over Display
+            else
+            {
+                this.uiController.ShowLevelUpText("Game Over!");
+            }
             await Task.Delay(2000);
+
+            State = GameState.Gameover;
+            Time.timeScale = 0f;
+            
             // Check if the leaderboard needs to be updated
             this.gameGenerator.AddToLeaderboard(this.score);
         }
         else
         {
             Debug.Log("Agent End Game");
-            State = GameState.Paused;
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
-            int ballBonus = this.lives - 1 * 1000;
-            this.score += ballBonus;
-            this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            // Agent completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+                await Task.Delay(2000);
+            }
             await Task.Delay(2000);
             if (opponentGame != null)
             {
@@ -324,8 +340,8 @@ public class GameManager : MonoBehaviour
                 else this.uiController.ShowLevelUpText("Player Wins!");
             }
             await Task.Delay(2000);
-            // Check if the leaderboard needs to be updated
-            this.gameGenerator.AddToLeaderboard(this.score);
+            // Do NOT add agent scores to the leaderboard
+            this.gameGenerator.Leaderboard();
         }
 
 
