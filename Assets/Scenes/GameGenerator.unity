@@ -1591,9 +1591,8 @@ MonoBehaviour:
     the learning behavior by offering three different playing modes: \n\n     - Beginner
     - the ML Agent was trained for 15 minutes.\n     - Intermediate - the ML Agent
     was trained for 30 minutes.\n     - Advanced - the ML Agent was trained for 60
-    minutes.\n\nMore descriptions here...\n\nThis project was developed by Kevin
-    Braman, Jonathan Reuter, and Joel Strong as part of their Capstone course at
-    Oregon State University.\n\n"
+    minutes.\n\nMore descriptions here...\n\nThis project was developed by Jonathan
+    Reuter, and Joel Strong as part of their Capstone course at Oregon State University.\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3940,7 +3939,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: dafafdasfdasf
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7808d6c8514354f22991c3364ab97811, type: 2}
   m_sharedMaterial: {fileID: -5015561764870224393, guid: 7808d6c8514354f22991c3364ab97811, type: 2}
@@ -3967,8 +3966,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 42
+  m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3983,7 +3982,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

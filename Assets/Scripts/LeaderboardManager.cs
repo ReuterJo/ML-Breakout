@@ -35,25 +35,25 @@ public class LeaderboardManager : MonoBehaviour
 
     void Start()
     {
-        LoadLeaderboard();
-        PopulateLeaderBoard();
-        playerNameInput.gameObject.SetActive(false);
+        this.LoadLeaderboard();
+        this.PopulateLeaderBoard();
+        this.playerNameInput.gameObject.SetActive(false);
     }
 
     public void LoadLeaderboard()
     {
-        if (File.Exists(leaderboardJsonFilePath))
+        if (File.Exists(this.leaderboardJsonFilePath))
         {
-            string json = File.ReadAllText(leaderboardJsonFilePath);
+            string json = File.ReadAllText(this.leaderboardJsonFilePath);
             Leaderboard loadedData = JsonUtility.FromJson<Leaderboard>(json);
-            leaderboard = loadedData.scores;
+            this.leaderboard = loadedData.scores;
 
             // Initialize min and max scores with the first score
-            if (leaderboard != null && leaderboard.Count > 0)
+            if (this.leaderboard != null && this.leaderboard.Count > 0)
             {
-                this.minScore = leaderboard[0].score;
+                this.minScore = this.leaderboard[0].score;
 
-                foreach (PlayerScore scoreEntry in leaderboard)
+                foreach (PlayerScore scoreEntry in this.leaderboard)
                 {
                     if (scoreEntry.score < this.minScore)
                         this.minScore = scoreEntry.score;
@@ -63,18 +63,17 @@ public class LeaderboardManager : MonoBehaviour
         else
         {
             this.minScore = 0; // Reset minScore to lowest possible integer value if leaderboard is empty
-            leaderboard = new List<PlayerScore>();
+            this.leaderboard = new List<PlayerScore>();
         }
-        Debug.Log("Min Score: " + minScore);
     }
 
     private void PopulateLeaderBoard()
     {
-        leaderboardText.text = "";
+        this.leaderboardText.text = "";
         int count = 1;
         foreach (var playerScore in leaderboard)
         {
-            leaderboardText.text += count + ". Player: " + playerScore.name + "  Score: " + playerScore.score + "  Date: " + playerScore.date + "\n";
+            this.leaderboardText.text += count + ". Player: " + playerScore.name + "  Score: " + playerScore.score + "  Date: " + playerScore.date + "\n";
             count += 1;
         }
     }
@@ -82,37 +81,37 @@ public class LeaderboardManager : MonoBehaviour
     public void AddScore(int score)
     {
         // Add score if it is above the minimum or if less than 8 total scores
-        if (score > this.minScore || leaderboard.Count < 8)
+        if (score > this.minScore || this.leaderboard.Count < 8)
         {
-            Debug.Log("High Score Entry");
             // Get player name
-            playerNameInput.gameObject.SetActive(true);
+            this.playerNameInput.gameObject.SetActive(true);
             //playerNameInput.onEndEdit.AddListener();
-            playerNameInput.gameObject.SetActive(false);
-            if (playerNameInput.text == "")
+            this.playerNameInput.gameObject.SetActive(false);
+            if (this.playerNameInput.text == "")
             {
-                playerNameInput.text = "Unknown";
+                this.playerNameInput.text = "Unknown";
             }
             // Save and add the score
             PlayerScore newScore = new PlayerScore { name = playerNameInput.text, score = score, date = DateTime.Now.ToString("MM-dd-yyyy") };
-            leaderboard.Add(newScore);
+            this.leaderboard.Add(newScore);
             // Sort the scores
-            leaderboard.Sort((x, y) => y.score.CompareTo(x.score));
+            this.leaderboard.Sort((x, y) => y.score.CompareTo(x.score));
             // If there are more than 10 scores, delete the lowest
-            if (leaderboard.Count > 8)
+            if (this.leaderboard.Count > 8)
             {
-                leaderboard.RemoveAt(leaderboard.Count - 1);
+                this.leaderboard.RemoveAt(leaderboard.Count - 1);
             }
             // Save and display leaderboard
-            SaveLeaderboard();
-            LoadLeaderboard();
+            this.SaveLeaderboard();
         }
+        this.LoadLeaderboard();
+        this.PopulateLeaderBoard();
     }
 
     public void SaveLeaderboard()
     {
         Leaderboard leaderboardData = new Leaderboard { scores = leaderboard };
         string json = JsonUtility.ToJson(leaderboardData, true);
-        File.WriteAllText(leaderboardJsonFilePath, json);
+        File.WriteAllText(this.leaderboardJsonFilePath, json);
     }
 }

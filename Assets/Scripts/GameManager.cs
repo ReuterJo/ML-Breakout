@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
             if (this.level == 1)
             {
                 this.bricksRemaining = levelGenerator.ChangeLevel(level);
-                this.uiController.ShowLevelUpText("Level " + level.ToString());
+                this.uiController.ShowLevelUpText("Level " + level.ToString(), 2f);
             }
             else
             {
@@ -299,20 +299,21 @@ public class GameManager : MonoBehaviour
             {
                 int ballBonus = this.lives - 1 * 1000;
                 this.score += ballBonus;
-                this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
+                await Task.Delay(5000);
             }
             // Two Player Winner Display
             if (opponentGame != null)
             {
-                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
-                else this.uiController.ShowLevelUpText("Player Wins!");
+                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
+                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
             }
             // Single Player Game Over Display
             else
             {
-                this.uiController.ShowLevelUpText("Game Over!");
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Over!", 5f));
             }
-            await Task.Delay(2000);
+            await Task.Delay(5000);
 
             State = GameState.Gameover;
             Time.timeScale = 0f;
@@ -330,16 +331,15 @@ public class GameManager : MonoBehaviour
             {
                 int ballBonus = this.lives - 1 * 1000;
                 this.score += ballBonus;
-                this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
-                await Task.Delay(2000);
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
+                await Task.Delay(5000);
             }
-            await Task.Delay(2000);
             if (opponentGame != null)
             {
-                if (opponentGame.GetScore() > this.score) this.uiController.ShowLevelUpText("Agent Wins!");
-                else this.uiController.ShowLevelUpText("Player Wins!");
+                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
+                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
             }
-            await Task.Delay(2000);
+            await Task.Delay(5000);
             // Do NOT add agent scores to the leaderboard
             this.gameGenerator.Leaderboard();
         }
@@ -452,7 +452,7 @@ public class GameManager : MonoBehaviour
         this.uiController.ShowLevel("Level " + this.level.ToString());
 
         // show level up text
-        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus));
+        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus, 2f));
     }
 
     public void RestartGame()

@@ -82,8 +82,6 @@ public class GameGenerator : MonoBehaviour
         this.Leaderboard();
         // Check/Add High Score
         this.leaderboardManager.AddScore(score);
-        // Reload High Scores to Display
-        this.leaderboardManager.LoadLeaderboard();
     }
 
     public void ReturnToMenu()
