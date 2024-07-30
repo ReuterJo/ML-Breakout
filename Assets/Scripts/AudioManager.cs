@@ -1,19 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class AudioManager : MonoBehaviour
 {
+    public AudioClip backgroundMusic;
+
     private static AudioManager instance;
+    private AudioSource audioSource;
 
     public static AudioManager Instance
     {
         get { return instance; }
     }
-
-    private AudioSource audioSource;
-    public AudioClip backgroundMusic;
 
     void Awake()
     {
