@@ -1,25 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelGenerator : MonoBehaviour
 {
-    private Vector2Int size;
-    private Vector2 offset;
     public GameObject brickPrefab;
     public Gradient gradient;
     public int layer = 0; // for default layer
+
+    private Vector2Int size;
+    private Vector2 offset;
     private List<GameObject> brickList;
 
-    void Start()
-    {
-        this.size = new Vector2Int(9, 6);
-        this.offset = new Vector2(0.7f, 0.25f);
-    }
-
-
+    /// <summary>
+    /// Changes the level
+    /// </summary>
+    /// <param name="level">The level configuration to be generated</param>
+    /// <returns>Returns the number of bricks in the newly generated level</returns>
     public int ChangeLevel(int level)
     {
         if (level == 1) 
@@ -28,6 +25,7 @@ public class LevelGenerator : MonoBehaviour
         }
         else if (level == 2) 
         {
+            this.GenerateLevelTwo();
             return 27;
         }
         else if (level == 3) 
@@ -48,8 +46,40 @@ public class LevelGenerator : MonoBehaviour
         return this.brickList.Count;
     }
 
+    /// <summary>
+    /// Destroys the remaining bricks
+    /// </summary>
+    public void DeconstructLevel()
+    {
+        foreach (GameObject brick in this.brickList)
+        {
+            if (!brick.IsDestroyed()) Destroy(brick);
+        }
+        this.brickList.Clear();
+    }
 
-    public void GenerateLevelOne()
+    /// <summary>
+    /// Returns the number of bricks in the level
+    /// </summary>
+    /// <returns>Number of bricks</returns>
+    public int getBrickCount()
+    {
+        int count = 0;
+        foreach (GameObject brick in this.brickList)
+        {
+
+            if (!brick.IsDestroyed()) count++;
+        }
+        return count;
+    }
+
+    void Start()
+    {
+        this.size = new Vector2Int(9, 6);
+        this.offset = new Vector2(0.7f, 0.25f);
+    }
+
+    private void GenerateLevelOne()
     {
         this.brickList = new List<GameObject>();
         for (int i = 0; i < size.x; i++)
@@ -65,13 +95,13 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateLevelTwo()
+    private void GenerateLevelTwo()
     // ChangeLevel(int pointMultiplier, int maxBonusPoints, float decreasePaddlePercent, float increaseBallVelocityPercent)
     {
         // blocks stay in play, game behavior attributes change
     }
     
-    public void GenerateLevelThree()
+    private void GenerateLevelThree()
     {
         this.brickList = new List<GameObject>();
         for (int i = 0; i < size.x; i++)
@@ -91,7 +121,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateLevelFour()
+    private void GenerateLevelFour()
     {
         this.brickList = new List<GameObject>();
         // Generate "diamond" pattern (Note: blocks generated bottom of the array to top)
@@ -124,7 +154,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateLevelFive()
+    private void GenerateLevelFive()
     {
         this.brickList = new List<GameObject>();
         // Generate "random" pattern (Note: blocks generated bottom of the array to top)
@@ -155,29 +185,5 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-
-    /// <summary>
-    /// Destroys the remaining bricks
-    /// </summary>
-    public void DeconstructLevel()
-    {
-        foreach (GameObject brick in this.brickList)
-        {
-            if (!brick.IsDestroyed()) Destroy(brick);
-        }
-        this.brickList.Clear();
-    }
-
-    public int getBrickCount()
-    {
-        int count = 0;
-        foreach (GameObject brick in this.brickList)
-        {
-
-            if (!brick.IsDestroyed()) count++;
-        }
-        return count;
     }
 }
