@@ -45,7 +45,6 @@ public class UIController : MonoBehaviour
 
     public IEnumerator ShowLevelUpText(string text, float seconds)
     {
-        Debug.Log("Show Level Up Called.");
         this.levelUpText.text = text;
         this.levelUpText.gameObject.SetActive(true);
         yield return new WaitForSeconds(seconds);

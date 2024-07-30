@@ -13,8 +13,10 @@ public class LeaderboardManager : MonoBehaviour
     public TextMeshProUGUI leaderboardText;
     public TMP_InputField playerNameInput;
     public Button resetButton;
+    public Button submitButton;
     private List<PlayerScore> leaderboard;
     private int minScore;
+    private int tempScore;
     
 
     // create PlayerScore class to store and serialize scores
@@ -38,6 +40,10 @@ public class LeaderboardManager : MonoBehaviour
         this.LoadLeaderboard();
         this.PopulateLeaderBoard();
         this.playerNameInput.gameObject.SetActive(false);
+        this.submitButton.gameObject.SetActive(false);
+        submitButton.onClick.AddListener(() => {
+            SetPlayerName();
+        });
     }
 
     public void LoadLeaderboard()
@@ -70,6 +76,7 @@ public class LeaderboardManager : MonoBehaviour
     private void PopulateLeaderBoard()
     {
         this.leaderboardText.text = "";
+
         int count = 1;
         foreach (var playerScore in leaderboard)
         {
@@ -78,31 +85,36 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
+    private void SetPlayerName()
+    {
+        if (playerNameInput.text == "") playerNameInput.text = "Unknown";
+        // Save and add the score
+        PlayerScore newScore = new PlayerScore { name = playerNameInput.text, score = this.tempScore, date = DateTime.Now.ToString("MM-dd-yyyy") };
+        this.leaderboard.Add(newScore);
+        // Sort the scores
+        this.leaderboard.Sort((x, y) => y.score.CompareTo(x.score));
+        // If there are more than 10 scores, delete the lowest
+        if (this.leaderboard.Count > 8)
+        {
+            this.leaderboard.RemoveAt(leaderboard.Count - 1);
+        }
+        this.tempScore = 0;
+        this.playerNameInput.gameObject.SetActive(false);
+        this.submitButton.gameObject.SetActive(false);
+        // Save and display leaderboard
+        this.SaveLeaderboard();
+        this.LoadLeaderboard();
+        this.PopulateLeaderBoard();
+    }
+
     public void AddScore(int score)
     {
         // Add score if it is above the minimum or if less than 8 total scores
         if (score > this.minScore || this.leaderboard.Count < 8)
         {
-            // Get player name
             this.playerNameInput.gameObject.SetActive(true);
-            //playerNameInput.onEndEdit.AddListener();
-            this.playerNameInput.gameObject.SetActive(false);
-            if (this.playerNameInput.text == "")
-            {
-                this.playerNameInput.text = "Unknown";
-            }
-            // Save and add the score
-            PlayerScore newScore = new PlayerScore { name = playerNameInput.text, score = score, date = DateTime.Now.ToString("MM-dd-yyyy") };
-            this.leaderboard.Add(newScore);
-            // Sort the scores
-            this.leaderboard.Sort((x, y) => y.score.CompareTo(x.score));
-            // If there are more than 10 scores, delete the lowest
-            if (this.leaderboard.Count > 8)
-            {
-                this.leaderboard.RemoveAt(leaderboard.Count - 1);
-            }
-            // Save and display leaderboard
-            this.SaveLeaderboard();
+            this.submitButton.gameObject.SetActive(true);
+            this.tempScore = score;
         }
         this.LoadLeaderboard();
         this.PopulateLeaderBoard();

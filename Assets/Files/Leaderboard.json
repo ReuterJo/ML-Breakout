@@ -1,38 +1,28 @@
 {
     "scores": [
         {
+            "name": "JoelS",
+            "score": 851,
+            "date": "07-29-2024"
+        },
+        {
             "name": "Unknown",
+            "score": 711,
+            "date": "07-29-2024"
+        },
+        {
+            "name": "JoelS",
+            "score": 190,
+            "date": "07-29-2024"
+        },
+        {
+            "name": "JoelS",
             "score": 170,
             "date": "07-29-2024"
         },
         {
-            "name": "Unknown",
-            "score": 140,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Unknown",
-            "score": 130,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Unknown",
-            "score": 110,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Unknown",
-            "score": 100,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Unknown",
+            "name": "JoelS",
             "score": 70,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Unknown",
-            "score": 30,
             "date": "07-29-2024"
         }
     ]

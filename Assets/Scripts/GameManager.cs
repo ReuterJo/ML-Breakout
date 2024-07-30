@@ -288,7 +288,6 @@ public class GameManager : MonoBehaviour
 
         if (this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
         {
-            Debug.Log("Player End Game");
             // Pause Player Game
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
@@ -323,7 +322,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Agent End Game");
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
             // Agent completed game - apply ball bonus
