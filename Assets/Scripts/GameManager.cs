@@ -82,8 +82,8 @@ public class GameManager : MonoBehaviour
         this.agentBehavior.Configure(model_path);
 
         // Configure audio
-        this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
-        this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
+        this.levelUpAudio = this.transform.Find("LevelUpSFX").GetComponent<AudioSource>();
+        this.lifeLostAudio = this.transform.Find("LifeLostSFX").GetComponent<AudioSource>();
 
         // Determine screen position and set it for game and agent
         switch (this.playerType)
