@@ -43,11 +43,11 @@ public class UIController : MonoBehaviour
         this.livesText.gameObject.SetActive(true);
     }
 
-    public IEnumerator ShowLevelUpText(string text)
+    public IEnumerator ShowLevelUpText(string text, float seconds)
     {
         this.levelUpText.text = text;
         this.levelUpText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(seconds);
         this.levelUpText.gameObject.SetActive(false);
     }
 

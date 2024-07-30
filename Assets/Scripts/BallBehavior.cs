@@ -95,7 +95,7 @@ public class BallBehavior : MonoBehaviour
     // Function used for destroying bricks when the ball collides with them
     {
         // Only play audio for the player game
-        if(this.gameManager.playerType == PlayerType.Player) this.ballAudio.Play(0);
+        if(this.gameManager.playerType == PlayerType.Player || this.gameManager.playerType == PlayerType.Single) this.ballAudio.Play(0);
         if(collision.gameObject.CompareTag("Brick"))
         {
             Destroy(collision.gameObject);

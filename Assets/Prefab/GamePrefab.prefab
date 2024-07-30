@@ -1385,6 +1385,10 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3237476010409353403, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 9.25
+      objectReference: {fileID: 0}
     - target: {fileID: 3317713867968738415, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: layer
       value: 3

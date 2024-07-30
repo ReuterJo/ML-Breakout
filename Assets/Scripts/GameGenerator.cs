@@ -78,9 +78,10 @@ public class GameGenerator : MonoBehaviour
 
     public void AddToLeaderboard(int score)
     {
+        // Show Leaderboard
+        this.Leaderboard();
+        // Check/Add High Score
         this.leaderboardManager.AddScore(score);
-        this.leaderboardCanvas.enabled = true;
-        this.menuCanvas.enabled = false;
     }
 
     public void ReturnToMenu()
