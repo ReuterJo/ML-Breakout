@@ -1,47 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting;
-using UnityEngine.SceneManagement;
 using TMPro;
 using System.Threading.Tasks;
-using UnityEngine.Events;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using System.Runtime.CompilerServices;
 
 public class GameManager : MonoBehaviour
 {
     // script variables
     [Tooltip("Sets the UI Controller script")]
     public UIController uiController;
-
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
-
     [Tooltip("Sets the AgentBehavior script")]
     public AgentBehavior agentBehavior;
-
     [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
-
     [Tooltip("Sets the game manager object for this game")]
     public GameManager thisGame;
-
     [Tooltip("Sets the game manager object for the opponent game")]
     public GameManager opponentGame;
-
     [Tooltip("Sets the Screen Position")]
     public ScreenPosition screenPosition;
-
     [Tooltip("Sets the game to multilevel mode")]
     public bool multi_level = true;            // use to change single or multi-level game
     [Tooltip("Sets the game to training mode")]
     public bool training_mode = false;         // use to train the model vs play the game
+    [Tooltip("Sets the game to debug mode")]
     public bool debug = false;
+    [Tooltip("The type of player")]
     public PlayerType playerType;
+    [Tooltip("The level UI text")]
     public TextMeshProUGUI levelText;
-
+    [Tooltip("That game generator that created the game")]
     public GameGenerator gameGenerator;
 
     // game variables
@@ -61,6 +49,7 @@ public class GameManager : MonoBehaviour
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
 
+    // Audio sources
     private AudioSource levelUpAudio;
     private AudioSource lifeLostAudio;
 
@@ -69,6 +58,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public GameState State { get; private set; } = GameState.Default;
 
+    /// <summary>
+    /// Configures the game manager
     public void Configure(bool multi_level, 
                     bool training_mode, 
                     bool debug, 
@@ -78,6 +69,7 @@ public class GameManager : MonoBehaviour
                     GameGenerator gameGenerator
                     )
     {
+        // Set game manager input variables
         this.multi_level = multi_level;
         this.training_mode = training_mode;
         this.debug = debug;
@@ -93,7 +85,7 @@ public class GameManager : MonoBehaviour
         this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
         this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
 
-        // Determine screen position and set it
+        // Determine screen position and set it for game and agent
         switch (this.playerType)
         {
             case PlayerType.Agent:
@@ -117,12 +109,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shifts game area objects to correct positions based upon screen position
+    /// </summary>
     void SetScreenPosition()
     {
-        // Update Game Area GameObject position
-        // using the incorrect logic here
-
-
         Transform gameAreaTransform = this.transform.Find("GameArea");
 
         float vertExtent = Camera.main.orthographicSize;
@@ -130,7 +121,7 @@ public class GameManager : MonoBehaviour
         
         Vector3 newPosition = gameAreaTransform.position;
 
-        // UI shift is hardcoded to match previous scene
+        // UI shift is hardcoded to match previous scene layout
         switch (this.screenPosition)
         {
             case ScreenPosition.Left:
@@ -155,6 +146,10 @@ public class GameManager : MonoBehaviour
         gameAreaTransform.position = newPosition;
     }
 
+    /// <summary>
+    /// Returns screen position
+    /// </summary>
+    /// <returns>Game manager screen position</returns>
     public ScreenPosition GetScreenPosition()
     {
         return this.screenPosition;
@@ -230,12 +225,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    private void Awake()
-    {
-        this.ballRb = ballBehavior.GetComponent<Rigidbody2D>();
-    }
-
-        /// <summary>
+    /// <summary>
     /// Called when a brick is destroyed
     /// </summary>
     public void scoreBrick()
@@ -256,97 +246,39 @@ public class GameManager : MonoBehaviour
         if(this.playerType == PlayerType.Player || this.playerType == PlayerType.Single) this.lifeLostAudio.Play(0);
     }
 
-    private void PauseGame()
+    /// <summary>
+    /// Returns the score of the game
+    /// </summary>
+    /// <returns>The score</returns>
+    public int GetScore()
     {
-        State = GameState.Paused;
-        Time.timeScale = 0f;
-        this.ballBehavior.Freeze();
-        this.agentBehavior.Freeze();
-        this.uiController.ShowPauseCanvas();
+        return this.score;
     }
 
-    public void ResumeGame()
+    /// <summary>
+    /// Restarts the game
+    /// </summary>
+    public void RestartGame()
     {
         this.uiController.HidePauseCanvas();
-        State = GameState.Playing;
-        this.ballBehavior.Unfreeze();
-        this.agentBehavior.Unfreeze();
-        if (opponentGame != null)
-        {
-            opponentGame.ballBehavior.Unfreeze();
-            opponentGame.agentBehavior.Unfreeze();
-            opponentGame.uiController.HidePauseCanvas();
-        }
-        Time.timeScale = 1f;
+        this.gameGenerator.Restart();
     }
 
     /// <summary>
-    /// Ends the game
+    /// Returns to the main menu
     /// </summary>
-    private async void EndGame()
+    public void MainMenu()
     {
+        this.gameGenerator.ReturnToMenu();
+    }
 
-        if (this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
-        {
-            // Pause Player Game
-            this.ballBehavior.Freeze();
-            this.agentBehavior.Freeze();
-            State = GameState.Paused;
-
-            // Player completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
-            {
-                int ballBonus = this.lives - 1 * 1000;
-                this.score += ballBonus;
-                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
-                await Task.Delay(5000);
-            }
-            // Two Player Winner Display
-            if (opponentGame != null)
-            {
-                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
-                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
-            }
-            // Single Player Game Over Display
-            else
-            {
-                StartCoroutine(this.uiController.ShowLevelUpText("Game Over!", 5f));
-            }
-            await Task.Delay(5000);
-
-            State = GameState.Gameover;
-            Time.timeScale = 0f;
-            
-            // Check if the leaderboard needs to be updated
-            this.gameGenerator.AddToLeaderboard(this.score);
-        }
-        else
-        {
-            this.ballBehavior.Freeze();
-            this.agentBehavior.Freeze();
-            // Agent completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
-            {
-                int ballBonus = this.lives - 1 * 1000;
-                this.score += ballBonus;
-                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
-                await Task.Delay(5000);
-            }
-            if (opponentGame != null)
-            {
-                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
-                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
-            }
-            await Task.Delay(5000);
-            // Do NOT add agent scores to the leaderboard
-            this.gameGenerator.Leaderboard();
-        }
-
-
+    private void Awake()
+    {
+        this.ballRb = ballBehavior.GetComponent<Rigidbody2D>();
     }
 
     /// <summary>
-    /// Called every frame
+    /// Updates game state for each frame
     /// </summary>
     private void Update()
     {
@@ -422,7 +354,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeLevel()
+    /// <summary>
+    /// Display the paused game screen
+    /// </summary>
+    private void PauseGame()
+    {
+        State = GameState.Paused;
+        Time.timeScale = 0f;
+        this.ballBehavior.Freeze();
+        this.agentBehavior.Freeze();
+        this.uiController.ShowPauseCanvas();
+    }
+
+    /// <summary>
+    /// Resume the game from the paused game screen
+    /// </summary>
+    private void ResumeGame()
+    {
+        this.uiController.HidePauseCanvas();
+        State = GameState.Playing;
+        this.ballBehavior.Unfreeze();
+        this.agentBehavior.Unfreeze();
+        if (opponentGame != null)
+        {
+            opponentGame.ballBehavior.Unfreeze();
+            opponentGame.agentBehavior.Unfreeze();
+            opponentGame.uiController.HidePauseCanvas();
+        }
+        Time.timeScale = 1f;
+    }
+
+    /// <summary>
+    /// Change to the next level
+    /// </summary>
+    private void ChangeLevel()
     {
         // increment level
         this.level += 1;
@@ -453,20 +418,67 @@ public class GameManager : MonoBehaviour
         StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus, 2f));
     }
 
-    public void RestartGame()
+    /// <summary>
+    /// Ends the game
+    /// </summary>
+    private async void EndGame()
     {
-        this.uiController.HidePauseCanvas();
-        this.gameGenerator.Restart();
-    }
 
-    public int GetScore()
-    {
-        return this.score;
-    }
+        if (this.playerType == PlayerType.Player || this.playerType == PlayerType.Single)
+        {
+            // Pause Player Game
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            State = GameState.Paused;
 
-    public void MainMenu()
-    {
-        this.gameGenerator.ReturnToMenu();
+            // Player completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
+                await Task.Delay(5000);
+            }
+            // Two Player Winner Display
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
+                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
+            }
+            // Single Player Game Over Display
+            else
+            {
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Over!", 5f));
+            }
+            await Task.Delay(5000);
+
+            State = GameState.Gameover;
+            Time.timeScale = 0f;
+            
+            // Check if the leaderboard needs to be updated
+            this.gameGenerator.AddToLeaderboard(this.score);
+        }
+        else
+        {
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            // Agent completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
+                await Task.Delay(5000);
+            }
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
+                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
+            }
+            await Task.Delay(5000);
+            // Do NOT add agent scores to the leaderboard
+            this.gameGenerator.Leaderboard();
+        }
     }
 
 }
