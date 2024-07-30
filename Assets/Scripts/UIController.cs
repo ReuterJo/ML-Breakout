@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Threading.Tasks;
@@ -8,27 +7,19 @@ public class UIController : MonoBehaviour
 {
     [Tooltip("The lives text")]
     public TextMeshProUGUI livesText;
-
     [Tooltip("The score text")]
     public TextMeshProUGUI scoreText;
-
     [Tooltip("The level text")]
     public TextMeshProUGUI levelText;
+    [Tooltip("The level up text")]
     public TextMeshProUGUI levelUpText;
-
+    [Tooltip("The pause canvas")]
     public Canvas pauseCanvas;
 
     /// <summary>
-    /// Shows lives text
+    /// Sets the screen position of the UI elements
     /// </summary>
-    /// <param name="text">Text of lives</param>
-
-    public void Start()
-    {
-        this.levelUpText.gameObject.SetActive(true);
-        this.pauseCanvas.enabled = false;
-    }
-
+    /// <param name="xShift">The horizontal shift</param>
     public void SetScreenPosition(float xShift)
     {
         this.livesText.transform.position += new Vector3(xShift, 0, 0);
@@ -37,12 +28,22 @@ public class UIController : MonoBehaviour
         this.levelUpText.transform.position += new Vector3(xShift, 0, 0);
     }
 
+    /// <summary>
+    /// Show the lives remaining text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
     public void ShowLives(string text)
     {
         this.livesText.text = text;
         this.livesText.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Show the level up text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
+    /// <param name="seconds">The duration for which the text is visible</param>
+    /// <returns></returns>
     public IEnumerator ShowLevelUpText(string text, float seconds)
     {
         this.levelUpText.text = text;
@@ -51,6 +52,10 @@ public class UIController : MonoBehaviour
         this.levelUpText.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Display the countdown timer
+    /// </summary>
+    /// <param name="playerType">The type of player</param>
     public async void CountdownTimer(PlayerType playerType)
     {
         int counter = 5;
@@ -66,16 +71,26 @@ public class UIController : MonoBehaviour
         this.levelUpText.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Show the pause canvas
+    /// </summary>
     public void ShowPauseCanvas()
     {
         this.pauseCanvas.enabled = true;
     }
 
+    /// <summary>
+    /// Hide the pause canvas
+    /// </summary>
     public void HidePauseCanvas()
     {
         this.pauseCanvas.enabled = false;
     }
 
+    /// <summary>
+    /// Display the game over text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
     public void GameOverText(string text)
     {
         this.levelUpText.text = text;
@@ -108,14 +123,27 @@ public class UIController : MonoBehaviour
         this.scoreText.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Show the level text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
     public void ShowLevel(string text)
     {
         this.levelText.text = text;
         this.levelText.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Hide the level text
+    /// </summary>
     public void HideLevel()
     {
         this.levelText.gameObject.SetActive(false);
+    }
+
+    void Start()
+    {
+        this.levelUpText.gameObject.SetActive(true);
+        this.pauseCanvas.enabled = false;
     }
 }
