@@ -1,37 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices;
 using Unity.MLAgents.Policies;
 using Unity.Barracuda;
 using System.Threading.Tasks;
 
 public class AgentBehavior : Agent
 {
-    private float speed = 10.0f;
     
     [Tooltip("Sets the GameManager object")]
     public GameManager gameManager;
-    
     [Tooltip("Sets the BallBehavior script")]
     public BallBehavior ballBehavior;
+
+    // Game dynamic variables
     private ScreenPosition screenPosition;
-
     private BehaviorParameters behaviorParameters;
-
+    private float speed = 10.0f;
     private float minX;
     private float maxX;
-
     private float paddleWidth = 2.0f;
-    
-    [Tooltip("Sets the paddle frozen state")]
     private bool frozen = true;            // determines if the paddle is frozen or not
-
     private bool trainingMode;
     private PolygonCollider2D paddleCollider;
     private Rigidbody2D ballRd;
@@ -41,19 +31,12 @@ public class AgentBehavior : Agent
     private float ballHitReward = 0.1f;
     private float brickDestoryedReward = 1f;
 
-    public void Start()
-    {   
-        // Not used        
-    }
-
-    void Update()
-    {
-        RequestDecision();
-    }
-
+    /// <summary>
+    /// Sets X travel limits based upon screen position
+    /// </summary>
     public void SetScreenPosition()
     {
-        this.screenPosition = this.gameManager.screenPosition;        
+        this.screenPosition = this.gameManager.GetScreenPosition();        
         float vertExtent = Camera.main.orthographicSize;
         float horzExtent = vertExtent * Screen.width / Screen.height;
         // Left game
@@ -76,21 +59,6 @@ public class AgentBehavior : Agent
             this.minX = -horzExtent / 2f;
             this.maxX = horzExtent / 2f;
             //this.transform.position = new Vector2(0f, -4f);
-        }
-    }
-
-    public void Configure(string model_path)
-    {
-        this.behaviorParameters = GetComponent<BehaviorParameters>();
-        if(this.gameManager.playerType == PlayerType.Agent)
-        {
-            behaviorParameters.BehaviorType = BehaviorType.Default;
-            NNModel model = Resources.Load<NNModel>(model_path);
-            this.SetModel("AgentBehavior", model);
-        }
-        else
-        {
-            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
         }
     }
 
@@ -119,6 +87,16 @@ public class AgentBehavior : Agent
     }
 
     /// <summary>
+    /// Scales the paddle width
+    /// </summary>
+    /// <param name="change">The delta change in local scale of paddle width</param>
+    public void ChangePaddleScale(float change){
+        transform.localScale = new Vector3(paddleWidth - change, 
+                                transform.localScale.y, 
+                                transform.localScale.z);
+    }
+
+    /// <summary>
     /// Freezes the paddle movement
     /// </summary>
     public void Freeze()
@@ -135,35 +113,22 @@ public class AgentBehavior : Agent
     }
 
     /// <summary>
-    /// Give negative reward for losing a ball
+    /// Sets the neural network model for the agent
     /// </summary>
-    public void BallLost()
+    /// <param name="model_path">The path to the trained neural network model</param>
+    public void Configure(string model_path)
     {
-        this.AddReward(this.ballLostReward);
-    }
-
-    /// <summary>
-    /// Give positive reward for breaking a brick
-    /// </summary>
-    public void BrickDestoryed()
-    {
-        this.AddReward(this.brickDestoryedReward);
-    }
-
-    /// <summary>
-    /// Give a very small reward for keeping the ball moving
-    /// </summary>
-    public void BallMoving()
-    {
-        this.AddReward(this.ballMovingReward);
-    }
-
-    /// <summary>
-    /// Ends the training episode
-    /// </summary>
-    public void EndTrainingEpisode()
-    {
-        this.EndEpisode();
+        this.behaviorParameters = GetComponent<BehaviorParameters>();
+        if(this.gameManager.playerType == PlayerType.Agent)
+        {
+            behaviorParameters.BehaviorType = BehaviorType.Default;
+            NNModel model = Resources.Load<NNModel>(model_path);
+            this.SetModel("AgentBehavior", model);
+        }
+        else
+        {
+            behaviorParameters.BehaviorType = BehaviorType.HeuristicOnly;
+        }
     }
 
     /// <summary>
@@ -181,6 +146,7 @@ public class AgentBehavior : Agent
     /// </summary>
     public override async void OnEpisodeBegin()
     {
+        // Slight delay to ensure that game is configured before starting
         await Task.Delay(100);
         this.gameManager.StartGame();
     }
@@ -238,6 +204,46 @@ public class AgentBehavior : Agent
     }
 
     /// <summary>
+    /// Give negative reward for losing a ball
+    /// </summary>
+    public void BallLost()
+    {
+        this.AddReward(this.ballLostReward);
+    }
+
+    /// <summary>
+    /// Give positive reward for breaking a brick
+    /// </summary>
+    public void BrickDestoryed()
+    {
+        this.AddReward(this.brickDestoryedReward);
+    }
+
+    /// <summary>
+    /// Give a very small reward for keeping the ball moving
+    /// </summary>
+    public void BallMoving()
+    {
+        this.AddReward(this.ballMovingReward);
+    }
+
+    /// <summary>
+    /// Ends the training episode
+    /// </summary>
+    public void EndTrainingEpisode()
+    {
+        this.EndEpisode();
+    }
+
+    /// <summary>
+    /// Request an agent decision for each frame
+    /// </summary>
+    void Update()
+    {
+        RequestDecision();
+    }
+
+    /// <summary>
     /// Give a small reward for bouncing the ball
     /// </summary>
     /// <param name="collision">Collision event between GameObjects</param>
@@ -249,9 +255,4 @@ public class AgentBehavior : Agent
         }
     }
 
-    public void ChangePaddleScale(float change){
-        transform.localScale = new Vector3(paddleWidth - change, 
-                                transform.localScale.y, 
-                                transform.localScale.z);
-    }
 }

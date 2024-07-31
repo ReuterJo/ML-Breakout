@@ -6,8 +6,28 @@
             "date": "07-30-2024"
         },
         {
+            "name": "Fancy",
+            "score": 5061,
+            "date": "07-30-2024"
+        },
+        {
+            "name": "Jonathan",
+            "score": 2556,
+            "date": "07-30-2024"
+        },
+        {
+            "name": "PizzaCake",
+            "score": 1148,
+            "date": "07-30-2024"
+        },
+        {
             "name": "Cake",
             "score": 949,
+            "date": "07-30-2024"
+        },
+        {
+            "name": "Wonderful",
+            "score": 906,
             "date": "07-30-2024"
         },
         {
@@ -18,26 +38,6 @@
         {
             "name": "Ben",
             "score": 835,
-            "date": "07-30-2024"
-        },
-        {
-            "name": "Unknown",
-            "score": 711,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "JoelS",
-            "score": 190,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "JoelS",
-            "score": 170,
-            "date": "07-29-2024"
-        },
-        {
-            "name": "Pizza",
-            "score": 170,
             "date": "07-30-2024"
         }
     ]

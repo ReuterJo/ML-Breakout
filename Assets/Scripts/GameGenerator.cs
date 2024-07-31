@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameGenerator : MonoBehaviour
 {
-
     // Game Objects
     public GameObject gamePrefab;
     public Canvas menuCanvas;
@@ -27,7 +23,6 @@ public class GameGenerator : MonoBehaviour
     private GameManager gameManager1;
     private GameObject game2;
     private GameManager gameManager2;
-
 
     public void SinglePlayer()
     {
@@ -89,31 +84,30 @@ public class GameGenerator : MonoBehaviour
         SceneManager.LoadScene("gameGenerator");
     }
 
-    public void StartGame()
+    public void Restart()
     {
-        this.menuCanvas.enabled = false;
-        this.SetAgentModel();
-        this.GenerateGame();
+        this.Reset();
+        this.StartGame();
     }
 
-
-    public void Start()
+    void Start()
     {
         this.menuCanvas.enabled = true;
         this.aboutCanvas.enabled = false;
         this.leaderboardCanvas.enabled = false;
     }
 
-    public void Reset()
+    void StartGame()
+    {
+        this.menuCanvas.enabled = false;
+        this.SetAgentModel();
+        this.GenerateGame();
+    }
+
+    void Reset()
     {
         if (game1 != null) Destroy(game1);
         if (game2 != null) Destroy(game2);
-    }
-
-    public void Restart()
-    {
-        this.Reset();
-        this.StartGame();
     }
 
     void SetAgentModel()

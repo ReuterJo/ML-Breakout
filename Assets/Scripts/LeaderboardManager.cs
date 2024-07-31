@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class LeaderboardManager : MonoBehaviour
@@ -14,12 +13,14 @@ public class LeaderboardManager : MonoBehaviour
     public TMP_InputField playerNameInput;
     public Button resetButton;
     public Button submitButton;
+
     private List<PlayerScore> leaderboard;
     private int minScore;
     private int tempScore;
     
-
-    // create PlayerScore class to store and serialize scores
+    /// <summary>
+    /// Create PlayerScore class to store and serialize scores
+    /// </summary>
     [System.Serializable]
     public class PlayerScore
     {
@@ -28,24 +29,18 @@ public class LeaderboardManager : MonoBehaviour
         public string date;
     }
 
-    // create Leaderboard class to store and serialize score list
+    /// <summary>
+    /// Create Leaderboard class to store and serialize score list
+    /// </summary>
     [System.Serializable]
     public class Leaderboard
     {
         public List<PlayerScore> scores;
     }
 
-    void Start()
-    {
-        this.LoadLeaderboard();
-        this.PopulateLeaderBoard();
-        this.playerNameInput.gameObject.SetActive(false);
-        this.submitButton.gameObject.SetActive(false);
-        submitButton.onClick.AddListener(() => {
-            SetPlayerName();
-        });
-    }
-
+    /// <summary>
+    /// Load existing leadboard from file
+    /// </summary>
     public void LoadLeaderboard()
     {
         if (File.Exists(this.leaderboardJsonFilePath))
@@ -73,6 +68,36 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add a score to the leaderboard
+    /// </summary>
+    /// <param name="score">The score to be added</param>
+    public void AddScore(int score)
+    {
+        // Add score if it is above the minimum or if less than 8 total scores
+        if (score > this.minScore || this.leaderboard.Count < 8)
+        {
+            this.playerNameInput.gameObject.SetActive(true);
+            this.submitButton.gameObject.SetActive(true);
+            this.tempScore = score;
+        }
+        this.LoadLeaderboard();
+        this.PopulateLeaderBoard();
+    }
+
+    /// <summary>
+    /// Save the leaderboard to file
+    /// </summary>
+    public void SaveLeaderboard()
+    {
+        Leaderboard leaderboardData = new Leaderboard { scores = leaderboard };
+        string json = JsonUtility.ToJson(leaderboardData, true);
+        File.WriteAllText(this.leaderboardJsonFilePath, json);
+    }
+
+    /// <summary>
+    /// Populate the leadboard text
+    /// </summary>
     private void PopulateLeaderBoard()
     {
         this.leaderboardText.text = "";
@@ -85,6 +110,9 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Accept a player name for the leadboard entry
+    /// </summary>
     private void SetPlayerName()
     {
         if (playerNameInput.text == "") playerNameInput.text = "Unknown";
@@ -107,23 +135,14 @@ public class LeaderboardManager : MonoBehaviour
         this.PopulateLeaderBoard();
     }
 
-    public void AddScore(int score)
+    void Start()
     {
-        // Add score if it is above the minimum or if less than 8 total scores
-        if (score > this.minScore || this.leaderboard.Count < 8)
-        {
-            this.playerNameInput.gameObject.SetActive(true);
-            this.submitButton.gameObject.SetActive(true);
-            this.tempScore = score;
-        }
         this.LoadLeaderboard();
         this.PopulateLeaderBoard();
-    }
-
-    public void SaveLeaderboard()
-    {
-        Leaderboard leaderboardData = new Leaderboard { scores = leaderboard };
-        string json = JsonUtility.ToJson(leaderboardData, true);
-        File.WriteAllText(this.leaderboardJsonFilePath, json);
+        this.playerNameInput.gameObject.SetActive(false);
+        this.submitButton.gameObject.SetActive(false);
+        submitButton.onClick.AddListener(() => {
+            SetPlayerName();
+        });
     }
 }
