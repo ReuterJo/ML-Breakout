@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; 
+using UnityEngine.SceneManagement;
 
 public class LeaderboardManager : MonoBehaviour
 {
@@ -147,11 +148,16 @@ public class LeaderboardManager : MonoBehaviour
         submitButton.onClick.AddListener(() => {
             SetPlayerName();
         });
-        this.leaderboardCanvas.enabled = false;
+        this.leaderboardCanvas.enabled = true;
     }
 
     public void HideLeaderboard()
     {
         this.leaderboardCanvas.enabled = false;
+    }
+
+        public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
