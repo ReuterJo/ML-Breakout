@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     private bool levelUpTextActive = false;
     private float levelUpTextStartTime;
 
-    private bool changeLevel = false;
+    private bool generateBricks = false;
 
     /// <summary>
     /// The current game state
@@ -128,12 +128,11 @@ public class GameManager : MonoBehaviour
                 // decrement level by one to generate correct level
                 this.level -= 1;
                 this.ChangeLevel();
+                this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
             }
             
             this.uiController.ShowLevel("Level " + level.ToString());
         }
-
-
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
@@ -144,8 +143,6 @@ public class GameManager : MonoBehaviour
 
         // Begin the level timer
         this.levelStartTime = Time.time;
-
-
 
 /*         // Begin countdown timer if not in training
          if (!training_mode)
@@ -239,8 +236,6 @@ public class GameManager : MonoBehaviour
             // Check if the leaderboard needs to be updated
             this.leaderboardManager.AddScore(this.score);
         }
-
-
     }
 
     /// <summary>
@@ -304,19 +299,23 @@ public class GameManager : MonoBehaviour
                     if (!this.training_mode) EndGame();
                     else this.agentBehavior.EndTrainingEpisode();  
                 }
-                // move to the next level
+                // check for move to next level
                 else
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
                         // change game dynamics and points immediately
-                        this.ChangeLevel();
-                        this.changeLevel = true;
+                        if (!this.generateBricks)
+                        {
+                            this.ChangeLevel();
+                            this.generateBricks = true;
+                        }
                     }
                     // change bricks once ball is out of brick generator area
-                    else if (this.changeLevel && ballBehavior.GetBallYPosition() < 0.0f)
+                    if (this.generateBricks && ballBehavior.GetBallYPosition() < 0.0f)
                     {
                         this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                        this.generateBricks = false;
                     }
                 }
             }
@@ -354,6 +353,7 @@ public class GameManager : MonoBehaviour
         // show level up text
         this.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus);
 
+        Debug.Log("Changed Level");
     }
 
     private void ShowLevelUpText(string text)
@@ -368,8 +368,6 @@ public class GameManager : MonoBehaviour
         this.uiController.HideLevelUpText();
         this.levelUpTextActive = false;
     }
-
-
 
     public void RestartGame()
     {

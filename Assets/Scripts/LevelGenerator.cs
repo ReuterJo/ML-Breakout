@@ -11,7 +11,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject brickPrefab;
     public Gradient gradient;
     public int layer = 0; // for default layer
-    private List<GameObject> brickList;
+    private List<GameObject> brickList = null;
 
     public int ChangeLevel(int level)
     {
@@ -21,7 +21,7 @@ public class LevelGenerator : MonoBehaviour
         }
         else if (level == 2) 
         {
-            return 27;
+            return this.getBrickCount();
         }
         else if (level == 3) 
         {
@@ -38,7 +38,7 @@ public class LevelGenerator : MonoBehaviour
             this.DeconstructLevel();
             this.GenerateLevelFive();
         }
-        return this.brickList.Count;
+        return this.getBrickCount();
     }
 
 
@@ -156,11 +156,14 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     public void DeconstructLevel()
     {
-        foreach (GameObject brick in this.brickList)
+        if (brickList != null)
         {
-            if (!brick.IsDestroyed()) Destroy(brick);
+            foreach (GameObject brick in this.brickList)
+            {
+                if (!brick.IsDestroyed()) Destroy(brick);
+            }
+            this.brickList.Clear();
         }
-        this.brickList.Clear();
     }
 
     public int getBrickCount()
@@ -168,7 +171,6 @@ public class LevelGenerator : MonoBehaviour
         int count = 0;
         foreach (GameObject brick in this.brickList)
         {
-
             if (!brick.IsDestroyed()) count++;
         }
         return count;
