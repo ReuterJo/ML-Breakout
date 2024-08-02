@@ -59,6 +59,10 @@ public class GameManager : MonoBehaviour
     private float levelPointMultiplier = 1.5f;
     private float levelPaddleSizeSubtractor = 0.15f;
     private float levelBonusMultiplier = 1.5f;
+    private bool levelUpTextActive = false;
+    private float levelUpTextStartTime;
+
+    private bool changeLevel = false;
 
     /// <summary>
     /// The current game state
@@ -95,7 +99,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Starts the game
     /// </summary>
-    public async void StartGame()
+    public void StartGame()
     {
         // Set the game state to preparing
         State = GameState.Preparing;
@@ -117,7 +121,7 @@ public class GameManager : MonoBehaviour
             if (this.level == 1)
             {
                 this.bricksRemaining = levelGenerator.ChangeLevel(level);
-                this.uiController.ShowLevelUpText("Level " + level.ToString());
+                this.ShowLevelUpText("Level " + level.ToString());
             }
             else
             {
@@ -129,12 +133,7 @@ public class GameManager : MonoBehaviour
             this.uiController.ShowLevel("Level " + level.ToString());
         }
 
-        // Begin countdown timer if not in training
-        if (training_mode)
-        {
-        this.uiController.CountdownTimer(this.playerType);
-        await Task.Delay(5000);
-        }
+
 
         // Update lives and score
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
@@ -145,6 +144,24 @@ public class GameManager : MonoBehaviour
 
         // Begin the level timer
         this.levelStartTime = Time.time;
+
+
+
+/*         // Begin countdown timer if not in training
+         if (!training_mode)
+        {
+            int counter = 5;
+            string player = "Player Game\nStarting In:\n";
+            if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
+            while (counter != 0)
+            {
+                this.uiController.ShowLevelUpText(player + counter);
+                await Task.Delay(1000);
+                counter--;
+            }
+            this.uiController.HideLevelUpText();
+        } */
+
 
         // Reset paddle ball
         this.ballBehavior.Reset();
@@ -215,7 +232,7 @@ public class GameManager : MonoBehaviour
 
         if (playerType == PlayerType.Agent)
         {
-            this.uiController.ShowLevelUpText("Game Ended");
+            this.ShowLevelUpText("Game Ended");
         }
         else
         {
@@ -244,10 +261,21 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Hide level up text if shown
+        if (this.levelUpTextActive && Time.time - levelUpTextStartTime >= 2f) this.HideLevelUpText();
+
         if (State == GameState.Playing)
         {
             // Reward agent for ball moving
             if (this.ballRb.velocity.magnitude > 0) this.agentBehavior.BallMoving();
+
+            // Check to see if the player has lost all lives
+            if (this.lives == 0)
+            {
+                if (!this.training_mode) EndGame();
+                else this.agentBehavior.EndTrainingEpisode();   
+            }
+            this.bricksRemaining = levelGenerator.getBrickCount();
 
             // Check to see if the player has lost all lives
             if (this.lives == 0)
@@ -281,11 +309,14 @@ public class GameManager : MonoBehaviour
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
-                        if (ballBehavior.GetBallYPosition() < 0.0f)
-                        {
-                            this.ChangeLevel();
-                        }
-
+                        // change game dynamics and points immediately
+                        this.ChangeLevel();
+                        this.changeLevel = true;
+                    }
+                    // change bricks once ball is out of brick generator area
+                    else if (this.changeLevel && ballBehavior.GetBallYPosition() < 0.0f)
+                    {
+                        this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
                     }
                 }
             }
@@ -317,15 +348,28 @@ public class GameManager : MonoBehaviour
         // change ball velocity
         this.ballBehavior.ChangeBallVelocity();
 
-        // generate blocks
-        this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
-
         // update level UI display
         this.uiController.ShowLevel("Level " + this.level.ToString());
 
         // show level up text
-        StartCoroutine(this.uiController.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus));
+        this.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus);
+
     }
+
+    private void ShowLevelUpText(string text)
+    {
+        this.uiController.ShowLevelUpText(text);
+        this.levelUpTextActive = true;
+        this.levelUpTextStartTime = Time.time;
+    }
+
+    private void HideLevelUpText()
+    {
+        this.uiController.HideLevelUpText();
+        this.levelUpTextActive = false;
+    }
+
+
 
     public void RestartGame()
     {

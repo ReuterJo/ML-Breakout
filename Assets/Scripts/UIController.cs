@@ -33,26 +33,14 @@ public class UIController : MonoBehaviour
         this.livesText.gameObject.SetActive(true);
     }
 
-    public IEnumerator ShowLevelUpText(string text)
+    public void ShowLevelUpText(string text)
     {
         this.levelUpText.text = text;
         this.levelUpText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        this.levelUpText.gameObject.SetActive(false);
     }
 
-    public async void CountdownTimer(PlayerType playerType)
+    public void HideLevelUpText()
     {
-        int counter = 5;
-        string player = "Player Game\nStarting In:\n";
-        if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
-        this.levelUpText.gameObject.SetActive(true);
-        while (counter != 0)
-        {
-            this.levelUpText.text = player + counter;
-            await Task.Delay(1000);
-            counter--;
-        }
         this.levelUpText.gameObject.SetActive(false);
     }
 
