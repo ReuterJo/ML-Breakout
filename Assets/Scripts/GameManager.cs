@@ -203,14 +203,16 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
+        if (this.playerType == PlayerType.Player) this.uiController.ShowPauseCanvas();
     }
 
-    private void ResumeGame()
+    public void ResumeGame()
     {
         State = GameState.Playing;
         Time.timeScale = 1f;
         this.ballBehavior.Unfreeze();
         this.agentBehavior.Unfreeze();
+        if (this.playerType == PlayerType.Player) this.uiController.HidePauseCanvas();
     }
 
     /// <summary>
@@ -218,23 +220,55 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
-        // Set the game state to game over
-        State = GameState.Gameover;
 
-        // Deconstruct level
-
-        // Freeze player and ball
-        this.ballBehavior.Freeze();
-        this.agentBehavior.Freeze();
-
-        if (playerType == PlayerType.Agent)
+        if (this.playerType == PlayerType.Player)
         {
-            this.ShowLevelUpText("Game Ended");
+            // Pause Player Game
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            State = GameState.Paused;
+
+            // Player completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                this.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            }
+            // Two Player Winner Display
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.ShowLevelUpText("Agent Wins!");
+                else this.ShowLevelUpText("Player Wins!");
+            }
+            // Single Player Game Over Display
+            else
+            {
+                this.ShowLevelUpText("Game Over!");
+            }
+
+            State = GameState.Gameover;
+            Time.timeScale = 0f;
+            
+            // Check if the leaderboard needs to be updated
+            this.leaderboardManager.AddScore(this.score);
         }
         else
         {
-            // Check if the leaderboard needs to be updated
-            this.leaderboardManager.AddScore(this.score);
+            this.ballBehavior.Freeze();
+            this.agentBehavior.Freeze();
+            // Agent completed game - apply ball bonus
+            if (level == 5 && bricksRemaining == 0)
+            {
+                int ballBonus = this.lives - 1 * 1000;
+                this.score += ballBonus;
+                this.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
+            }
+            if (opponentGame != null)
+            {
+                if (opponentGame.GetScore() > this.score) this.ShowLevelUpText("Agent Wins!");
+                else this.ShowLevelUpText("Player Wins!");
+            }
         }
     }
 
@@ -371,10 +405,22 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        // Unfreeze objects before restart
+        this.ResumeGame();
         // Reload scene to restart game
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
         this.StartGame();
+    }
+
+    public int GetScore()
+    {
+        return this.score;
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
 }
