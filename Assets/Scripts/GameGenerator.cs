@@ -115,7 +115,7 @@ public class GameGenerator : MonoBehaviour
         switch (this.difficulty)
         {
             case Difficulty.Beginner:
-                this.model_path = "NNModels/Train80k";
+                this.model_path = "NNModels/Train140k";
                 break;
             case Difficulty.Intermediate:
                 this.model_path = "NNModels/Train160k";
