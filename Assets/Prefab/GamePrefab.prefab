@@ -1513,6 +1513,10 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7749540596127615184, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8518296966299737913, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
       propertyPath: m_SortingLayer
       value: 0
