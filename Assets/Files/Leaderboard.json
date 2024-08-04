@@ -6,6 +6,11 @@
             "date": "07-30-2024"
         },
         {
+            "name": "Pizzacake",
+            "score": 9153,
+            "date": "08-04-2024"
+        },
+        {
             "name": "Fancy",
             "score": 5061,
             "date": "07-30-2024"
@@ -34,11 +39,6 @@
             "name": "Wonderful",
             "score": 906,
             "date": "07-30-2024"
-        },
-        {
-            "name": "JoelS",
-            "score": 851,
-            "date": "07-29-2024"
         }
     ]
 }
