@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     private float levelBonusMultiplier = 1.5f;
     private bool levelUpTextActive = false;
     private float levelUpTextStartTime;
+    private int countdownTimer;
     private bool generateBricks = false;
 
     /// <summary>
@@ -140,9 +141,6 @@ public class GameManager : MonoBehaviour
         if (debug) this.levelText.gameObject.SetActive(true);
         else this.levelText.gameObject.SetActive(true);
 
-        // Begin the level timer
-        this.levelStartTime = Time.time;
-
 /*         // Begin countdown timer if not in training
          if (!training_mode)
         {
@@ -162,13 +160,11 @@ public class GameManager : MonoBehaviour
         // Reset paddle ball
         this.ballBehavior.Reset();
         this.agentBehavior.Reset();
+        this.ballBehavior.Freeze();
+        this.agentBehavior.Freeze();
 
-        // Unfreeze player and ball
-        this.ballBehavior.Unfreeze();
-        this.agentBehavior.Unfreeze();
-
-        // Set the game state to playing
-        State = GameState.Playing;
+        this.countdownTimer = 5;
+        this.levelUpTextStartTime = Time.time;
     }
 
     private void Awake()
@@ -280,6 +276,41 @@ public class GameManager : MonoBehaviour
             else
             {
                 ResumeGame();
+            }
+        }
+
+        // single threaded countdown timer 
+        if (this.countdownTimer >= 0)
+        {
+            // count down function
+            if (this.countdownTimer > 0)
+            {
+                this.leaderboardManager.HideLeaderboard();
+                string player = "Player Game\nStarting In:\n";
+                if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
+                this.uiController.ShowLevelUpText(player + this.countdownTimer);
+                this.levelUpTextActive = true;
+                if (Time.time - this.levelUpTextStartTime >= 1f) 
+                {
+                    this.countdownTimer -= 1;
+                    this.levelUpTextStartTime = Time.time;
+                }
+            }
+            // end countdown and begin game
+            else
+            {
+                this.HideLevelUpText();
+                this.countdownTimer -= 1;
+
+                // Unfreeze player and ball
+                this.ballBehavior.Unfreeze();
+                this.agentBehavior.Unfreeze();
+
+                // Set the game state to playing
+                State = GameState.Playing;
+
+                // Begin the level timer
+                this.levelStartTime = Time.time;
             }
         }
 
