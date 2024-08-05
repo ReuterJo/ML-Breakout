@@ -27,6 +27,8 @@ public class BallBehavior : MonoBehaviour
     private bool frozen = true;
     private AudioSource ballAudio;
 
+    private Vector2 previousVelocity;
+
 
     void Start()
     // Loads the ball component and sets the ball starting position at the start of the game
@@ -111,6 +113,7 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Freeze()
     {
+        this.previousVelocity = this.ball.velocity;
         this.frozen = true;
     }
 
@@ -119,6 +122,7 @@ public class BallBehavior : MonoBehaviour
     /// </summary>
     public void Unfreeze()
     {
+        this.ball.velocity = this.previousVelocity;
         this.frozen = false;
     }
 

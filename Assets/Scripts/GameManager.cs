@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
     private float levelBonusMultiplier = 1.5f;
     private bool levelUpTextActive = false;
     private float levelUpTextStartTime;
-
     private bool generateBricks = false;
 
     /// <summary>
@@ -401,6 +400,7 @@ public class GameManager : MonoBehaviour
     {
         // Unfreeze objects before restart
         this.ResumeGame();
+        Destroy(this);
         // Reload scene to restart game
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);
@@ -414,6 +414,8 @@ public class GameManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
+        this.ResumeGame();
+        Destroy(this);
         SceneManager.LoadScene("MainMenu");
     }
 
