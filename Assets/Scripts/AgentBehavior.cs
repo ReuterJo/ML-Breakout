@@ -27,7 +27,7 @@ public class AgentBehavior : Agent
     private Rigidbody2D ballRd;
     private float colliderWidth;
     private float ballLostReward = -5f;
-    private float ballMovingReward = 0.001f;
+    private float ballMovingReward = -0.001f;
     private float ballHitReward = 0.1f;
     private float brickDestoryedReward = 1f;
 
