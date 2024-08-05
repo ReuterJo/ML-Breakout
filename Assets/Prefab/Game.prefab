@@ -255,9 +255,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5503931751980190907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ResumeGame
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Resume Game
+  m_text: Press ESC to Resume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7808d6c8514354f22991c3364ab97811, type: 2}
   m_sharedMaterial: {fileID: -5015561764870224393, guid: 7808d6c8514354f22991c3364ab97811, type: 2}

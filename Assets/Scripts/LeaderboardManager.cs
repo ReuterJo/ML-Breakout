@@ -6,6 +6,26 @@ using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Create PlayerScore class to store and serialize scores
+/// </summary>
+[System.Serializable]
+public class PlayerScore
+{
+    public string name;
+    public int score;
+    public string date;
+}
+
+/// <summary>
+/// Create Leaderboard class to store and serialize score list
+/// </summary>
+[System.Serializable]
+public class Leaderboard
+{
+    public List<PlayerScore> scores;
+}
+
 public class LeaderboardManager : MonoBehaviour
 {
     public string leaderboardJsonFilePath = "Assets/Files/Leaderboard.json";
@@ -20,26 +40,7 @@ public class LeaderboardManager : MonoBehaviour
     private int tempScore;
 
     public Canvas leaderboardCanvas;
-    
-    /// <summary>
-    /// Create PlayerScore class to store and serialize scores
-    /// </summary>
-    [System.Serializable]
-    public class PlayerScore
-    {
-        public string name;
-        public int score;
-        public string date;
-    }
 
-    /// <summary>
-    /// Create Leaderboard class to store and serialize score list
-    /// </summary>
-    [System.Serializable]
-    public class Leaderboard
-    {
-        public List<PlayerScore> scores;
-    }
 
     /// <summary>
     /// Load existing leadboard from file

@@ -1517,6 +1517,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5709153462145927966, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: fca1ec097e8b84c6386d1b88de6b12dc, type: 3}
+    - target: {fileID: 5709153462145927966, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: m_BehaviorType
       value: 0
       objectReference: {fileID: 0}

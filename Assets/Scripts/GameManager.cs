@@ -175,6 +175,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         this.ballRb = ballBehavior.GetComponent<Rigidbody2D>();
+        this.leaderboardManager.HideLeaderboard();
+        this.uiController.HidePauseCanvas();
     }
 
         /// <summary>
@@ -257,17 +259,9 @@ public class GameManager : MonoBehaviour
         {
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
-            // Agent completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
-            {
-                int ballBonus = this.lives - 1 * 1000;
-                this.score += ballBonus;
-                this.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString());
-            }
             if (opponentGame != null)
             {
-                if (opponentGame.GetScore() > this.score) this.ShowLevelUpText("Agent Wins!");
-                else this.ShowLevelUpText("Player Wins!");
+                this.ShowLevelUpText("Game Over");
             }
         }
     }
