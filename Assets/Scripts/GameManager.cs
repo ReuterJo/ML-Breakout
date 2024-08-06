@@ -108,7 +108,6 @@ public class GameManager : MonoBehaviour
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
-        this.leaderboardManager.HideLeaderboard();
 
         // Generate level
 
@@ -141,22 +140,6 @@ public class GameManager : MonoBehaviour
 
         if (debug) this.levelText.gameObject.SetActive(true);
         else this.levelText.gameObject.SetActive(true);
-
-/*         // Begin countdown timer if not in training
-         if (!training_mode)
-        {
-            int counter = 5;
-            string player = "Player Game\nStarting In:\n";
-            if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
-            while (counter != 0)
-            {
-                this.uiController.ShowLevelUpText(player + counter);
-                await Task.Delay(1000);
-                counter--;
-            }
-            this.uiController.HideLevelUpText();
-        } */
-
 
         // Reset paddle ball
         this.ballBehavior.Reset();
@@ -309,90 +292,97 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        // Check if the Escape key is pressed to pause/unpause game
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (State == GameState.Playing)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
-            }
-        }
+
 
         // single threaded countdown timer 
-        if (this.countdownTimer >= 0) this.Countdown();
-
-        // Hide level up text if shown
-        if (this.levelUpTextActive && Time.time - levelUpTextStartTime >= 2f) this.HideLevelUpText();
-
-        if (State == GameState.Playing)
+        if (this.countdownTimer >= 0) 
         {
-            // Reward agent for ball moving
-            if (this.ballRb.velocity.magnitude > 0) this.agentBehavior.BallMoving();
-
-            // Check to see if the player has lost all lives
-            if (this.lives == 0)
+            this.Countdown();
+        }
+        else
+        {
+            // Check if the Escape key is pressed to pause/unpause game
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (!this.training_mode) EndGame();
-                else this.agentBehavior.EndTrainingEpisode();   
-            }
-            this.bricksRemaining = levelGenerator.getBrickCount();
-
-            // Check to see if the player has lost all lives
-            if (this.lives == 0)
-            {
-                if (!this.training_mode) EndGame();
-                else this.agentBehavior.EndTrainingEpisode();   
-            }
-            this.bricksRemaining = levelGenerator.getBrickCount();
-
-            // Single level game
-            if (!this.multi_level)
-            {
-                // finished single-level game
-                if (this.bricksRemaining == 0)
+                if (State == GameState.Playing)
                 {
-                    if (!this.training_mode) EndGame();
-                    else this.agentBehavior.EndTrainingEpisode();  
+                    PauseGame();
                 }
-            }
-            // Multi-level game
-            else
-            {
-                // finished multi-level game
-                if (this.bricksRemaining == 0 && this.level == 5)
-                {
-                    if (!this.training_mode) EndGame();
-                    else this.agentBehavior.EndTrainingEpisode();  
-                }
-                // check for move to next level
                 else
                 {
-                    if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
+                    ResumeGame();
+                }
+            }
+
+            // Hide level up text if shown
+            if (this.levelUpTextActive && Time.time - levelUpTextStartTime >= 2f) this.HideLevelUpText();
+
+            if (State == GameState.Playing)
+            {
+                // Reward agent for ball moving
+                if (this.ballRb.velocity.magnitude > 0) this.agentBehavior.BallMoving();
+
+                // Check to see if the player has lost all lives
+                if (this.lives == 0)
+                {
+                    if (!this.training_mode) EndGame();
+                    else this.agentBehavior.EndTrainingEpisode();   
+                }
+                this.bricksRemaining = levelGenerator.getBrickCount();
+
+                // Check to see if the player has lost all lives
+                if (this.lives == 0)
+                {
+                    if (!this.training_mode) EndGame();
+                    else this.agentBehavior.EndTrainingEpisode();   
+                }
+                this.bricksRemaining = levelGenerator.getBrickCount();
+
+                // Single level game
+                if (!this.multi_level)
+                {
+                    // finished single-level game
+                    if (this.bricksRemaining == 0)
                     {
-                        // change game dynamics and points immediately
-                        if (!this.generateBricks)
-                        {
-                            this.ChangeLevel();
-                            this.generateBricks = true;
-                        }
+                        if (!this.training_mode) EndGame();
+                        else this.agentBehavior.EndTrainingEpisode();  
                     }
-                    // change bricks once ball is out of brick generator area
-                    if (this.generateBricks && ballBehavior.GetBallYPosition() < 0.0f)
+                }
+                // Multi-level game
+                else
+                {
+                    // finished multi-level game
+                    if (this.bricksRemaining == 0 && this.level == 5)
                     {
-                        this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
-                        this.generateBricks = false;
+                        if (!this.training_mode) EndGame();
+                        else this.agentBehavior.EndTrainingEpisode();  
+                    }
+                    // check for move to next level
+                    else
+                    {
+                        if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
+                        {
+                            // change game dynamics and points immediately
+                            if (!this.generateBricks)
+                            {
+                                this.ChangeLevel();
+                                this.generateBricks = true;
+                            }
+                        }
+                        // change bricks once ball is out of brick generator area
+                        if (this.generateBricks && ballBehavior.GetBallYPosition() < 0.0f)
+                        {
+                            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                            this.generateBricks = false;
+                        }
                     }
                 }
             }
-        }
-        if (debug)
-        {
-            float seconds = Time.time - this.levelStartTime;
-            this.levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}\nLevel: {this.level}";
+            if (debug)
+            {
+                float seconds = Time.time - this.levelStartTime;
+                this.levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}\nLevel: {this.level}";
+            }
         }
     }
 

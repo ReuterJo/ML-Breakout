@@ -168,11 +168,19 @@ public class LevelGenerator : MonoBehaviour
 
     public int getBrickCount()
     {
-        int count = 0;
-        foreach (GameObject brick in this.brickList)
+        if (this.brickList != null)
         {
-            if (!brick.IsDestroyed()) count++;
+            int count = 0;
+            foreach (GameObject brick in this.brickList)
+            {
+                if (!brick.IsDestroyed()) count++;
+            }
+            return count;
         }
-        return count;
+        else
+        {
+            Debug.Log("brickList is null in the LevelGenerator");
+            return -1;
+        }
     }
 }
