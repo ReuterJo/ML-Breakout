@@ -667,8 +667,8 @@ MonoBehaviour:
     levels, a leaderboard, multiple trained models, and deployment of the game using
     WebGL to Unity Play.  This game demonstrates the learning behavior by offering
     three different levels of model training: \n\n     - Beginner - the ML Agent
-    was trained for 10 minutes.\n     - Intermediate - the ML Agent was trained for
-    20 minutes.\n     - Advanced - the ML Agent was trained for 44 minutes.\n\nThis
+    was trained for 7 minutes.\n     - Intermediate - the ML Agent was trained for
+    11 minutes.\n     - Advanced - the ML Agent was trained for 44 minutes.\n\nThis
     project was developed by Jonathan Reuter (reuterjo@oregonstate.edu), and Joel
     Strong (stronjoe@oregonstate.edu) as part of their Capstone course at Oregon
     State University.  We used a GitHub repository with CI/CD and workflows found

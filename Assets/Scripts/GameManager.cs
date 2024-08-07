@@ -66,6 +66,10 @@ public class GameManager : MonoBehaviour
     private bool generateBricks = false;
     private bool useCountdown = true;
 
+    // audio sources
+    private AudioSource levelUpAudio;
+    private AudioSource lifeLostAudio;
+
     /// <summary>
     /// The current game state
     /// </summary>
@@ -182,6 +186,10 @@ public class GameManager : MonoBehaviour
         this.ballRb = ballBehavior.GetComponent<Rigidbody2D>();
         this.leaderboardManager.HideLeaderboard();
         this.uiController.HidePauseCanvas();
+
+        // configure audio sources
+        this.levelUpAudio = this.transform.Find("LevelUpSFX").GetComponent<AudioSource>();
+        this.lifeLostAudio = this.transform.Find("LifeLostSFX").GetComponent<AudioSource>();
     }
 
         /// <summary>
@@ -202,6 +210,7 @@ public class GameManager : MonoBehaviour
         this.lives--;
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.agentBehavior.BallLost();
+        if(this.playerType == PlayerType.Player) this.lifeLostAudio.Play(0);
     }
 
     private void PauseGame()
@@ -418,6 +427,9 @@ public class GameManager : MonoBehaviour
     {
         // increment level
         this.level += 1;
+
+        // Play level up sound
+        if(this.playerType == PlayerType.Player && this.level > starting_level) this.levelUpAudio.Play(0);
 
         // change brickValue 
         this.brickValue = (int) (this.brickValue * this.level * this.levelPointMultiplier);
