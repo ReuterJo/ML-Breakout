@@ -430,7 +430,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5503931751980190907, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5503931751980190907, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: levelText
@@ -1494,7 +1494,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5503931751980190907, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5503931751980190907, guid: 060f8d5a2469df5668689d523bc7ccee, type: 3}
       propertyPath: levelText

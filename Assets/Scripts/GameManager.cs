@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
     private int countdownTimer;
     private bool countdownHelper;
     private bool generateBricks = false;
+    private bool useCountdown = true;
 
     /// <summary>
     /// The current game state
@@ -104,24 +105,23 @@ public class GameManager : MonoBehaviour
     {
         // Set the game state to preparing
         State = GameState.Preparing;
-        this.level = starting_level;
+        this.level = 1;
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
 
         // Generate level
 
-        if (!multi_level)
+        if (!this.multi_level)
         {
             this.uiController.HideLevel();
-            this.bricksRemaining = levelGenerator.ChangeLevel(level);
+            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
         }
         else
         {
             if (this.level == 1)
             {
-                this.bricksRemaining = levelGenerator.ChangeLevel(level);
-                this.ShowLevelUpText("Level " + level.ToString());
+                this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
             }
             else
             {
@@ -130,16 +130,26 @@ public class GameManager : MonoBehaviour
                 this.ChangeLevel();
                 this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
             }
+            this.ShowLevelUpText("Level " + this.level.ToString());
             
-            this.uiController.ShowLevel("Level " + level.ToString());
+            this.uiController.ShowLevel("Level " + this.level.ToString());
+        }
+
+        if (this.levelGenerator.getBrickCount() == -1)
+        {
+            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+            if (this.playerType == PlayerType.Agent) Debug.Log("Agent restarted with: " + this.bricksRemaining);
+            else Debug.Log("Player restarted with: " + this.bricksRemaining);
         }
 
         // Update lives and score
+        this.leaderboardManager.HideLeaderboard();
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.uiController.ShowScore("Score " + this.score.ToString());
+        this.ShowLevelUpText("Level " + this.level.ToString());
 
         if (debug) this.levelText.gameObject.SetActive(true);
-        else this.levelText.gameObject.SetActive(true);
+        else this.levelText.gameObject.SetActive(false);
 
         // Reset paddle ball
         this.ballBehavior.Reset();
@@ -147,9 +157,24 @@ public class GameManager : MonoBehaviour
         this.ballBehavior.Freeze();
         this.agentBehavior.Freeze();
 
-        this.countdownTimer = 5;
-        this.countdownHelper = true;
-        this.levelUpTextStartTime = Time.time;
+        if (useCountdown)
+        {
+            this.countdownTimer = 5;
+            this.countdownHelper = true;
+            this.levelUpTextStartTime = Time.time;
+        }
+        else
+        {
+            // Unfreeze player and ball
+            this.ballBehavior.Unfreeze();
+            this.agentBehavior.Unfreeze();
+
+            // Set the game state to playing
+            State = GameState.Playing;
+
+            // Begin the level timer
+            this.levelStartTime = Time.time;
+        }
     }
 
     private void Awake()
@@ -202,9 +227,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndGame()
     {
-
         if (this.playerType == PlayerType.Player)
         {
+            Debug.Log("Player End Game");
             // Pause Player Game
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
@@ -237,12 +262,15 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Agent End Game");
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
             if (opponentGame != null)
             {
                 this.ShowLevelUpText("Game Over");
             }
+            State = GameState.Gameover;
+            Time.timeScale = 0f;
         }
     }
 
@@ -264,7 +292,7 @@ public class GameManager : MonoBehaviour
             {
                 this.leaderboardManager.HideLeaderboard();
                 string player = "Player Game\nStarting In:\n";
-                if (playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
+                if (this.playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
                 this.uiController.ShowLevelUpText(player + this.countdownTimer);
                 this.levelUpTextActive = true;
             }
@@ -292,10 +320,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-
-
         // single threaded countdown timer 
-        if (this.countdownTimer >= 0) 
+        if (useCountdown && this.countdownTimer >= 0) 
         {
             this.Countdown();
         }
@@ -315,7 +341,7 @@ public class GameManager : MonoBehaviour
             }
 
             // Hide level up text if shown
-            if (this.levelUpTextActive && Time.time - levelUpTextStartTime >= 2f) this.HideLevelUpText();
+            if (this.levelUpTextActive && Time.time - this.levelUpTextStartTime >= 2f) this.HideLevelUpText();
 
             if (State == GameState.Playing)
             {
@@ -328,15 +354,17 @@ public class GameManager : MonoBehaviour
                     if (!this.training_mode) EndGame();
                     else this.agentBehavior.EndTrainingEpisode();   
                 }
-                this.bricksRemaining = levelGenerator.getBrickCount();
 
-                // Check to see if the player has lost all lives
-                if (this.lives == 0)
-                {
-                    if (!this.training_mode) EndGame();
-                    else this.agentBehavior.EndTrainingEpisode();   
-                }
+                // Get current brick count
                 this.bricksRemaining = levelGenerator.getBrickCount();
+                
+                if (this.levelGenerator.getBrickCount() == -1)
+                {
+                    this.level = 1;
+                    this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                    if (this.playerType == PlayerType.Agent) Debug.Log("Agent level reloaded: " + this.level);
+                    else Debug.Log("Player level reloaded " + this.level);
+                }
 
                 // Single level game
                 if (!this.multi_level)
@@ -378,11 +406,11 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-            if (debug)
-            {
-                float seconds = Time.time - this.levelStartTime;
-                this.levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}\nLevel: {this.level}";
-            }
+        }
+        if (this.debug)
+        {
+            float seconds = Time.time - this.levelStartTime;
+            this.levelText.text = $"Bricks: {this.bricksRemaining}\nTime: {seconds:F2}\nLevel: {this.level}";
         }
     }
 

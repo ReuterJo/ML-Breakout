@@ -59,7 +59,6 @@ public class LevelGenerator : MonoBehaviour
     }
 
     public void GenerateLevelTwo()
-    // ChangeLevel(int pointMultiplier, int maxBonusPoints, float decreasePaddlePercent, float increaseBallVelocityPercent)
     {
         // blocks stay in play, game behavior attributes change
     }
