@@ -53,6 +53,18 @@ public class UIController : MonoBehaviour
     }
 
     /// <summary>
+    /// Show the level up text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
+    /// <param name="seconds">The duration for which the text is visible</param>
+    /// <returns></returns>
+    public void ShowEndGameText(string text)
+    {
+        this.levelUpText.text = text;
+        this.levelUpText.gameObject.SetActive(true);
+    }
+
+    /// <summary>
     /// Display the countdown timer
     /// </summary>
     /// <param name="playerType">The type of player</param>
