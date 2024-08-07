@@ -12,7 +12,7 @@ public class BallBehavior : MonoBehaviour
  */
 {
     private float minY = -5.5f;
-    private float maxVelocity = 8.0f;
+    private float maxVelocity = 7.0f;
     private float minVelocityY = 3.5f;
     
     [Tooltip("Sets the game manager object")]

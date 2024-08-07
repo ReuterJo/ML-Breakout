@@ -444,7 +444,6 @@ public class GameManager : MonoBehaviour
         // show level up text
         this.ShowLevelUpText("Starting Level " + this.level.ToString() + "\nBonus: " + bonus);
 
-        Debug.Log("Changed Level");
     }
 
     private void ShowLevelUpText(string text)
