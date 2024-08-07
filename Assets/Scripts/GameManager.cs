@@ -23,9 +23,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("Sets the LevelGenerator script")]
     public LevelGenerator levelGenerator;
 
-    [Tooltip("Sets the LeaderboardManager script")]
-    public LeaderboardManager leaderboardManager;
-
     [Tooltip("Sets the game manager object for this game")]
     public GameManager thisGame;
 
@@ -64,7 +61,7 @@ public class GameManager : MonoBehaviour
     private int countdownTimer;
     private bool countdownHelper;
     private bool generateBricks = false;
-    private bool useCountdown = true;
+    private bool useCountdown = false;
 
     // audio sources
     private AudioSource levelUpAudio;
@@ -147,7 +144,6 @@ public class GameManager : MonoBehaviour
         }
 
         // Update lives and score
-        this.leaderboardManager.HideLeaderboard();
         this.uiController.ShowLives(this.lives.ToString() + " Lives");
         this.uiController.ShowScore("Score " + this.score.ToString());
         this.ShowLevelUpText("Level " + this.level.ToString());
@@ -184,7 +180,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         this.ballRb = ballBehavior.GetComponent<Rigidbody2D>();
-        this.leaderboardManager.HideLeaderboard();
         this.uiController.HidePauseCanvas();
 
         // configure audio sources
@@ -266,8 +261,8 @@ public class GameManager : MonoBehaviour
             State = GameState.Gameover;
             Time.timeScale = 0f;
             
-            // Check if the leaderboard needs to be updated
-            this.leaderboardManager.AddScore(this.score);
+            // ENABLED PAUSE MENU BUTTONS AT END OF GAME
+            this.PauseGame();
         }
         else
         {
@@ -278,8 +273,6 @@ public class GameManager : MonoBehaviour
             {
                 this.ShowLevelUpText("Game Over");
             }
-            State = GameState.Gameover;
-            Time.timeScale = 0f;
         }
     }
 
@@ -299,7 +292,6 @@ public class GameManager : MonoBehaviour
             }
             if (countdownHelper)
             {
-                this.leaderboardManager.HideLeaderboard();
                 string player = "Player Game\nStarting In:\n";
                 if (this.playerType == PlayerType.Agent) player = "Agent Game \nStarting In:\n";
                 this.uiController.ShowLevelUpText(player + this.countdownTimer);
