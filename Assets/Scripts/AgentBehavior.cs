@@ -216,6 +216,11 @@ public class AgentBehavior : Agent
         }
     }
 
+    void Update()
+    {
+        RequestDecision();
+    }
+
     public void ChangePaddleScale(float change){
         transform.localScale = new Vector3(paddleWidth - change, 
                                 transform.localScale.y, 
