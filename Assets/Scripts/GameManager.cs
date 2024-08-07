@@ -188,8 +188,8 @@ public class GameManager : MonoBehaviour
         this.uiController.HidePauseCanvas();
 
         // configure audio sources
-        this.levelUpAudio = GameObject.Find("LevelUpSFX").GetComponent<AudioSource>();
-        this.lifeLostAudio = GameObject.Find("LifeLostSFX").GetComponent<AudioSource>();
+        this.levelUpAudio = this.transform.Find("LevelUpSFX").GetComponent<AudioSource>();
+        this.lifeLostAudio = this.transform.Find("LifeLostSFX").GetComponent<AudioSource>();
     }
 
         /// <summary>
