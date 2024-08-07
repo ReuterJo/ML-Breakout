@@ -1979,6 +1979,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 5503931751980190907}
+    - target: {fileID: 7749540596127615184, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5323703274082330921, guid: 1f97d851fe6f08184b1c19ec7918bc2a, type: 3}
     m_RemovedGameObjects: []
