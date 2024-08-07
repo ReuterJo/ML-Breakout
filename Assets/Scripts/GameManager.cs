@@ -315,19 +315,22 @@ public class GameManager : MonoBehaviour
         {
             this.Countdown();
         }
-
-        // Check if the Escape key is pressed to pause/unpause game
-        if (Input.GetKeyDown(KeyCode.Escape))
+        else
         {
-            if (State == GameState.Playing)
+            // Check if the Escape key is pressed to pause/unpause game
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
+                if (State == GameState.Playing)
+                {
+                    PauseGame();
+                }
+                else
+                {
+                    ResumeGame();
+                }
             }
         }
+
 
         // Hide level up text if shown
         if (this.levelUpTextActive && Time.time - this.levelUpTextStartTime >= 2f) this.HideLevelUpText();
