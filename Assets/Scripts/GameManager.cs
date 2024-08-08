@@ -326,7 +326,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 // finished multi-level game
-                if (this.bricksRemaining == 0 && this.level == 5)
+                if (this.bricksRemaining == 0 && this.level == 5 && !this.generateBricks)
                 {
                     if (!this.training_mode) EndGame();
                     else this.agentBehavior.EndTrainingEpisode();  
@@ -440,7 +440,7 @@ public class GameManager : MonoBehaviour
             State = GameState.Paused;
 
             // Player completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
+            if (level == 5 && bricksRemaining == 0 && !this.generateBricks)
             {
                 int ballBonus = this.lives - 1 * 1000;
                 this.score += ballBonus;
