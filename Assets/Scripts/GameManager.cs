@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
     {
         // Set the game state to preparing
         State = GameState.Preparing;
-        this.level = 1;
+        this.level = starting_level;
         this.lives = 5;
         this.score = 0;
         this.levelText.text = "";
@@ -230,7 +230,7 @@ public class GameManager : MonoBehaviour
             State = GameState.Paused;
 
             // Player completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
+            if (level == 5 && bricksRemaining == 0 && !this.generateBricks)
             {
                 int ballBonus = this.lives - 1 * 1000;
                 this.score += ballBonus;
@@ -239,20 +239,20 @@ public class GameManager : MonoBehaviour
             // Two Player Winner Display
             if (opponentGame != null)
             {
-                if (opponentGame.GetScore() > this.score) this.ShowLevelUpText("Agent Wins!");
-                else this.ShowLevelUpText("Player Wins!");
+                if (opponentGame.GetScore() > this.score) this.uiController.EndGame("Agent Wins!");
+                else this.uiController.EndGame("Player Wins!");
             }
             // Single Player Game Over Display
             else
             {
-                this.ShowLevelUpText("Game Over!");
+                this.uiController.EndGame("Game Over!");
             }
 
             State = GameState.Gameover;
             Time.timeScale = 0f;
             
             // ENABLED PAUSE MENU BUTTONS AT END OF GAME
-            this.PauseGame();
+            this.uiController.ShowPauseCanvas();
         }
         else
         {
@@ -364,7 +364,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 // finished multi-level game
-                if (this.bricksRemaining == 0 && this.level == 5)
+                if (this.bricksRemaining == 0 && this.level == 5 && !this.generateBricks)
                 {
                     if (!this.training_mode) EndGame();
                     else this.agentBehavior.EndTrainingEpisode();  
