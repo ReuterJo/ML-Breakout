@@ -1710,8 +1710,8 @@ MonoBehaviour:
     of time, the Agent will learn what actions maximize the rewards and minimize
     the penalties, effectively learning to play the game.\n\nThis game demonstrates
     the learning behavior by offering three different playing modes: \n\n     - Beginner
-    - the ML Agent was trained for 10 minutes.\n     - Intermediate - the ML Agent
-    was trained for 20 minutes.\n     - Advanced - the ML Agent was trained for 44
+    - the ML Agent was trained for 7 minutes.\n     - Intermediate - the ML Agent
+    was trained for 11 minutes.\n     - Advanced - the ML Agent was trained for 44
     minutes.\n\nMore descriptions here...\n\nThis project was developed by Jonathan
     Reuter, and Joel Strong as part of their Capstone course at Oregon State University.\n\n"
   m_isRightToLeft: 0
