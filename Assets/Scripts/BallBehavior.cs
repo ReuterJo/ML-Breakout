@@ -171,8 +171,8 @@ public class BallBehavior : MonoBehaviour
 
     public void ChangeBallVelocity()
     {
-        this.maxVelocity += 1;
-        this.minVelocityY += 0.5f;
+        this.maxVelocity += 0.5f;
+        this.minVelocityY += 0.25f;
     }
 
     public float GetBallYPosition()

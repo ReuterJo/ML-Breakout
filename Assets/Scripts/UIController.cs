@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     [Tooltip("The level text")]
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI levelUpText;
+    public TextMeshProUGUI pauseText;
     public Canvas pauseCanvas;
 
     /// <summary>
@@ -27,6 +28,7 @@ public class UIController : MonoBehaviour
     {
         this.levelUpText.gameObject.SetActive(false);
         this.pauseCanvas.enabled = false;
+        this.pauseText.text = "Game Paused";
     }
 
     public void ShowLives(string text)
@@ -91,6 +93,12 @@ public class UIController : MonoBehaviour
 
     public void ShowPauseCanvas()
     {
+        this.pauseCanvas.enabled = true;
+    }
+
+    public void EndGame(string text)
+    {
+        this.pauseText.text = text;
         this.pauseCanvas.enabled = true;
     }
 
