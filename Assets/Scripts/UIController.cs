@@ -14,7 +14,9 @@ public class UIController : MonoBehaviour
     [Tooltip("The level up text")]
     public TextMeshProUGUI levelUpText;
     [Tooltip("The pause canvas")]
+    public TextMeshProUGUI pauseText;
     public Canvas pauseCanvas;
+
 
     /// <summary>
     /// Sets the screen position of the UI elements
@@ -50,6 +52,18 @@ public class UIController : MonoBehaviour
         this.levelUpText.gameObject.SetActive(true);
         yield return new WaitForSeconds(seconds);
         this.levelUpText.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Show the level up text
+    /// </summary>
+    /// <param name="text">The text to be displayed</param>
+    /// <param name="seconds">The duration for which the text is visible</param>
+    /// <returns></returns>
+    public void ShowEndGameText(string text)
+    {
+        this.levelUpText.text = text;
+        this.levelUpText.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -145,5 +159,6 @@ public class UIController : MonoBehaviour
     {
         this.levelUpText.gameObject.SetActive(true);
         this.pauseCanvas.enabled = false;
+        this.pauseText.text = "Game Paused";
     }
 }

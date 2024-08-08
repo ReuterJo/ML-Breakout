@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     private int level;
     private Rigidbody2D ballRb;
     private float levelStartTime;
+    private bool generateBricks;
 
     // configuration variables
     private int starting_level = 1;             // use to set starting level in multi-level mode
@@ -325,7 +326,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 // finished multi-level game
-                if (this.bricksRemaining == 0 && this.level == 5)
+                if (this.bricksRemaining == 0 && this.level == 5 && !this.generateBricks)
                 {
                     if (!this.training_mode) EndGame();
                     else this.agentBehavior.EndTrainingEpisode();  
@@ -335,14 +336,21 @@ public class GameManager : MonoBehaviour
                 {
                     if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                     {
-                        if (ballBehavior.GetBallYPosition() < 0.0f)
+                        if (this.bricksRemaining == 0 || (this.level == 1 && this.bricksRemaining < 27))
                         {
-                            // change bricks once ball is out of brick generator area
-                            this.ChangeLevel();
-                            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
                             // change game dynamics and points immediately
+                            if (!this.generateBricks)
+                            {
+                                this.ChangeLevel();
+                                this.generateBricks = true;
+                            }
                         }
-
+                        // change bricks once ball is out of brick generator area
+                        if (this.generateBricks && ballBehavior.GetBallYPosition() < 0.0f)
+                        {
+                            this.bricksRemaining = this.levelGenerator.ChangeLevel(this.level);
+                            this.generateBricks = false;
+                        }
                     }
                 }
             }
@@ -432,7 +440,7 @@ public class GameManager : MonoBehaviour
             State = GameState.Paused;
 
             // Player completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
+            if (level == 5 && bricksRemaining == 0 && !this.generateBricks)
             {
                 int ballBonus = this.lives - 1 * 1000;
                 this.score += ballBonus;
@@ -447,10 +455,7 @@ public class GameManager : MonoBehaviour
             }
             // Single Player Game Over Display
             else
-            {
-                StartCoroutine(this.uiController.ShowLevelUpText("Game Over!", 5f));
-            }
-            await Task.Delay(5000);
+            this.uiController.ShowEndGameText("Game Over");
 
             State = GameState.Gameover;
             Time.timeScale = 0f;
@@ -462,22 +467,8 @@ public class GameManager : MonoBehaviour
         {
             this.ballBehavior.Freeze();
             this.agentBehavior.Freeze();
-            // Agent completed game - apply ball bonus
-            if (level == 5 && bricksRemaining == 0)
-            {
-                int ballBonus = this.lives - 1 * 1000;
-                this.score += ballBonus;
-                StartCoroutine(this.uiController.ShowLevelUpText("Game Ended\nBall Bonus: " + ballBonus.ToString(), 5f));
-                await Task.Delay(5000);
-            }
-            if (opponentGame != null)
-            {
-                if (opponentGame.GetScore() > this.score) StartCoroutine(this.uiController.ShowLevelUpText("Agent Wins!", 5f));
-                else StartCoroutine(this.uiController.ShowLevelUpText("Player Wins!", 5f));
-            }
-            await Task.Delay(5000);
-            // Do NOT add agent scores to the leaderboard
-            this.gameGenerator.Leaderboard();
+            this.uiController.ShowEndGameText("Game Over");
+
         }
     }
 

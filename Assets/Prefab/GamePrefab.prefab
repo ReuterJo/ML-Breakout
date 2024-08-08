@@ -1222,6 +1222,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6514244736084106510, guid: fca061b8c41327a02aaaef849549277b, type: 3}
+      propertyPath: pauseText
+      value: 
+      objectReference: {fileID: 3521063890683865453}
+    - target: {fileID: 6514244736084106510, guid: fca061b8c41327a02aaaef849549277b, type: 3}
       propertyPath: pauseCanvas
       value: 
       objectReference: {fileID: 4380105491919892083}
@@ -1327,6 +1331,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 480332747803654624, guid: fca061b8c41327a02aaaef849549277b, type: 3}
   m_PrefabInstance: {fileID: 797845008198077299}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3521063890683865453 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4309900015894897182, guid: fca061b8c41327a02aaaef849549277b, type: 3}
+  m_PrefabInstance: {fileID: 797845008198077299}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4096941062837227997 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3731727064653945518, guid: fca061b8c41327a02aaaef849549277b, type: 3}
